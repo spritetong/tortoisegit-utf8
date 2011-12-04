@@ -555,7 +555,7 @@ void CCommitDlg::OnOK()
 			else
 				cmd.Format(_T("git.exe update-index  -- \"%s\""),entry->GetGitPathString());
 
-			if(g_Git.Run(cmd,&out,CP_ACP))
+			if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 			{
 				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 				bAddSuccess = false ;
@@ -565,7 +565,7 @@ void CCommitDlg::OnOK()
 			if( entry->m_Action & CTGitPath::LOGACTIONS_REPLACED)
 				cmd.Format(_T("git.exe rm -- \"%s\""), entry->GetGitOldPathString());
 
-			g_Git.Run(cmd,&out,CP_ACP);
+			g_Git.Run(cmd,&out,CP_GIT_XUTF8);
 
 			nchecked++;
 
@@ -578,7 +578,7 @@ void CCommitDlg::OnOK()
 			if(entry->m_Action & CTGitPath::LOGACTIONS_ADDED)
 			{	//To init git repository, there are not HEAD, so we can use git reset command
 				cmd.Format(_T("git.exe rm -f --cache -- \"%s\""),entry->GetGitPathString());
-				if(g_Git.Run(cmd,&out,CP_ACP))
+				if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 				{
 					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 					bAddSuccess = false ;
@@ -597,7 +597,7 @@ void CCommitDlg::OnOK()
 				{
 					cmd.Format(_T("git.exe reset -- \"%s\""), entry->GetGitPathString());
 				}
-				if(g_Git.Run(cmd,&out,CP_ACP))
+				if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 				{
 					/* when reset a unstage file will report error.
 					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
@@ -1501,9 +1501,9 @@ void CCommitDlg::ScanFile(const CString& sFilePath, const CString& sRegex)
 		}
 		if ((opts & IS_TEXT_UNICODE_NOT_UNICODE_MASK)||(opts == 0))
 		{
-			int ret = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, NULL, 0);
+			int ret = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, NULL, 0);
 			wchar_t * pWideBuf = new wchar_t[ret];
-			int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, pWideBuf, ret);
+			int ret2 = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, pWideBuf, ret);
 			if (ret2 == ret)
 				sFileContent = wstring(pWideBuf, ret);
 			delete [] pWideBuf;
@@ -1800,7 +1800,7 @@ void CCommitDlg::FillPatchView()
 				if(m_bCommitAmend==TRUE && m_bAmendDiffToLastCommit==FALSE)
 					head = _T("HEAD~1");
 				cmd.Format(_T("git.exe diff %s -- \"%s\""), head, p->GetGitPathString());
-				g_Git.Run(cmd,&out,CP_ACP);
+				g_Git.Run(cmd,&out,CP_GIT_XUTF8);
 			}
 		}
 

@@ -1,18 +1,18 @@
 [submodule "ext/apr-util"]
 	path = ext/apr-util
-	url = http://git.apache.org/apr-util.git
+	url = https://git.tch.25u.com/git/opensource/net/apr-util.git
 [submodule "ext/apr"]
 	path = ext/apr
-	url = http://git.apache.org/apr.git
+	url = https://git.tch.25u.com/git/opensource/net/apr.git
 [submodule "ext/tgit"]
 	path = ext/tgit
-	url = https://code.google.com/p/tortoisegit.tgit
+	url = https://git.tch.25u.com/git/opensource/git/tortoisegit.tgit.git
 [submodule "ext/zlib"]
 	path = ext/zlib
-	url = https://code.google.com/p/tortoisegit.zlib
+	url = https://git.tch.25u.com/git/opensource/git/tortoisegit.zlib.git
 [submodule "ext/libcurl"]
 	path = ext/libcurl
-	url = https://github.com/bagder/curl.git
+	url = https://git.tch.25u.com/git/opensource/net/curl.git
 [submodule "ext/libgit2"]
 	path = ext/libgit2
-	url = https://github.com/libgit2/libgit2.git
+	url = https://git.tch.25u.com/git/opensource/git/libgit2.git

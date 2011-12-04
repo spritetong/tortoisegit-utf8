@@ -142,7 +142,7 @@ typedef struct terminal_tag Terminal;
 #define CURSORBLINK GetCaretBlinkTime()
 #define TICKSPERSEC 1000	       /* GetTickCount returns milliseconds */
 
-#define DEFAULT_CODEPAGE CP_ACP
+#define DEFAULT_CODEPAGE CP_GIT_XUTF8
 
 typedef HDC Context;
 

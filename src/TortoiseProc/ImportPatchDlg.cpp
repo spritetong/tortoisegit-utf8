@@ -399,7 +399,7 @@ UINT CImportPatchDlg::PatchThread()
 
 				this->AddLogString(cmd);
 				CString output;
-				if(g_Git.Run(cmd, &output, CP_ACP))
+				if(g_Git.Run(cmd, &output, CP_GIT_XUTF8))
 				{
 					this->AddLogString(output);
 					this->AddLogString(_T("Fail"));
@@ -433,7 +433,7 @@ UINT CImportPatchDlg::PatchThread()
 
 			this->AddLogString(cmd);
 			CString output;
-			if(g_Git.Run(cmd,&output,CP_ACP))
+			if(g_Git.Run(cmd,&output,CP_GIT_XUTF8))
 			{
 				//keep STATUS_APPLYING to let user retry failed patch
 				m_cList.SetItemData(i, CPatchListCtrl::STATUS_APPLY_FAIL|CPatchListCtrl::STATUS_APPLYING);

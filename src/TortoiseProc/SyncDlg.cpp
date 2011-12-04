@@ -342,7 +342,7 @@ void CSyncDlg::FetchComplete()
 					g_Git.m_CurrentDir,
 					g_Git.FixBranchName(dlg.m_Upstream),
 					g_Git.FixBranchName(dlg.m_Branch));
-			if(g_Git.Run(cmd, &out, &err, CP_ACP))
+			if(g_Git.Run(cmd, &out, &err, CP_GIT_XUTF8))
 			{
 				CMessageBox::Show(NULL, out + L"\n" + err, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 				return ;
@@ -453,7 +453,7 @@ void CSyncDlg::OnBnClickedButtonApply()
 		{
 			cmd.Format(_T("git.exe am \"%s\""),dlg.m_PathList[i].GetGitPathString());
 
-			if(g_Git.Run(cmd,&output,CP_ACP))
+			if(g_Git.Run(cmd,&output,CP_GIT_XUTF8))
 			{
 				CMessageBox::Show(NULL,output,_T("TortoiseGit"),MB_OK);
 
@@ -517,7 +517,7 @@ void CSyncDlg::OnBnClickedButtonEmail()
 					g_Git.m_CurrentDir,
 					m_strURL+_T('/')+m_strRemoteBranch,g_Git.FixBranchName(m_strLocalBranch));
 
-	if (g_Git.Run(cmd, &out, &err, CP_ACP))
+	if (g_Git.Run(cmd, &out, &err, CP_GIT_XUTF8))
 	{
 		CMessageBox::Show(NULL, out + L"\n" + err, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 		return ;

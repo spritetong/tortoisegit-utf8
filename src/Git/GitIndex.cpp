@@ -34,7 +34,7 @@
 
 #define FILL_DATA() \
 	m_FileName.Empty();\
-	g_Git.StringAppend(&m_FileName, (BYTE*)entry->name, CP_ACP, Big2lit(entry->flags)&CE_NAMEMASK);\
+	g_Git.StringAppend(&m_FileName, (BYTE*)entry->name, CP_GIT_XUTF8, Big2lit(entry->flags)&CE_NAMEMASK);\
 	m_FileName.MakeLower(); \
 	this->m_Flags=Big2lit(entry->flags);\
 	this->m_ModifyTime=Big2lit(entry->mtime.sec);\
@@ -612,7 +612,7 @@ int CGitHeadFileList::ReadHeadHash(CString gitdir)
 				ReadFile(hfile, p, filesize - 4, &size, NULL);
 
 				m_HeadRefFile.Empty();
-				g_Git.StringAppend(&this->m_HeadRefFile, p, CP_ACP, filesize - 4);
+				g_Git.StringAppend(&this->m_HeadRefFile, p, CP_GIT_XUTF8, filesize - 4);
 				CString ref = this->m_HeadRefFile;
 				ref = ref.Trim();
 				int start = 0;
@@ -789,9 +789,9 @@ int CGitHeadFileList::CallBack(const unsigned char *sha1, const char *base, int 
 	p->at(cur).m_FileName.Empty();
 
 	if(base)
-		g_Git.StringAppend(&p->at(cur).m_FileName, (BYTE*)base, CP_ACP, baselen);
+		g_Git.StringAppend(&p->at(cur).m_FileName, (BYTE*)base, CP_GIT_XUTF8, baselen);
 
-	g_Git.StringAppend(&p->at(cur).m_FileName,(BYTE*)pathname, CP_ACP);
+	g_Git.StringAppend(&p->at(cur).m_FileName,(BYTE*)pathname, CP_GIT_XUTF8);
 
 	p->at(cur).m_FileName.MakeLower();
 
@@ -843,7 +843,7 @@ int ReadTreeRecursive(git_repository &repo, git_tree * tree, CStringA base, int 
 
 int CGitHeadFileList::ReadTree()
 {
-	CStringA gitdir = CUnicodeUtils::GetMulti(m_Gitdir,CP_ACP) ;
+	CStringA gitdir = CUnicodeUtils::GetMulti(m_Gitdir,CP_GIT_XUTF8) ;
 	gitdir += "\\.git";
 	git_repository *repository = NULL;
 	git_commit *commit = NULL;
@@ -898,7 +898,7 @@ int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &f
 			if(start >= 0)
 			{
 				base = base.Left(start);
-				this->m_BaseDir = CUnicodeUtils::GetMulti(base,CP_ACP) ;
+				this->m_BaseDir = CUnicodeUtils::GetMulti(base,CP_GIT_XUTF8) ;
 			}
 		}
 	}
@@ -1227,7 +1227,7 @@ int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 
 	CStringA patha;
 
-	patha = CUnicodeUtils::GetMulti(path, CP_ACP) ;
+	patha = CUnicodeUtils::GetMulti(path, CP_GIT_XUTF8) ;
 	patha.Replace('\\', '/');
 
 	if(g_Git.GetFileModifyTime(temp, &time, &dir))

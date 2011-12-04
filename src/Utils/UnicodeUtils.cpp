@@ -240,7 +240,7 @@ CStringA CUnicodeUtils::GetUTF8(const CStringA& string)
 		return CStringA();
 	buf = new WCHAR[len*4 + 1];
 	SecureZeroMemory(buf, (len*4 + 1)*sizeof(WCHAR));
-	MultiByteToWideChar(CP_ACP, 0, string, -1, buf, len*4);
+	MultiByteToWideChar(CP_GIT_XUTF8, 0, string, -1, buf, len*4);
 	CStringW temp = CStringW(buf);
 	delete [] buf;
 	return (CUnicodeUtils::GetUTF8(temp));
@@ -315,7 +315,7 @@ std::string WideToMultibyte(const wide_string& wide)
 {
 	char * narrow = new char[wide.length()*3+2];
 	BOOL defaultCharUsed;
-	int ret = (int)WideCharToMultiByte(CP_ACP, 0, wide.c_str(), (int)wide.size(), narrow, (int)wide.length()*3 - 1, ".", &defaultCharUsed);
+	int ret = (int)WideCharToMultiByte(CP_GIT_XUTF8, 0, wide.c_str(), (int)wide.size(), narrow, (int)wide.length()*3 - 1, ".", &defaultCharUsed);
 	narrow[ret] = 0;
 	std::string str = narrow;
 	delete[] narrow;
@@ -341,7 +341,7 @@ wide_string MultibyteToWide(const std::string& multibyte)
 	wchar_t * wide = new wchar_t[multibyte.length()*2+2];
 	if (wide == NULL)
 		return wide_string();
-	int ret = (int)MultiByteToWideChar(CP_ACP, 0, multibyte.c_str(), (int)multibyte.size(), wide, (int)length*2 - 1);
+	int ret = (int)MultiByteToWideChar(CP_GIT_XUTF8, 0, multibyte.c_str(), (int)multibyte.size(), wide, (int)length*2 - 1);
 	wide[ret] = 0;
 	wide_string str = wide;
 	delete[] wide;
@@ -431,7 +431,7 @@ int LoadStringEx(HINSTANCE hInstance, UINT uID, LPTSTR lpBuffer, int nBufferMax,
 	wcsncpy_s((wchar_t *)lpBuffer, nBufferMax, pImage->achString, ret);
 	lpBuffer[ret] = 0;
 #else
-	ret = WideCharToMultiByte(CP_ACP, 0, pImage->achString, pImage->nLength, (LPSTR)lpBuffer, nBufferMax-1, ".", &defaultCharUsed);
+	ret = WideCharToMultiByte(CP_GIT_XUTF8, 0, pImage->achString, pImage->nLength, (LPSTR)lpBuffer, nBufferMax-1, ".", &defaultCharUsed);
 	lpBuffer[ret] = 0;
 #endif
 	return ret;

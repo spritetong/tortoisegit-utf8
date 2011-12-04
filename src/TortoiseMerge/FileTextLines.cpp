@@ -268,9 +268,9 @@ BOOL CFileTextLines::Load(const CString& sFilePath, int lengthHint /* = 0*/)
 	}
 	else if (m_UnicodeType == ASCII)
 	{
-		int ret = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, dwReadBytes, NULL, 0);
+		int ret = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)pFileBuf, dwReadBytes, NULL, 0);
 		wchar_t * pWideBuf = new wchar_t[ret];
-		int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, dwReadBytes, pWideBuf, ret);
+		int ret2 = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)pFileBuf, dwReadBytes, pWideBuf, ret);
 		if (ret2 == ret)
 		{
 			delete [] pFileBuf;

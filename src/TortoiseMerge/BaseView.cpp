@@ -2021,7 +2021,7 @@ BOOL CBaseView::OnToolTipNotify(UINT /*id*/, NMHDR *pNMHDR, LRESULT *pResult)
 	if (pNMHDR->code == TTN_NEEDTEXTA)
 	{
 		pTTTA->lpszText = m_szTip;
-		WideCharToMultiByte(CP_ACP, 0, strTipText, -1, m_szTip, strTipText.GetLength()+1, 0, 0);
+		WideCharToMultiByte(CP_GIT_XUTF8, 0, strTipText, -1, m_szTip, strTipText.GetLength()+1, 0, 0);
 	}
 	else
 	{

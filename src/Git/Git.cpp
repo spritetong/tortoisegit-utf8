@@ -469,7 +469,7 @@ CString CGit::GetConfigValue(CString name,int encoding, CString *GitPath, BOOL R
 		key =  CUnicodeUtils::GetMulti(name, encoding);
 		CStringA p;
 		if(git_path)
-			p=CUnicodeUtils::GetMulti(*GitPath,CP_ACP);
+			p=CUnicodeUtils::GetMulti(*GitPath,CP_GIT_XUTF8);
 
 		if(git_get_config(key.GetBuffer(), value.GetBufferSetLength(4096), 4096, p.GetBuffer()))
 			return CString();
@@ -509,7 +509,7 @@ int CGit::SetConfigValue(CString key, CString value, CONFIG_TYPE type, int encod
 		valuea = CUnicodeUtils::GetMulti(value, encoding);
 		CStringA p;
 		if(GitPath)
-			p=CUnicodeUtils::GetMulti(*GitPath,CP_ACP);
+			p=CUnicodeUtils::GetMulti(*GitPath,CP_GIT_XUTF8);
 
 		return get_set_config(keya.GetBuffer(), valuea.GetBuffer(), type, p.GetBuffer());
 
@@ -917,7 +917,7 @@ CGitHash CGit::GetHash(TCHAR* friendname)
 
 		CGitHash hash;
 		CStringA ref;
-		ref = CUnicodeUtils::GetMulti(FixBranchName(friendname),CP_ACP);
+		ref = CUnicodeUtils::GetMulti(FixBranchName(friendname),CP_GIT_XUTF8);
 		try
 		{
 			git_get_sha1(ref, hash.m_hash);
@@ -986,7 +986,7 @@ int addto_list_each_ref_fn(const char *refname, const unsigned char * /*sha1*/, 
 {
 	STRING_VECTOR *list = (STRING_VECTOR*)cb_data;
 	CString str;
-	g_Git.StringAppend(&str,(BYTE*)refname,CP_ACP);
+	g_Git.StringAppend(&str,(BYTE*)refname,CP_GIT_XUTF8);
 	list->push_back(str);
 	return 0;
 }
@@ -1168,7 +1168,7 @@ int addto_map_each_ref_fn(const char *refname, const unsigned char *sha1, int /*
 {
 	MAP_HASH_NAME *map = (MAP_HASH_NAME*)cb_data;
 	CString str;
-	g_Git.StringAppend(&str,(BYTE*)refname,CP_ACP);
+	g_Git.StringAppend(&str,(BYTE*)refname,CP_GIT_XUTF8);
 	CGitHash hash((char*)sha1);
 
 	(*map)[hash].push_back(str);
@@ -1466,7 +1466,7 @@ public:
 		{
 			WCHAR *buf = (WCHAR*)alloca((len*4+2)*sizeof(WCHAR));
 			*buf = 0;
-			MultiByteToWideChar(CP_ACP, 0, line, len+1, buf, len*4+1);
+			MultiByteToWideChar(CP_GIT_XUTF8, 0, line, len+1, buf, len*4+1);
 			fileStatus.sFileName = buf;
 
 			if (*buf && (*m_pEnumCb)(&fileStatus,m_pUserData))
@@ -1583,14 +1583,14 @@ int CGit::Revert(CString commit, CTGitPath &path)
 	if(path.m_Action & CTGitPath::LOGACTIONS_REPLACED && !path.GetGitOldPathString().IsEmpty())
 	{
 		cmd.Format(_T("git.exe mv -- \"%s\" \"%s\""),path.GetGitPathString(),path.GetGitOldPathString());
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			::MessageBox(NULL, out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 			return -1;
 		}
 
 		cmd.Format(_T("git.exe checkout %s -f -- \"%s\""), commit, path.GetGitOldPathString());
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			::MessageBox(NULL, out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 			return -1;
@@ -1601,7 +1601,7 @@ int CGit::Revert(CString commit, CTGitPath &path)
 	{	//To init git repository, there are not HEAD, so we can use git reset command
 		cmd.Format(_T("git.exe rm -f --cached -- \"%s\""),path.GetGitPathString());
 
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			::MessageBox(NULL, out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 			return -1;
@@ -1610,7 +1610,7 @@ int CGit::Revert(CString commit, CTGitPath &path)
 	else
 	{
 		cmd.Format(_T("git.exe checkout %s -f -- \"%s\""), commit, path.GetGitPathString());
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			::MessageBox(NULL, out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 			return -1;
@@ -1646,7 +1646,7 @@ bool CGit::IsFastForward(const CString &from, const CString &to)
 	CString cmd, err;
 	cmd.Format(_T("git.exe merge-base %s %s"), FixBranchName(to), FixBranchName(from));
 
-	if (g_Git.Run(cmd, &base, &err, CP_ACP))
+	if (g_Git.Run(cmd, &base, &err, CP_GIT_XUTF8))
 	{
 		//CMessageBox::Show(NULL, base + _T("\n") + err, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 		return false;
@@ -1687,7 +1687,7 @@ int CGit::RefreshGitIndex()
 	{
 		CString cmd,output;
 		cmd=_T("git.exe update-index --refresh");
-		return Run(cmd,&output,CP_ACP);
+		return Run(cmd,&output,CP_GIT_XUTF8);
 	}
 }
 
@@ -1699,9 +1699,9 @@ int CGit::GetOneFile(CString Refname, CTGitPath &path, const CString &outputfile
 		{
 			g_Git.CheckAndInitDll();
 			CStringA ref, patha, outa;
-			ref = CUnicodeUtils::GetMulti(Refname,CP_ACP);
-			patha = CUnicodeUtils::GetMulti(path.GetGitPathString(), CP_ACP);
-			outa = CUnicodeUtils::GetMulti(outputfile,CP_ACP);
+			ref = CUnicodeUtils::GetMulti(Refname,CP_GIT_XUTF8);
+			patha = CUnicodeUtils::GetMulti(path.GetGitPathString(), CP_GIT_XUTF8);
+			outa = CUnicodeUtils::GetMulti(outputfile,CP_GIT_XUTF8);
 			::DeleteFile(outputfile);
 			return git_checkout_file((const char*)ref.GetBuffer(),(const char*)patha.GetBuffer(),(const char*)outa.GetBuffer());
 
@@ -1856,8 +1856,8 @@ int CGit::GetDiffPath(CTGitPathList *PathList, CGitHash *hash1, CGitHash *hash2,
 		git_get_diff_file(diff,file,j,&newname,&oldname,
 					&mode,&IsBin,&inc,&dec);
 
-		StringAppend(&strnewname,(BYTE*)newname,CP_ACP);
-		StringAppend(&stroldname,(BYTE*)oldname,CP_ACP);
+		StringAppend(&strnewname,(BYTE*)newname,CP_GIT_XUTF8);
+		StringAppend(&stroldname,(BYTE*)oldname,CP_GIT_XUTF8);
 
 		path.SetFromGit(strnewname,&stroldname);
 		path.ParserAction((BYTE)mode);

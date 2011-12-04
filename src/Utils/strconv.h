@@ -40,6 +40,9 @@
 
 #include <vector>
 
+/* For UTF-8. Chanaged by Sprite Tong, 12/1/2011. */
+#define CP_GIT_XUTF8	CP_UTF8
+
 class strconv_t
 {
 public:
@@ -58,12 +61,12 @@ public:
     if(lpsz==NULL)
       return NULL;
 
-    int count = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, lpsz, -1, NULL, 0);
+    int count = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, lpsz, -1, NULL, 0);
     if(count==0)
       return NULL;
 
     void* pBuffer = (void*) new wchar_t[count];
-    int result = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, lpsz, -1, (LPWSTR)pBuffer, count);
+    int result = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, lpsz, -1, (LPWSTR)pBuffer, count);
     if(result==0)
     {
       delete [] pBuffer;
@@ -84,7 +87,7 @@ public:
       return NULL;
 
     void* pBuffer = (void*) new char[count];
-    int result = WideCharToMultiByte(CP_ACP, 0, lpsz, -1, (LPSTR)pBuffer, count, NULL, NULL);
+    int result = WideCharToMultiByte(CP_GIT_XUTF8, 0, lpsz, -1, (LPSTR)pBuffer, count, NULL, NULL);
     if(result==0)
     {
       delete [] pBuffer;
@@ -121,17 +124,17 @@ public:
       return NULL;
 
     // 1. Convert input ANSI string to widechar using 
-    // MultiByteToWideChar(CP_ACP, ...) function (CP_ACP 
+    // MultiByteToWideChar(CP_GIT_XUTF8, ...) function (CP_GIT_XUTF8 
     // is current Windows system Ansi code page)
     
     // Calculate required buffer size
-    int count = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, lpsz, -1, NULL, 0);
+    int count = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, lpsz, -1, NULL, 0);
     if(count==0)
       return NULL;
 
     // Convert ANSI->UNICODE
     wchar_t* pBuffer = new wchar_t[count];
-    int result = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, lpsz, -1, (LPWSTR)pBuffer, count);
+    int result = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, lpsz, -1, (LPWSTR)pBuffer, count);
     if(result==0)
     {
       delete [] pBuffer;

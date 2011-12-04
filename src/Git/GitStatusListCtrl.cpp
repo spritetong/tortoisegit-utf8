@@ -2313,7 +2313,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 						CString cmd;
 						cmd.Format(_T("git.exe add -f -- \"%s\""), path->GetGitPathString());
 						CString output;
-						if (!g_Git.Run(cmd, &output, NULL, CP_ACP))
+						if (!g_Git.Run(cmd, &output, NULL, CP_GIT_XUTF8))
 						{
 							path->m_Action = CTGitPath::LOGACTIONS_ADDED;
 							SetEntryCheck(path,index,true);
@@ -2433,7 +2433,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 							 ((this->m_bIsRevertTheirMy)&&cmd == IDGITLC_RESOLVEMINE) )
 						{
 							gitcmd.Format(_T("git.exe checkout-index -f --stage=3 -- \"%s\""),fentry->GetGitPathString());
-							if(g_Git.Run(gitcmd,&output,CP_ACP))
+							if(g_Git.Run(gitcmd,&output,CP_GIT_XUTF8))
 							{
 								CMessageBox::Show(m_hWnd, output, _T("TortoiseGit"), MB_ICONERROR);
 								continue;
@@ -2444,7 +2444,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 							 ((this->m_bIsRevertTheirMy)&&cmd == IDGITLC_RESOLVETHEIRS) )
 						{
 							gitcmd.Format(_T("git.exe checkout-index -f --stage=2 -- \"%s\""),fentry->GetGitPathString());
-							if(g_Git.Run(gitcmd,&output,CP_ACP))
+							if(g_Git.Run(gitcmd,&output,CP_GIT_XUTF8))
 							{
 								CMessageBox::Show(m_hWnd, output, _T("TortoiseGit"), MB_ICONERROR);
 								continue;
@@ -2455,7 +2455,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 						if ( fentry->m_Action & CTGitPath::LOGACTIONS_UNMERGED)
 						{
 							gitcmd.Format(_T("git.exe add -f -- \"%s\""),fentry->GetGitPathString());
-							if(g_Git.Run(gitcmd,&output,CP_ACP))
+							if(g_Git.Run(gitcmd,&output,CP_GIT_XUTF8))
 							{
 								CMessageBox::Show(m_hWnd, output, _T("TortoiseGit"), MB_ICONERROR);
 							}
@@ -3702,7 +3702,7 @@ void CGitStatusListCtrl::StartDiff(int fileindex)
 					cmd.Format(_T("git.exe merge-base %s^%d %s^%d"), this->m_CurrentVersion, parent1+1,
 						this->m_CurrentVersion,parent2+1);
 
-					if(g_Git.Run(cmd, &output, NULL, CP_ACP))
+					if(g_Git.Run(cmd, &output, NULL, CP_GIT_XUTF8))
 					{
 					}
 					else
@@ -4939,7 +4939,7 @@ int CGitStatusListCtrl::UpdateFileList(git_revnum_t hash,CTGitPathList *list)
 					if(last > 0)
 					{
 						CString str;
-						g_Git.StringAppend(&str, &cmdErr[last+1], CP_ACP, cmdErr.size() - last -1);
+						g_Git.StringAppend(&str, &cmdErr[last+1], CP_GIT_XUTF8, cmdErr.size() - last -1);
 						CMessageBox::Show(NULL,str, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 					}
 					else
@@ -5341,7 +5341,7 @@ int CGitStatusListCtrl::RevertSelectedItemToVersion()
 		CTGitPath *fentry=(CTGitPath*)GetItemData(index);
 		cmd.Format(_T("git.exe checkout %s -- \"%s\""),m_CurrentVersion,fentry->GetGitPathString());
 		out.Empty();
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK);
 		}

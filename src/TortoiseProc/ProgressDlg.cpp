@@ -393,7 +393,7 @@ void CProgressDlg::ParserCmdOutput(CRichEditCtrl &log,CProgressCtrl &progressctr
 		}
 
 		int lines = log.GetLineCount();
-		g_Git.StringAppend(&str,(BYTE*)oneline.GetBuffer(),CP_ACP);
+		g_Git.StringAppend(&str,(BYTE*)oneline.GetBuffer(),CP_GIT_XUTF8);
 		str.Trim();
 //		TRACE(_T("%s"), str);
 
@@ -574,7 +574,7 @@ CString CCommitProgressDlg::Convert2UnionCode(char *buff, int size)
 	int cp=CP_UTF8;
 
 	cmd=_T("git.exe config i18n.logOutputEncoding");
-	if(g_Git.Run(cmd, &output, NULL, CP_ACP))
+	if(g_Git.Run(cmd, &output, NULL, CP_GIT_XUTF8))
 		cp=CP_UTF8;
 
 	int start=0;
@@ -598,7 +598,7 @@ CString CCommitProgressDlg::Convert2UnionCode(char *buff, int size)
 
 	str.Empty();
 	g_Git.StringAppend(&str, (BYTE*)buff, cp, start);
-	g_Git.StringAppend(&str, (BYTE*)buff+start, CP_ACP,size - start);
+	g_Git.StringAppend(&str, (BYTE*)buff+start, CP_GIT_XUTF8,size - start);
 
 	return str;
 }

@@ -90,7 +90,7 @@ bool PasteCopyCommand::Execute()
 			CopyFile(sourcePath.GetWinPath(), fullDropPath.GetWinPath(), FALSE);
 			CString cmd,output;
 			cmd.Format(_T("git.exe add \"%s\""),fullDropPath.GetWinPath());
-			if( g_Git.Run(cmd,&output,CP_ACP))
+			if( g_Git.Run(cmd,&output,CP_GIT_XUTF8))
 			{
 				TRACE(_T("%s\n"), (LPCTSTR)output);
 				CMessageBox::Show(hwndExplorer, output, _T("TortoiseGit"), MB_ICONERROR);

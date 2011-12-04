@@ -37,7 +37,7 @@ bool BisectCommand::Execute()
 			{
 				CString cmd, out;
 				cmd = _T("git.exe stash");
-				if(g_Git.Run(cmd, &out, CP_ACP))
+				if(g_Git.Run(cmd, &out, CP_GIT_XUTF8))
 				{
 					CMessageBox::Show(NULL, out, _T("TortoiseGit"), MB_OK);
 					return false;

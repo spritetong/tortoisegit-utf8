@@ -1806,7 +1806,7 @@ bool CGitProgressDlg::CmdAdd(CString& sWindowTitle, bool& localoperation)
 	git_repository *repo = NULL;
 	git_index *index;
 
-	CStringA gitdir = CUnicodeUtils::GetMulti(CTGitPath(g_Git.m_CurrentDir).GetGitPathString() + _T("/.git"), CP_ACP);
+	CStringA gitdir = CUnicodeUtils::GetMulti(CTGitPath(g_Git.m_CurrentDir).GetGitPathString() + _T("/.git"), CP_GIT_XUTF8);
 	if (git_repository_open(&repo, gitdir.GetBuffer()))
 	{
 		ReportGitError();
@@ -1828,7 +1828,7 @@ bool CGitProgressDlg::CmdAdd(CString& sWindowTitle, bool& localoperation)
 
 	for(int i=0;i<m_targetPathList.GetCount();i++)
 	{
-		if (git_index_add(index, CStringA(CUnicodeUtils::GetMulti(m_targetPathList[i].GetGitPathString(), CP_ACP)).GetBuffer(), 0))
+		if (git_index_add(index, CStringA(CUnicodeUtils::GetMulti(m_targetPathList[i].GetGitPathString(), CP_GIT_XUTF8)).GetBuffer(), 0))
 		{
 			ReportGitError();
 			git_index_free(index);
@@ -1962,7 +1962,7 @@ bool CGitProgressDlg::CmdResolve(CString& sWindowTitle, bool& localoperation)
 	{
 		CString cmd,out,tempmergefile;
 		cmd.Format(_T("git.exe add -f -- \"%s\""),m_targetPathList[i].GetGitPathString());
-		if(g_Git.Run(cmd,&out,CP_ACP))
+		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
 		{
 			CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 			m_bErrorsOccurred=true;
