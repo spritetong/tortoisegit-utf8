@@ -11,3 +11,5 @@
 #include <tchar.h>
 #include <windows.h>
 #pragma warning(pop)
+
+#include "../Utils/strconv.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */

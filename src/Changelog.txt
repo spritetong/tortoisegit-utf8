@@ -12,6 +12,9 @@
  * Fixed issue #801: Be able to enter a custom stash message
  * Fixed issue #933: implement git stash --include-untracked
  * Fixed issue #987: Add Stash save/pop to "Working Dir Changes" dialog
+ * Fixed issue #988: Stash pop/apply fail should have a button for viewing conflicts
+ * Fixed issue #676: Add remove remote tag ability
+ * Fixed issue #678: TortoiseGitBlame log incomplete (integrated --follow into TortoiseGitBlame)
 
 == Bug Fix ==
  * Fixed issue #747: TortoiseProc & less process not closing
@@ -27,6 +30,7 @@
  * Fixed issue #863: Commit and revert gets stuck on repositories with mixed line-endings
  * Fixed issue #378: CRLF/LF conversion causes commit dialog to freeze
  * Fixed issue #858: Tortoise Git Client crash when showing the log dialog
+ * Fixed issue #920: TortoiseGitBlame and UTF-16 LE
 
 = Release 1.7.5.0 =
 == Features==

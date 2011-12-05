@@ -121,7 +121,7 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 			SetCurrentDirectory(g_Git.m_CurrentDir);
 
 		m_GitPath = path;
-		GetMainFrame()->m_wndOutput.LoadHistory(path.GetGitPathString());
+		GetMainFrame()->m_wndOutput.LoadHistory(path.GetGitPathString(), (theApp.GetInt(_T("FollowRenames"), 0) == 1));
 
 		CString cmd;
 
@@ -134,9 +134,11 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 		if(g_Git.Run(cmd, &m_BlameData, &err))
 		{
 			CString str;
-			g_Git.StringAppend(&str, &m_BlameData[0], CP_GIT_XUTF8);
-			g_Git.StringAppend(&str, &err[0], CP_GIT_XUTF8);
-			CMessageBox::Show(NULL,CString(_T("Blame Error")) + str,_T("TortoiseGitBlame"),MB_OK);
+			if (m_BlameData.size() > 0)
+				g_Git.StringAppend(&str, &m_BlameData[0], CP_GIT_XUTF8);
+			if (err.size() > 0)
+				g_Git.StringAppend(&str, &err[0], CP_GIT_XUTF8);
+			CMessageBox::Show(NULL,CString(_T("Blame Error:\n\n")) + str,_T("TortoiseGitBlame"),MB_OK);
 
 		}
 

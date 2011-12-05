@@ -23,3 +23,4 @@ extern const LPCTSTR addressFormat;
 extern const LPCTSTR offsetFormat;
 extern const LPCTSTR sizeFormat;
 
+#include "../Utils/strconv.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */

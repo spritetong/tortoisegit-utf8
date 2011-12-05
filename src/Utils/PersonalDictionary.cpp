@@ -53,7 +53,7 @@ bool CPersonalDictionary::Load()
 	std::wifstream File;
 	char filepath[MAX_PATH+1];
 	SecureZeroMemory(filepath, sizeof(filepath));
-	WideCharToMultiByte(CP_ACP, NULL, path, -1, filepath, MAX_PATH, NULL, NULL);
+	WideCharToMultiByte(CP_GIT_XACP, NULL, path, -1, filepath, MAX_PATH, NULL, NULL);
 	File.open(filepath);
 	if (!File.good())
 	{
@@ -111,7 +111,7 @@ bool CPersonalDictionary::Save()
 	std::wofstream File;
 	char filepath[MAX_PATH+1];
 	SecureZeroMemory(filepath, sizeof(filepath));
-	WideCharToMultiByte(CP_ACP, NULL, path, -1, filepath, MAX_PATH, NULL, NULL);
+	WideCharToMultiByte(CP_GIT_XACP, NULL, path, -1, filepath, MAX_PATH, NULL, NULL);
 	File.open(filepath, std::ios_base::binary);
 	for (std::set<CString>::iterator it = dict.begin(); it != dict.end(); ++it)
 	{

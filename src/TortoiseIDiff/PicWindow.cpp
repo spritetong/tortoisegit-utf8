@@ -22,7 +22,6 @@
 #include "PicWindow.h"
 #include "math.h"
 #include "SysInfo.h"
-#include "strconv.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
 
 #pragma comment(lib, "Msimg32.lib")
 #pragma comment(lib, "shell32.lib")
