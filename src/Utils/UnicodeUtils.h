@@ -18,6 +18,7 @@
 //
 #pragma once
 
+#include "strconv.h" // For UTF-8. Added by Sprite Tong, 12/5/2011
 #include <string>
 #include <WinDef.h>
 #pragma warning (push,1)
