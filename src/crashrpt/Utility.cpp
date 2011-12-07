@@ -20,11 +20,11 @@ BSTR CUtility::AllocSysString(string s)
 #if defined(_UNICODE) || defined(OLE2ANSI)
 	BSTR bstr = ::SysAllocStringLen(s.c_str(), s.size());
 #else
-	int nLen = MultiByteToWideChar(CP_GIT_XACP, 0, s.c_str(),
+	int nLen = MultiByteToWideChar(CP_GIT_XUTF8, 0, s.c_str(),
 		s.size(), NULL, NULL);
 	BSTR bstr = ::SysAllocStringLen(NULL, nLen);
 	if(bstr != NULL)
-		MultiByteToWideChar(CP_GIT_XACP, 0, s.c_str(), s.size(), bstr, nLen);
+		MultiByteToWideChar(CP_GIT_XUTF8, 0, s.c_str(), s.size(), bstr, nLen);
 #endif
 	return bstr;
 }

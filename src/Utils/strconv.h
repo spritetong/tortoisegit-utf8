@@ -38,11 +38,7 @@
 #ifndef _STRCONV_H
 #define _STRCONV_H
 
-/* For UTF-8. Chanaged by Sprite Tong, 12/1/2011. */
-#define CP_GIT_XUTF8	CP_UTF8
-#define CP_GIT_XACP		CP_ACP
-#ifdef __cplusplus
-
+#include "tgit_xutf8.h" // For UTF-8. Added by Sprite Tong, 12/5/2011
 #include <vector>
 
 class strconv_t
@@ -292,7 +288,6 @@ private:
   std::vector<void*> m_ConvertedStrings;  
 };
 
-#endif // __cplusplus
 #endif  //_STRCONV_H
 
 

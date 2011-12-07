@@ -12,6 +12,8 @@
 #include <map>
 #include <string>
 
+#include "../Utils/tgit_xutf8.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
+
 using namespace std;
 
 #define CRASHRPTAPI extern "C" __declspec(dllexport)
@@ -22,5 +24,3 @@ using namespace std;
 extern const LPCTSTR addressFormat;
 extern const LPCTSTR offsetFormat;
 extern const LPCTSTR sizeFormat;
-
-#include "../Utils/strconv.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */

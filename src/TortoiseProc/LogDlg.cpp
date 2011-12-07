@@ -167,12 +167,14 @@ END_MESSAGE_MAP()
 
 void CLogDlg::SetParams(const CTGitPath& orgPath, const CTGitPath& path, CString hightlightRevision, CString startrev, CString endrev, int limit /* = FALSE */)
 {
+#ifdef __TGIT_XUTF8_BUGFIX__
 	// Fix a critical bug that causes the log dialog crash when the end revision is "Working Copy".
 	// Added by Sprite Tong, 12/5/2011.
 	if (_tcsncmp(startrev, _T("00000000"), 8) == 0)
 		startrev.Empty();
 	if (_tcsncmp(endrev, _T("00000000"), 8) == 0)
 		endrev.Empty();
+#endif // __TGIT_XUTF8_BUGFIX__
 
 	m_orgPath = orgPath;
 	m_path = path;

@@ -23,7 +23,7 @@
 #include "GitStatus.h"
 #include "GitAdminDir.h"
 #include "gitdll.h"
-#include "strconv.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
+#include "tgit_xutf8.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
 
 class CFilterData
 {

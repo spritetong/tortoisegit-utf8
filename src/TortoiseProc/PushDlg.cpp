@@ -274,6 +274,31 @@ void CPushDlg::OnBnClickedOk()
 		m_URL=m_RemoteURL.GetString();
 	}
 
+#ifndef __TGIT_XUTF8_LEGACY__
+	// To avoid misuse of Push causing local dirty data to remote,
+	//    remote branch must be set.
+	// Added by Sprite Tong, 12/7/2011.
+	if (m_bPushAllBranches)
+	{
+		if (CMessageBox::Show(NULL,_T("Push All Branches to Remote is NOT Recommended.\nDo you want to continue?"),
+			_T("TortoiseGit"),MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION) != IDYES)
+			return;
+		if (CMessageBox::Show(NULL,
+				_T("Warning: ALL Local Branches Will Be Pushed to Remote.\n")
+				_T("         Local PRIVATE and DIRTY Data May Be Published to Others.\n")
+				_T("Click OK to continue."),
+			_T("TortoiseGit"),MB_OKCANCEL|MB_DEFBUTTON2|MB_ICONWARNING) != IDOK)
+			return;
+	}
+	else
+	{
+		if (m_BranchRemoteName.IsEmpty())
+		{
+			CMessageBox::Show(NULL,IDS_B_T_INVALID,IDS_TORTOISEGIT,MB_OK|MB_ICONERROR);
+			return;
+		}
+	}
+#endif // __TGIT_XUTF8_LEGACY__
 	if (!m_bPushAllBranches)
 	{
 		this->m_BranchRemoteName=m_BranchRemote.GetString().Trim();

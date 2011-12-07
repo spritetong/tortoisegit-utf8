@@ -62,7 +62,7 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName)
 #ifdef _UNICODE
 	char narrow[_MAX_PATH * 3];
 	BOOL defaultCharUsed;
-	int ret = WideCharToMultiByte(CP_GIT_XACP, 0, szThreadName, (int)_tcslen(szThreadName), narrow, _MAX_PATH*3 - 1, ".", &defaultCharUsed);
+	int ret = WideCharToMultiByte(CP_GIT_XUTF8, 0, szThreadName, (int)_tcslen(szThreadName), narrow, _MAX_PATH*3 - 1, ".", &defaultCharUsed);
 	narrow[ret] = 0;
 #endif
 	THREADNAME_INFO info;

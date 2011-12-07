@@ -66,11 +66,14 @@ BOOL CAboutDlg::OnInitDialog()
 	CAppUtils::GetMsysgitVersion(&out);
 
 	temp.Format(IDS_ABOUTVERSION, TGIT_VERMAJOR, TGIT_VERMINOR, TGIT_VERMICRO, TGIT_VERBUILD,out);
-	// For UTF-8. Add by Sprite Tong, 12/6/2011.
+#ifndef __TGIT_XUTF8_LEGACY__
+	// Show UTF-8 info version in About Dialog.
+	// Add by Sprite Tong, 12/6/2011.
 	CString sBuildInfo;
 	sBuildInfo.Format(_T(" for UTF-8, %s"), CString(TGIT_VERDATE));
 	int nLineEnd = temp.FindOneOf(_T("\r\n"));
 	if (nLineEnd > 0) temp.Insert(nLineEnd, sBuildInfo);
+#endif // __TGIT_XUTF8_LEGACY__
 #if 0
 	const svn_version_t * svnver = svn_client_version();
 
