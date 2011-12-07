@@ -145,7 +145,6 @@
 #define IDD_DIALOG_BROWSE_REFS          322
 #define IDD_ADD_REMOTE                  323
 #define IDD_DIALOG2                     324
-#define IDD_DIALOG_DELETE_REF           324
 #define IDR_ACC_COMMITDLG               325
 #define IDD_SYNC                        326
 #define IDD_PATCH_VIEW                  328
@@ -895,7 +894,6 @@
 #define IDD_SUBMODULE_ADD               1589
 #define IDC_EDIT_NAME                   1589
 #define IDC_CHECK_FORSE                 1590
-#define IDC_STATIC_MESSAGE              1591
 #define IDC_STATIC_BRANCH               1592
 #define IDC_BUGTRAQ_WARNINGIFNOISSUE_TRUE 1593
 #define IDC_BUGTRAQ_WARNINGIFNOISSUE_FALSE 1594
@@ -978,6 +976,7 @@
 #define IDC_BUTTON_GOOD                 1672
 #define IDC_GROUP_STASHMESSAGE          1673
 #define IDC_STASHMESSAGE                1674
+#define IDC_FOLLOWRENAMES               1675
 #define IDS_ABOUTVERSION                1700
 #define IDS_ABOUTVERSIONBOX             1701
 #define IDS_DLGTITLE_ADD_DIFF_TOOL      1750
@@ -1549,7 +1548,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        339
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1675
+#define _APS_NEXT_CONTROL_VALUE         1676
 #define _APS_NEXT_SYMED_VALUE           201
 #endif
 #endif

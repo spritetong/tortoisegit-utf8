@@ -866,7 +866,7 @@ END
 
 IDD_SETTINGSTBLAME DIALOGEX 0, 0, 300, 217
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "TortoiseBlame"
+CAPTION "TortoiseGitBlame"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Colors",IDC_STATIC,7,7,286,79
@@ -882,6 +882,7 @@ BEGIN
     LTEXT           "Tab size:",IDC_STATIC,14,132,92,8
     EDITTEXT        IDC_TABSIZE,253,130,31,12,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "Note: the font settings also affect the TortoiseUDiff viewer",IDC_STATIC,15,156,269,21
+    CONTROL         "Follow renames",IDC_FOLLOWRENAMES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,148,8
 END
 
 IDD_CONFLICTRESOLVE DIALOGEX 0, 0, 316, 150
@@ -1602,6 +1603,7 @@ BEGIN
     PUSHBUTTON      "Help",IDHELP,210,76,50,14
 END
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -2236,6 +2238,14 @@ BEGIN
         RIGHTMARGIN, 372
         TOPMARGIN, 7
         BOTTOMMARGIN, 231
+    END
+
+    IDD_RESOLVE_CONFLICT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 85
     END
 
     IDD_SETTINGIT_CONFIG, DIALOG
@@ -3720,17 +3730,6 @@ BEGIN
     PUSHBUTTON      "Help",IDHELP,243,63,50,14
 END
 
-IDD_DIALOG_DELETE_REF DIALOGEX 0, 0, 264, 125
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Confirm Delete Ref"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,81,104,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,131,104,50,14
-    CTEXT           "Confirmation message",IDC_STATIC_MESSAGE,7,7,250,76
-    CONTROL         "Force",IDC_CHECK_FORCE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,15,105,35,10
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3757,14 +3756,6 @@ BEGIN
         VERTGUIDE, 44
         TOPMARGIN, 7
         BOTTOMMARGIN, 77
-    END
-
-    IDD_DIALOG_DELETE_REF, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 257
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 118
     END
 END
 #endif    // APSTUDIO_INVOKED
