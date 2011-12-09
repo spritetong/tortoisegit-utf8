@@ -248,6 +248,13 @@ void CImportPatchDlg::OnBnClickedButtonAdd()
 					NULL,
 					OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT|OFN_ALLOWMULTISELECT,
 					_T("Patch Files(*.patch)|*.patch|Diff Files(*.diff)|*.diff|All Files(*.*)|*.*||"));
+#ifdef __TGIT_XUTF8_BUGFIX__
+	// Allow more files to be selected.
+	// Add by Sprite Tong, 12/9/2011.
+	dlg.m_ofn.nMaxFile = 65536;
+	dlg.m_ofn.lpstrFile = new TCHAR[dlg.m_ofn.nMaxFile];
+	dlg.m_ofn.lpstrFile[0] = '\0';
+#endif // __TGIT_XUTF8_BUGFIX__
 	if(dlg.DoModal() == IDOK)
 	{
 		POSITION pos;
@@ -264,6 +271,11 @@ void CImportPatchDlg::OnBnClickedButtonAdd()
 			}
 		}
 	}
+#ifdef __TGIT_XUTF8_BUGFIX__
+	delete[] dlg.m_ofn.lpstrFile;
+	dlg.m_ofn.lpstrFile = NULL;
+	dlg.m_ofn.nMaxFile = 0;
+#endif // __TGIT_XUTF8_BUGFIX__
 }
 
 void CImportPatchDlg::OnBnClickedButtonUp()
