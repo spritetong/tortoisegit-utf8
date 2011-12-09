@@ -742,7 +742,17 @@ bool CAppUtils::LaunchPAgent(CString *keyfile,CString * pRemote)
 	proc += tempfile;
 	proc += _T("\"");
 
+	// Launch pageant.exe at Git install diretory,
+	// to prevent pageant.exe from locking the current working directory.
+	// Modified by Sprite Tong, 12/9/2011.
+#ifndef __TGIT_XUTF8_LEGACY__
+	CString sGitCurrentDir = g_Git.m_CurrentDir;
+	g_Git.m_CurrentDir = CPathUtils::GetAppDirectory();
+#endif // __TGIT_XUTF8_LEGACY__
 	bool b = LaunchApplication(proc, IDS_ERR_PAGEANT, true);
+#ifndef __TGIT_XUTF8_LEGACY__
+	g_Git.m_CurrentDir = sGitCurrentDir;
+#endif // __TGIT_XUTF8_LEGACY__
 	if(!b)
 		return b;
 
