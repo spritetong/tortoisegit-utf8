@@ -24,3 +24,4 @@ using namespace std;
 extern const LPCTSTR addressFormat;
 extern const LPCTSTR offsetFormat;
 extern const LPCTSTR sizeFormat;
+
