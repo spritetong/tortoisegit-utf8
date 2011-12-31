@@ -292,7 +292,7 @@ void CPushDlg::OnBnClickedOk()
 	}
 	else
 	{
-		if (m_BranchRemoteName.IsEmpty())
+		if (m_BranchRemote.GetString().Trim().IsEmpty())
 		{
 			CMessageBox::Show(NULL,IDS_B_T_INVALID,IDS_TORTOISEGIT,MB_OK|MB_ICONERROR);
 			return;

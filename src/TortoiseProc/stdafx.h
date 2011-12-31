@@ -79,3 +79,6 @@
 #pragma warning(disable: 4512)	// assignment operator could not be generated
 #pragma warning(disable: 4355)	// used in base member initializer list
 
+/* For UTF-8. Added by Sprite Tong, 12/30/2011. */
+#include "../Utils/tgit_xutf8.h"
+#include "../../../tgit/compat/win32_xutf8.h"

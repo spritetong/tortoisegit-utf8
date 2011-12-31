@@ -28,6 +28,37 @@ extern "C" {
 /******************************************************************************/
 
 #ifdef __cplusplus
+extern "C++"
+{
+
+#include <io.h>
+#include <fcntl.h>
+
+#ifdef __AFX_H__
+class CStdioFileUtf8: public CStdioFile
+{
+public:
+	CStdioFileUtf8(): CStdioFile() {}
+	CStdioFileUtf8(FILE* pOpenStream): CStdioFile(pOpenStream) {}
+	CStdioFileUtf8(LPCTSTR lpszFileName, UINT nOpenFlags):
+		CStdioFile(lpszFileName, nOpenFlags) {}
+	
+	virtual BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags,
+		CFileException* pError = NULL)
+	{
+		BOOL ret = CStdioFile::Open(lpszFileName, nOpenFlags, pError);
+		if (ret && !(nOpenFlags & typeBinary))
+			_setmode(_fileno(m_pStream), _O_U8TEXT);
+		return ret;
+	}
+};
+#define CStdioFile CStdioFileUtf8
+#endif /* __AFX_H__ */
+
+}
+#endif /* __cplusplus */
+
+#ifdef __cplusplus
 }
 #endif
 
