@@ -1,0 +1,744 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|x64">
+      <Configuration>Template</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{50797F06-39C5-4802-8E2B-7B7A4EF03214}</ProjectGuid>
+    <RootNamespace>TortoiseProc</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\TortoiseProc\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\TortoiseProc\$(Configuration)64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\TortoiseProc\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\TortoiseProc\$(Configuration)64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Template|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Template|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Template|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\TortoiseProc;..\Resources;$InputDir;../../ext/ResizableLib;../Git;..\Utils;..\crashrpt;..\..\ext\libintl\libintl3-win32\inc;..\..\ext\hunspell;..\..\ext\scintilla\include;..\Utils\TreePropSheet;..\Utils\MiscUI;..\TortoiseShell;..\..\ext\gitdll;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;ENABLE_NLS;THESAURUS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;Dnsapi.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>gdiplus.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\TortoiseProc;..\Resources;$InputDir;../../ext/ResizableLib;../Git;..\Utils;..\crashrpt;..\..\ext\libintl\libintl3-win32\inc;..\..\ext\hunspell;..\..\ext\scintilla\include;..\Utils\TreePropSheet;..\Utils\MiscUI;..\TortoiseShell;..\..\ext\gitdll;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WINDOWS;_DEBUG;ENABLE_NLS;THESAURUS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;Dnsapi.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>gdiplus.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\TortoiseProc;..\Resources;$InputDir;../../ext/ResizableLib;../Git;..\Utils;..\crashrpt;..\..\ext\libintl\libintl3-win32\inc;..\..\ext\hunspell;..\..\ext\scintilla\include;..\Utils\TreePropSheet;..\Utils\MiscUI;..\TortoiseShell;..\..\ext\gitdll;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;THESAURUS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;Dnsapi.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>gdiplus.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\TortoiseProc;..\Resources;$InputDir;../../ext/ResizableLib;../Git;..\Utils;..\crashrpt;..\..\ext\libintl\libintl3-win32\inc;..\..\ext\hunspell;..\..\ext\scintilla\include;..\Utils\TreePropSheet;..\Utils\MiscUI;..\TortoiseShell;..\..\ext\gitdll;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;THESAURUS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;Dnsapi.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>gdiplus.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AddRemoteDlg.cpp" />
+    <ClCompile Include="..\TGitCache\CacheInterface.cpp" />
+    <ClCompile Include="FindDlg.cpp" />
+    <ClCompile Include="LogFile.cpp" />
+    <ClCompile Include="Patch.cpp" />
+    <ClCompile Include="ProjectProperties.cpp" />
+    <ClCompile Include="SinglePropSheetDlg.cpp" />
+    <ClCompile Include="AppUtils.cpp" />
+    <ClCompile Include="DeleteConflictDlg.cpp" />
+    <ClCompile Include="HistoryDlg.cpp" />
+    <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="..\Utils\MiscUI\HorizontalResizableStandAloneDialog.cpp" />
+    <ClCompile Include="..\Utils\MiscUI\SciEdit.cpp" />
+    <ClCompile Include="..\Utils\MiscUI\StandAloneDlg.cpp" />
+    <ClCompile Include="Commands\Command.cpp" />
+    <ClCompile Include="Commands\CommitCommand.cpp" />
+    <ClCompile Include="CommitDlg.cpp" />
+    <ClCompile Include="PatchViewDlg.cpp" />
+    <ClCompile Include="Commands\AboutCommand.cpp" />
+    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="Commands\BlameCommand.cpp" />
+    <ClCompile Include="GitLogCache.cpp" />
+    <ClCompile Include="GitLogListAction.cpp" />
+    <ClCompile Include="GitLogListBase.cpp" />
+    <ClCompile Include="lanes.cpp" />
+    <ClCompile Include="Commands\LogCommand.cpp" />
+    <ClCompile Include="LogDataVector.cpp" />
+    <ClCompile Include="LogDlg.cpp" />
+    <ClCompile Include="LogDlgHelper.cpp" />
+    <ClCompile Include="StatGraphDlg.cpp" />
+    <ClCompile Include="Commands\RefLogCommand.cpp" />
+    <ClCompile Include="RefLogDlg.cpp" />
+    <ClCompile Include="RefLoglist.cpp" />
+    <ClCompile Include="SubmoduleAddDlg.cpp" />
+    <ClCompile Include="Commands\SubmoduleCommand.cpp" />
+    <ClCompile Include="Commands\DropMoveCommand.cpp" />
+    <ClCompile Include="Commands\RenameCommand.cpp" />
+    <ClCompile Include="RenameDlg.cpp" />
+    <ClCompile Include="Commands\RemoveCommand.cpp" />
+    <ClCompile Include="Commands\RevertCommand.cpp" />
+    <ClCompile Include="RevertDlg.cpp" />
+    <ClCompile Include="CleanTypeDlg.cpp" />
+    <ClCompile Include="Commands\CleanupCommand.cpp" />
+    <ClCompile Include="Commands\CloneCommand.cpp" />
+    <ClCompile Include="CloneDlg.cpp" />
+    <ClCompile Include="Commands\FetchCommand.cpp" />
+    <ClCompile Include="Commands\PullCommand.cpp" />
+    <ClCompile Include="PullFetchDlg.cpp" />
+    <ClCompile Include="Commands\PushCommand.cpp" />
+    <ClCompile Include="PushDlg.cpp" />
+    <ClCompile Include="Commands\BranchCommand.cpp" />
+    <ClCompile Include="CreateBranchTagDlg.cpp" />
+    <ClCompile Include="Commands\TagCommand.cpp" />
+    <ClCompile Include="Commands\ExportCommand.cpp" />
+    <ClCompile Include="ExportDlg.cpp" />
+    <ClCompile Include="Commands\AddCommand.cpp" />
+    <ClCompile Include="AddDlg.cpp" />
+    <ClCompile Include="Commands\IgnoreCommand.cpp" />
+    <ClCompile Include="Commands\FormatPatchCommand.cpp" />
+    <ClCompile Include="FormatPatchDlg.cpp" />
+    <ClCompile Include="Commands\ImportPatchCommand.cpp" />
+    <ClCompile Include="ImportPatchDlg.cpp" />
+    <ClCompile Include="Commands\CatCommand.cpp" />
+    <ClCompile Include="..\TortoiseShell\MenuInfo.cpp" />
+    <ClCompile Include="Settings\SetBugTraq.cpp" />
+    <ClCompile Include="Settings\SetBugTraqAdv.cpp" />
+    <ClCompile Include="Settings\SetDialogs.cpp" />
+    <ClCompile Include="Settings\SetHooks.cpp" />
+    <ClCompile Include="Settings\SetHooksAdv.cpp" />
+    <ClCompile Include="Settings\SetLookAndFeelPage.cpp" />
+    <ClCompile Include="Settings\SetMainPage.cpp" />
+    <ClCompile Include="Settings\SetOverlayHandlers.cpp" />
+    <ClCompile Include="Settings\SetOverlayIcons.cpp" />
+    <ClCompile Include="Settings\SetOverlayPage.cpp" />
+    <ClCompile Include="Settings\SetProgsAdvDlg.cpp" />
+    <ClCompile Include="Settings\SetProxyPage.cpp" />
+    <ClCompile Include="Settings\SetSavedDataPage.cpp" />
+    <ClCompile Include="Settings\SettingGitConfig.cpp" />
+    <ClCompile Include="Settings\SettingGitRemote.cpp" />
+    <ClCompile Include="Settings\Settings.cpp" />
+    <ClCompile Include="Settings\SettingsBugtraqConfig.cpp" />
+    <ClCompile Include="Settings\SettingsColors.cpp" />
+    <ClCompile Include="Settings\SettingsColors2.cpp" />
+    <ClCompile Include="Settings\SettingsColors3.cpp" />
+    <ClCompile Include="Commands\SettingsCommand.cpp" />
+    <ClCompile Include="Settings\SettingSMTP.cpp" />
+    <ClCompile Include="Settings\SettingsProgsAlternativeEditor.cpp" />
+    <ClCompile Include="Settings\SettingsProgsDiff.cpp" />
+    <ClCompile Include="Settings\SettingsProgsMerge.cpp" />
+    <ClCompile Include="Settings\SettingsProgsUniDiff.cpp" />
+    <ClCompile Include="Settings\SettingsPropPage.cpp" />
+    <ClCompile Include="Settings\SettingsTBlame.cpp" />
+    <ClCompile Include="Settings\ToolAssocDlg.cpp" />
+    <ClCompile Include="GitSwitchDlg.cpp" />
+    <ClCompile Include="Commands\SwitchCommand.cpp" />
+    <ClCompile Include="Commands\PrevDiffCommand.cpp" />
+    <ClCompile Include="Commands\DiffCommand.cpp" />
+    <ClCompile Include="Commands\ShowCompareCommand.cpp" />
+    <ClCompile Include="Commands\ConflictEditorCommand.cpp" />
+    <ClCompile Include="Commands\ResolveCommand.cpp" />
+    <ClCompile Include="ResolveDlg.cpp" />
+    <ClCompile Include="Commands\RebaseCommand.cpp" />
+    <ClCompile Include="RebaseDlg.cpp" />
+    <ClCompile Include="Commands\MergeCommand.cpp" />
+    <ClCompile Include="MergeDlg.cpp" />
+    <ClCompile Include="Commands\RepoStatusCommand.cpp" />
+    <ClCompile Include="Commands\DropCopyAddCommand.cpp" />
+    <ClCompile Include="Commands\DropCopyCommand.cpp" />
+    <ClCompile Include="Commands\SendMailCommand.cpp" />
+    <ClCompile Include="SendMailDlg.cpp" />
+    <ClCompile Include="Commands\StashCommand.cpp" />
+    <ClCompile Include="StashSave.cpp" />
+    <ClCompile Include="BrowseRefsDlg.cpp" />
+    <ClCompile Include="Commands\SVNDCommitCommand.cpp" />
+    <ClCompile Include="SVNDCommitDlg.cpp" />
+    <ClCompile Include="Commands\SVNFetchCommand.cpp" />
+    <ClCompile Include="Commands\SVNIgnoreCommand.cpp" />
+    <ClCompile Include="SVNIgnoreTypeDlg.cpp" />
+    <ClCompile Include="Commands\SVNRebaseCommand.cpp" />
+    <ClCompile Include="Commands\SyncCommand.cpp" />
+    <ClCompile Include="SyncDlg.cpp" />
+    <ClCompile Include="CheckForUpdatesDlg.cpp" />
+    <ClCompile Include="Commands\UpdateCheckCommand.cpp" />
+    <ClCompile Include="Commands\PasteCopyCommand.cpp" />
+    <ClCompile Include="Commands\PasteMoveCommand.cpp" />
+    <ClCompile Include="Commands\RequestPullCommand.cpp" />
+    <ClCompile Include="RequestPullDlg.cpp" />
+    <ClCompile Include="CreateRepoDlg.cpp" />
+    <ClCompile Include="Commands\CreateRepositoryCommand.cpp" />
+    <ClCompile Include="Commands\BisectCommand.cpp" />
+    <ClCompile Include="BisectStartDlg.cpp" />
+    <ClCompile Include="ChangedDlg.cpp" />
+    <ClCompile Include="FileDiffDlg.cpp" />
+    <ClCompile Include="GitProgressDlg.cpp" />
+    <ClCompile Include="InputDlg.cpp" />
+    <ClCompile Include="ProgressDlg.cpp" />
+    <ClCompile Include="ResetDlg.cpp" />
+    <ClCompile Include="GitDiff.cpp" />
+    <ClCompile Include="..\Git\GitStatusListCtrl.cpp" />
+    <ClCompile Include="GitStatusListCtrlHelpers.cpp" />
+    <ClCompile Include="PatchListCtrl.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TortoiseProc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AddRemoteDlg.h" />
+    <ClInclude Include="FindDlg.h" />
+    <ClInclude Include="LogFile.h" />
+    <ClInclude Include="Patch.h" />
+    <ClInclude Include="ProjectProperties.h" />
+    <ClInclude Include="..\TortoiseShell\resource.h" />
+    <ClInclude Include="SinglePropSheetDlg.h" />
+    <ClInclude Include="DeleteConflictDlg.h" />
+    <ClInclude Include="HistoryDlg.h" />
+    <ClInclude Include="..\Utils\MiscUI\HorizontalResizableStandAloneDialog.h" />
+    <ClInclude Include="..\Utils\MiscUI\SciEdit.h" />
+    <ClInclude Include="..\Utils\MiscUI\StandAloneDlg.h" />
+    <ClInclude Include="Commands\Command.h" />
+    <ClInclude Include="Commands\CommitCommand.h" />
+    <ClInclude Include="CommitDlg.h" />
+    <ClInclude Include="PatchViewDlg.h" />
+    <ClInclude Include="Commands\AboutCommand.h" />
+    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="Commands\BlameCommand.h" />
+    <ClInclude Include="gitlogcache.h" />
+    <ClInclude Include="GitLogList.h" />
+    <ClInclude Include="GitLogListBase.h" />
+    <ClInclude Include="lanes.h" />
+    <ClInclude Include="Commands\LogCommand.h" />
+    <ClInclude Include="LogDlg.h" />
+    <ClInclude Include="LogDlgHelper.h" />
+    <ClInclude Include="StatGraphDlg.h" />
+    <ClInclude Include="Commands\RefLogCommand.h" />
+    <ClInclude Include="RefLogDlg.h" />
+    <ClInclude Include="RefLoglist.h" />
+    <ClInclude Include="SubmoduleAddDlg.h" />
+    <ClInclude Include="Commands\SubmoduleCommand.h" />
+    <ClInclude Include="Commands\DropMoveCommand.h" />
+    <ClInclude Include="Commands\RenameCommand.h" />
+    <ClInclude Include="RenameDlg.h" />
+    <ClInclude Include="Commands\RemoveCommand.h" />
+    <ClInclude Include="Commands\RevertCommand.h" />
+    <ClInclude Include="RevertDlg.h" />
+    <ClInclude Include="CleanTypeDlg.h" />
+    <ClInclude Include="Commands\CleanupCommand.h" />
+    <ClInclude Include="Commands\CloneCommand.h" />
+    <ClInclude Include="CloneDlg.h" />
+    <ClInclude Include="Commands\FetchCommand.h" />
+    <ClInclude Include="Commands\PullCommand.h" />
+    <ClInclude Include="PullFetchDlg.h" />
+    <ClInclude Include="Commands\PushCommand.h" />
+    <ClInclude Include="PushDlg.h" />
+    <ClInclude Include="Commands\BranchCommand.h" />
+    <ClInclude Include="CreateBranchTagDlg.h" />
+    <ClInclude Include="Commands\TagCommand.h" />
+    <ClInclude Include="Commands\ExportCommand.h" />
+    <ClInclude Include="ExportDlg.h" />
+    <ClInclude Include="Commands\AddCommand.h" />
+    <ClInclude Include="AddDlg.h" />
+    <ClInclude Include="Commands\IgnoreCommand.h" />
+    <ClInclude Include="Commands\FormatPatchCommand.h" />
+    <ClInclude Include="FormatPatchDlg.h" />
+    <ClInclude Include="Commands\ImportPatchCommand.h" />
+    <ClInclude Include="ImportPatchDlg.h" />
+    <ClInclude Include="Commands\CatCommand.h" />
+    <ClInclude Include="Settings\SetBugTraq.h" />
+    <ClInclude Include="Settings\SetBugTraqAdv.h" />
+    <ClInclude Include="Settings\SetDialogs.h" />
+    <ClInclude Include="Settings\SetExtMenu.h" />
+    <ClInclude Include="Settings\SetHooks.h" />
+    <ClInclude Include="Settings\SetHooksAdv.h" />
+    <ClInclude Include="Settings\SetLookAndFeelPage.h" />
+    <ClInclude Include="Settings\SetMainPage.h" />
+    <ClInclude Include="Settings\SetOverlayHandlers.h" />
+    <ClInclude Include="Settings\SetOverlayIcons.h" />
+    <ClInclude Include="Settings\SetOverlayPage.h" />
+    <ClInclude Include="Settings\SetProgsAdvDlg.h" />
+    <ClInclude Include="Settings\SetProxyPage.h" />
+    <ClInclude Include="Settings\SetSavedDataPage.h" />
+    <ClInclude Include="Settings\SettingGitConfig.h" />
+    <ClInclude Include="Settings\SettingGitRemote.h" />
+    <ClInclude Include="Settings\Settings.h" />
+    <ClInclude Include="Settings\SettingsBugtraqConfig.h" />
+    <ClInclude Include="Settings\SettingsColors.h" />
+    <ClInclude Include="Settings\SettingsColors2.h" />
+    <ClInclude Include="Settings\SettingsColors3.h" />
+    <ClInclude Include="Commands\SettingsCommand.h" />
+    <ClInclude Include="Settings\SettingSMTP.h" />
+    <ClInclude Include="Settings\SettingsProgsAlternativeEditor.h" />
+    <ClInclude Include="Settings\SettingsPropPage.h" />
+    <ClInclude Include="Settings\SettingsTBlame.h" />
+    <ClInclude Include="Settings\ToolAssocDlg.h" />
+    <ClInclude Include="GitSwitchDlg.h" />
+    <ClInclude Include="Commands\SwitchCommand.h" />
+    <ClInclude Include="Commands\PrevDiffCommand.h" />
+    <ClInclude Include="Commands\DiffCommand.h" />
+    <ClInclude Include="Commands\ShowCompareCommand.h" />
+    <ClInclude Include="Commands\ConflictEditorCommand.h" />
+    <ClInclude Include="Commands\ResolveCommand.h" />
+    <ClInclude Include="ResolveDlg.h" />
+    <ClInclude Include="Commands\RebaseCommand.h" />
+    <ClInclude Include="RebaseDlg.h" />
+    <ClInclude Include="Commands\MergeCommand.h" />
+    <ClInclude Include="MergeDlg.h" />
+    <ClInclude Include="Commands\RepoStatusCommand.h" />
+    <ClInclude Include="Commands\DropCopyAddCommand.h" />
+    <ClInclude Include="Commands\DropCopyCommand.h" />
+    <ClInclude Include="Commands\SendMailCommand.h" />
+    <ClInclude Include="SendMailDlg.h" />
+    <ClInclude Include="Commands\StashCommand.h" />
+    <ClInclude Include="StashSave.h" />
+    <ClInclude Include="BrowseRefsDlg.h" />
+    <ClInclude Include="Commands\RefBrowseCommand.h" />
+    <ClInclude Include="Commands\SVNDCommitCommand.h" />
+    <ClInclude Include="SVNDCommitDlg.h" />
+    <ClInclude Include="Commands\SVNFetchCommand.h" />
+    <ClInclude Include="Commands\SVNIgnoreCommand.h" />
+    <ClInclude Include="SVNIgnoreTypeDlg.h" />
+    <ClInclude Include="Commands\SVNRebaseCommand.h" />
+    <ClInclude Include="Commands\SyncCommand.h" />
+    <ClInclude Include="SyncDlg.h" />
+    <ClInclude Include="CheckForUpdatesDlg.h" />
+    <ClInclude Include="Commands\UpdateCheckCommand.h" />
+    <ClInclude Include="Commands\RequestPullCommand.h" />
+    <ClInclude Include="RequestPullDlg.h" />
+    <ClInclude Include="CreateRepoDlg.h" />
+    <ClInclude Include="Commands\CreateRepositoryCommand.h" />
+    <ClInclude Include="Commands\BisectCommand.h" />
+    <ClInclude Include="BisectStartDlg.h" />
+    <ClInclude Include="BranchCombox.h" />
+    <ClInclude Include="ChangedDlg.h" />
+    <ClInclude Include="ChooseVersion.h" />
+    <ClInclude Include="FileDiffDlg.h" />
+    <ClInclude Include="GitProgressDlg.h" />
+    <ClInclude Include="InputDlg.h" />
+    <ClInclude Include="ProgressDlg.h" />
+    <ClInclude Include="ResetDlg.h" />
+    <ClInclude Include="GitDiff.h" />
+    <ClInclude Include="..\Git\GitStatusListCtrl.h" />
+    <ClInclude Include="PatchListCtrl.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TortoiseProc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Resources\actionad.ico" />
+    <None Include="..\Resources\actionadded.ico" />
+    <None Include="..\Resources\actiondeleted.ico" />
+    <None Include="..\Resources\actionfetching.ico" />
+    <None Include="..\Resources\actionmodified.ico" />
+    <None Include="..\Resources\actionreplaced.ico" />
+    <None Include="..\Resources\AddBackground.ico" />
+    <None Include="..\Resources\AddedIcon.ico" />
+    <None Include="..\Resources\bin167.avi" />
+    <None Include="..\Resources\bin168.avi" />
+    <None Include="..\Resources\bitmap2.bmp" />
+    <None Include="..\Resources\bugtraq.ico" />
+    <None Include="..\Resources\cache.ico" />
+    <None Include="..\Resources\CacheList.ico" />
+    <None Include="..\Resources\cancel-highlight.bmp" />
+    <None Include="..\Resources\cancel-normal.ico" />
+    <None Include="..\Resources\cancel-pressed.ico" />
+    <None Include="..\Resources\CFMBackground.ico" />
+    <None Include="..\Resources\checkout.ico" />
+    <None Include="..\Resources\cleananim.avi" />
+    <None Include="..\Resources\clippaste.ico" />
+    <None Include="..\Resources\CommitBackground.ico" />
+    <None Include="..\Resources\ConflictIcon.ico" />
+    <None Include="..\Resources\copy.ico" />
+    <None Include="..\Resources\CopyBackground.ico" />
+    <None Include="..\Resources\DeletedIcon.ico" />
+    <None Include="..\Resources\DelunversionedBackground.ico" />
+    <None Include="..\Resources\dialogs.ico" />
+    <None Include="..\Resources\download.avi" />
+    <None Include="..\Resources\Drives.ico" />
+    <None Include="..\Resources\explorer.ico" />
+    <None Include="..\Resources\ExportBackground.ico" />
+    <None Include="..\Resources\extwarning.ico" />
+    <None Include="..\Resources\filteredit.ico" />
+    <None Include="..\Resources\general.ico" />
+    <None Include="..\Resources\git.bmp" />
+    <None Include="..\Resources\gitconfig.ico" />
+    <None Include="..\Resources\gitremote.ico" />
+    <None Include="..\Resources\graph-bar-stacked.ico" />
+    <None Include="..\Resources\graph-bar.ico" />
+    <None Include="..\Resources\graph-line-stacked.ico" />
+    <None Include="..\Resources\graph-line.ico" />
+    <None Include="..\Resources\graph-pie.ico" />
+    <None Include="..\Resources\hook.ico" />
+    <None Include="..\Resources\icon1.ico" />
+    <None Include="..\Resources\iconset.ico" />
+    <None Include="..\Resources\ImportBackground.ico" />
+    <None Include="..\Resources\ImportPatchesBackground.ico" />
+    <None Include="..\Resources\InSubVersionIcon.ico" />
+    <None Include="..\Resources\lineadded.ico" />
+    <None Include="..\Resources\lineconflicted.ico" />
+    <None Include="..\Resources\lineremoved.ico" />
+    <None Include="..\Resources\logfilter.ico" />
+    <None Include="..\Resources\lookandfeel.ico" />
+    <None Include="..\Resources\menuabout.ico" />
+    <None Include="..\Resources\menuadd.ico" />
+    <None Include="..\Resources\menublame.ico" />
+    <None Include="..\Resources\menucheckout.ico" />
+    <None Include="..\Resources\menucleanup.ico" />
+    <None Include="..\Resources\menucommit.ico" />
+    <None Include="..\Resources\menucompare.ico" />
+    <None Include="..\Resources\menuconflict.ico" />
+    <None Include="..\Resources\menucopy.ico" />
+    <None Include="..\Resources\menucreaterepos.ico" />
+    <None Include="..\Resources\menudelete.ico" />
+    <None Include="..\Resources\menudelunversioned.ico" />
+    <None Include="..\Resources\menudiff.ico" />
+    <None Include="..\Resources\menuexport.ico" />
+    <None Include="..\Resources\menuhelp.ico" />
+    <None Include="..\Resources\menuignore.ico" />
+    <None Include="..\Resources\menuimport.ico" />
+    <None Include="..\Resources\menulog.ico" />
+    <None Include="..\Resources\menumerge.ico" />
+    <None Include="..\Resources\menupatch.ico" />
+    <None Include="..\Resources\menuproperties.ico" />
+    <None Include="..\Resources\menurelocate.ico" />
+    <None Include="..\Resources\menurename.ico" />
+    <None Include="..\Resources\menuresolve.ico" />
+    <None Include="..\Resources\menurevert.ico" />
+    <None Include="..\Resources\menusettings.ico" />
+    <None Include="..\Resources\menushowchanged.ico" />
+    <None Include="..\Resources\menuswitch.ico" />
+    <None Include="..\Resources\menuupdate.ico" />
+    <None Include="..\Resources\MergeBackground.ico" />
+    <None Include="..\Resources\misc.ico" />
+    <None Include="..\Resources\ModifiedIcon.ico" />
+    <None Include="..\Resources\newfolder.ico" />
+    <None Include="..\Resources\open.ico" />
+    <None Include="..\Resources\Overlays.ico" />
+    <None Include="..\Resources\pan.cur" />
+    <None Include="..\Resources\pandown.cur" />
+    <None Include="..\Resources\proxy.ico" />
+    <None Include="..\Resources\pull1.ico" />
+    <None Include="..\Resources\refresh.ico" />
+    <None Include="..\Resources\reftype.bmp" />
+    <None Include="..\Resources\RenameBackground.ico" />
+    <None Include="..\Resources\repo_file.ico" />
+    <None Include="..\Resources\repo_http.ico" />
+    <None Include="..\Resources\repo_https.ico" />
+    <None Include="..\Resources\repo_svn+ssh.ico" />
+    <None Include="..\Resources\repo_svn.ico" />
+    <None Include="..\Resources\repo_unknown.ico" />
+    <None Include="..\Resources\ResolveBackground.ico" />
+    <None Include="..\Resources\RevertBackground.ico" />
+    <None Include="..\Resources\revgraph_added.ico" />
+    <None Include="..\Resources\revgraph_addedplus.ico" />
+    <None Include="..\Resources\revgraph_deleted.ico" />
+    <None Include="..\Resources\revgraph_lastcommit.ico" />
+    <None Include="..\Resources\revgraph_renamed.ico" />
+    <None Include="..\Resources\revgraph_replaced.ico" />
+    <None Include="..\Resources\revgraph_tag.ico" />
+    <None Include="..\Resources\revgraphbar.bmp" />
+    <None Include="..\Resources\save.ico" />
+    <None Include="..\Resources\saveas.ico" />
+    <None Include="..\Resources\saveddata.ico" />
+    <None Include="..\Resources\search.avi" />
+    <None Include="..\TortoiseBlame\small.ico" />
+    <None Include="..\Resources\ssh.ico" />
+    <None Include="..\Resources\switch.ico" />
+    <None Include="..\Resources\SwitchBackground.ico" />
+    <None Include="..\Resources\Toolbar.bmp" />
+    <None Include="..\Resources\Tortoise.ico" />
+    <None Include="..\Resources\Tortoise13by13.ico" />
+    <None Include="..\Resources\Tortoise16by16.ico" />
+    <None Include="..\Resources\Tortoise20by16.ico" />
+    <None Include="..\TortoiseBlame\TortoiseBlame.ico" />
+    <None Include="..\Resources\tortoisegit_logoflipped.bmp" />
+    <None Include="..\Resources\TortoiseMerge.ico" />
+    <None Include="..\Resources\TortoiseSmall.ico" />
+    <None Include="..\Resources\tsvnmenufile.ico" />
+    <None Include="..\Resources\tsvnmenufolder.ico" />
+    <None Include="..\Resources\tsvnmenulink.ico" />
+    <None Include="..\Resources\tsvnmenumultiple.ico" />
+    <None Include="..\Resources\ttf_glyph.bmp" />
+    <None Include="..\Resources\up.ico" />
+    <None Include="..\Resources\update1.ico" />
+    <None Include="..\Resources\warning-general.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Resources\TortoiseProcENG.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ext\build\libgit2.vcxproj">
+      <Project>{2b4f366c-93ba-491e-87af-5ef7b37f75f7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ext\build\ScintillaLexer.vcxproj">
+      <Project>{a5498556-ce09-4095-8335-08fc8370552d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ext\gitdll\gitdll.vcxproj">
+      <Project>{4f0a55de-dafd-4a0b-a03d-2c14cb77e08f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ext\hunspell\hunspell.vcxproj">
+      <Project>{12e5b4ae-d7ef-4a57-a22d-6f9f9d8ce1fb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ext\ResizableLib\ResizableLib.vcxproj">
+      <Project>{4be529fb-c2f2-49f7-a897-054b955564cf}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\crashrpt\CrashRpt.vcxproj">
+      <Project>{13bc1836-2726-45c4-9249-5ba2bbbf8328}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Git\Git.vcxproj">
+      <Project>{7ca5b1eb-8cc9-40a6-96d8-83649c1a870b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\IBugTraqProvider\IBugTraqProvider.vcxproj">
+      <Project>{2c879469-db8f-4bf0-b016-ae864d2a7bbc}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.vcxproj">
+      <Project>{a2c38606-3d96-4a2c-b5c5-22ceac523b37}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DevPartner_IsInstrumented="0" RESOURCE_FILE="\TortoiseGit\src\Resources\TortoiseProcENG.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

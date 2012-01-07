@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2B4F366C-93BA-491E-87AF-5EF7B37F75F7}</ProjectGuid>
+    <RootNamespace>libgit2</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\libgit2\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\libgit2\$(Configuration)64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\libgit2\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\libgit2\$(Configuration)64\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)32</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\zlib;..\libgit2\src;..\libgit2\include;..\libgit2\deps\http-parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\zlib;..\libgit2\src;..\libgit2\include;..\libgit2\deps\http-parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GIT_WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\zlib;..\libgit2\src;..\libgit2\include;..\libgit2\deps\http-parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\zlib;..\libgit2\src;..\libgit2\include;..\libgit2\deps\http-parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GIT_WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libgit2\src\blob.c" />
+    <ClCompile Include="..\libgit2\src\buffer.c" />
+    <ClCompile Include="..\libgit2\src\cache.c" />
+    <ClCompile Include="..\libgit2\src\commit.c" />
+    <ClCompile Include="..\libgit2\src\config.c" />
+    <ClCompile Include="..\libgit2\src\config_file.c" />
+    <ClCompile Include="..\libgit2\src\delta-apply.c" />
+    <ClCompile Include="..\libgit2\src\errors.c" />
+    <ClCompile Include="..\libgit2\src\fetch.c" />
+    <ClCompile Include="..\libgit2\src\filebuf.c" />
+    <ClCompile Include="..\libgit2\src\fileops.c" />
+    <ClCompile Include="..\libgit2\src\global.c" />
+    <ClCompile Include="..\libgit2\src\hash.c" />
+    <ClCompile Include="..\libgit2\src\hashtable.c" />
+    <ClCompile Include="..\libgit2\src\index.c" />
+    <ClCompile Include="..\libgit2\src\indexer.c" />
+    <ClCompile Include="..\libgit2\src\mwindow.c" />
+    <ClCompile Include="..\libgit2\src\netops.c" />
+    <ClCompile Include="..\libgit2\src\object.c" />
+    <ClCompile Include="..\libgit2\src\odb.c" />
+    <ClCompile Include="..\libgit2\src\odb_loose.c" />
+    <ClCompile Include="..\libgit2\src\odb_pack.c" />
+    <ClCompile Include="..\libgit2\src\oid.c" />
+    <ClCompile Include="..\libgit2\src\pack.c" />
+    <ClCompile Include="..\libgit2\src\path.c" />
+    <ClCompile Include="..\libgit2\src\pkt.c" />
+    <ClCompile Include="..\libgit2\src\posix.c" />
+    <ClCompile Include="..\libgit2\src\pqueue.c" />
+    <ClCompile Include="..\libgit2\src\protocol.c" />
+    <ClCompile Include="..\libgit2\src\reflog.c" />
+    <ClCompile Include="..\libgit2\src\refs.c" />
+    <ClCompile Include="..\libgit2\src\refspec.c" />
+    <ClCompile Include="..\libgit2\src\remote.c" />
+    <ClCompile Include="..\libgit2\src\repository.c" />
+    <ClCompile Include="..\libgit2\src\revwalk.c" />
+    <ClCompile Include="..\libgit2\src\sha1.c" />
+    <ClCompile Include="..\libgit2\src\sha1_lookup.c" />
+    <ClCompile Include="..\libgit2\src\signature.c" />
+    <ClCompile Include="..\libgit2\src\status.c" />
+    <ClCompile Include="..\libgit2\src\tag.c" />
+    <ClCompile Include="..\libgit2\src\thread-utils.c" />
+    <ClCompile Include="..\libgit2\src\transport.c" />
+    <ClCompile Include="..\libgit2\src\tree-cache.c" />
+    <ClCompile Include="..\libgit2\src\tree.c" />
+    <ClCompile Include="..\libgit2\src\tsort.c" />
+    <ClCompile Include="..\libgit2\src\util.c" />
+    <ClCompile Include="..\libgit2\src\vector.c" />
+    <ClCompile Include="..\libgit2\src\win32\dir.c" />
+    <ClCompile Include="..\libgit2\src\win32\fnmatch.c" />
+    <ClCompile Include="..\libgit2\src\win32\map.c" />
+    <ClCompile Include="..\libgit2\src\win32\posix_w32.c" />
+    <ClCompile Include="..\libgit2\src\win32\pthread.c" />
+    <ClCompile Include="..\libgit2\src\win32\utf-conv.c" />
+    <ClCompile Include="..\libgit2\src\transports\git.c" />
+    <ClCompile Include="..\libgit2\src\transports\http.c" />
+    <ClCompile Include="..\libgit2\src\transports\local.c" />
+    <ClCompile Include="..\libgit2\deps\http-parser\http_parser.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\libgit2\src\blob.h" />
+    <ClInclude Include="..\libgit2\src\bswap.h" />
+    <ClInclude Include="..\libgit2\src\buffer.h" />
+    <ClInclude Include="..\libgit2\src\cache.h" />
+    <ClInclude Include="..\libgit2\src\cc-compat.h" />
+    <ClInclude Include="..\libgit2\src\commit.h" />
+    <ClInclude Include="..\libgit2\src\common.h" />
+    <ClInclude Include="..\libgit2\src\config.h" />
+    <ClInclude Include="..\libgit2\src\delta-apply.h" />
+    <ClInclude Include="..\libgit2\src\dir.h" />
+    <ClInclude Include="..\libgit2\src\fetch.h" />
+    <ClInclude Include="..\libgit2\src\filebuf.h" />
+    <ClInclude Include="..\libgit2\src\fileops.h" />
+    <ClInclude Include="..\libgit2\src\global.h" />
+    <ClInclude Include="..\libgit2\src\hash.h" />
+    <ClInclude Include="..\libgit2\src\hashtable.h" />
+    <ClInclude Include="..\libgit2\src\index.h" />
+    <ClInclude Include="..\libgit2\src\map.h" />
+    <ClInclude Include="..\libgit2\src\mwindow.h" />
+    <ClInclude Include="..\libgit2\src\netops.h" />
+    <ClInclude Include="..\libgit2\src\odb.h" />
+    <ClInclude Include="..\libgit2\src\pack.h" />
+    <ClInclude Include="..\libgit2\src\path.h" />
+    <ClInclude Include="..\libgit2\src\pkt.h" />
+    <ClInclude Include="..\libgit2\src\posix.h" />
+    <ClInclude Include="..\libgit2\src\pqueue.h" />
+    <ClInclude Include="..\libgit2\src\reflog.h" />
+    <ClInclude Include="..\libgit2\src\refs.h" />
+    <ClInclude Include="..\libgit2\src\refspec.h" />
+    <ClInclude Include="..\libgit2\src\remote.h" />
+    <ClInclude Include="..\libgit2\src\repository.h" />
+    <ClInclude Include="..\libgit2\src\sha1.h" />
+    <ClInclude Include="..\libgit2\src\sha1_lookup.h" />
+    <ClInclude Include="..\libgit2\src\signature.h" />
+    <ClInclude Include="..\libgit2\src\tag.h" />
+    <ClInclude Include="..\libgit2\src\thread-utils.h" />
+    <ClInclude Include="..\libgit2\src\transport.h" />
+    <ClInclude Include="..\libgit2\src\tree-cache.h" />
+    <ClInclude Include="..\libgit2\src\tree.h" />
+    <ClInclude Include="..\libgit2\src\util.h" />
+    <ClInclude Include="..\libgit2\src\vector.h" />
+    <ClInclude Include="..\libgit2\src\win32\fnmatch.h" />
+    <ClInclude Include="..\libgit2\src\win32\mingw-compat.h" />
+    <ClInclude Include="..\libgit2\src\win32\msvc-compat.h" />
+    <ClInclude Include="..\libgit2\src\win32\posix.h" />
+    <ClInclude Include="..\libgit2\src\win32\pthread.h" />
+    <ClInclude Include="..\libgit2\src\win32\utf-conv.h" />
+    <ClInclude Include="..\libgit2\include\git2\blob.h" />
+    <ClInclude Include="..\libgit2\include\git2\branch.h" />
+    <ClInclude Include="..\libgit2\include\git2\commit.h" />
+    <ClInclude Include="..\libgit2\include\git2\common.h" />
+    <ClInclude Include="..\libgit2\include\git2\config.h" />
+    <ClInclude Include="..\libgit2\include\git2\errors.h" />
+    <ClInclude Include="..\libgit2\include\git2.h" />
+    <ClInclude Include="..\libgit2\include\git2\index.h" />
+    <ClInclude Include="..\libgit2\include\git2\indexer.h" />
+    <ClInclude Include="..\libgit2\include\git2\inttypes.h" />
+    <ClInclude Include="..\libgit2\include\git2\net.h" />
+    <ClInclude Include="..\libgit2\include\git2\object.h" />
+    <ClInclude Include="..\libgit2\include\git2\odb.h" />
+    <ClInclude Include="..\libgit2\include\git2\odb_backend.h" />
+    <ClInclude Include="..\libgit2\include\git2\oid.h" />
+    <ClInclude Include="..\libgit2\include\git2\reflog.h" />
+    <ClInclude Include="..\libgit2\include\git2\refs.h" />
+    <ClInclude Include="..\libgit2\include\git2\refspec.h" />
+    <ClInclude Include="..\libgit2\include\git2\remote.h" />
+    <ClInclude Include="..\libgit2\include\git2\repository.h" />
+    <ClInclude Include="..\libgit2\include\git2\revwalk.h" />
+    <ClInclude Include="..\libgit2\include\git2\signature.h" />
+    <ClInclude Include="..\libgit2\include\git2\status.h" />
+    <ClInclude Include="..\libgit2\include\git2\stdint.h" />
+    <ClInclude Include="..\libgit2\include\git2\tag.h" />
+    <ClInclude Include="..\libgit2\include\git2\thread-utils.h" />
+    <ClInclude Include="..\libgit2\include\git2\transport.h" />
+    <ClInclude Include="..\libgit2\include\git2\tree.h" />
+    <ClInclude Include="..\libgit2\include\git2\types.h" />
+    <ClInclude Include="..\libgit2\include\git2\zlib.h" />
+    <ClInclude Include="..\libgit2\deps\http-parser\http_parser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\libgit2\src\win32\git2.rc">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">INCLUDE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="zlib.vcxproj">
+      <Project>{5c6b6a95-2053-4593-9617-c4f176736d5a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
