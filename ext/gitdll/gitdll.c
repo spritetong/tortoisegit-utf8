@@ -937,7 +937,8 @@ int git_checkout_file(const char *ref, const char *path, const char *outputpath)
 	if(!root)
 		return -1;
 
-	ce = xcalloc(1, cache_entry_size(strlen(path)));
+	/* __TGIT_XUTF8_BUGFIX__ : expand buffer length with PATH_MAX bytes. */
+	ce = xcalloc(1, cache_entry_size(strlen(path)) + PATH_MAX);
 
 	match[0] = path;
 	match[1] = NULL;
