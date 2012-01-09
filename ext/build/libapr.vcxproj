@@ -1010,16 +1010,20 @@
     </CustomBuildStep>
     <CustomBuild Include="..\apr\include\apr.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul
+@if %errorlevel% neq 0 (type %(Identity) &gt; %(RelativeDir)apr.h)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)apr.h</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul
+@if %errorlevel% neq 0 (type %(Identity) &gt; %(RelativeDir)apr.h)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RelativeDir)apr.h</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul
+@if %errorlevel% neq 0 (type %(Identity) &gt; %(RelativeDir)apr.h)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)apr.h</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">@fc /b %(Identity) %(RelativeDir)apr.h &gt;nul 2&gt;nul
+@if %errorlevel% neq 0 (type %(Identity) &gt; %(RelativeDir)apr.h)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RelativeDir)apr.h</Outputs>
     </CustomBuild>
   </ItemGroup>
