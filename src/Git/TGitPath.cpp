@@ -827,7 +827,8 @@ int CTGitPath::GetAdminDirMask() const
 	}
 
 	CString dotGitPath;
-	g_GitAdminDir.GetAdminDirPath(g_Git.m_CurrentDir, dotGitPath);
+	/* __TGIT_XUTF8_BUGFIX__. Changed by Sprite Tong, 1/11/2012. */
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);
 
 	if (PathFileExists(dotGitPath + _T("BISECT_START")))
 		status |= ITEMIS_BISECT;

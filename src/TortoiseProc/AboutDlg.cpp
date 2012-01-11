@@ -70,6 +70,11 @@ BOOL CAboutDlg::OnInitDialog()
 	// Show UTF-8 info version in About Dialog.
 	// Add by Sprite Tong, 12/6/2011.
 	CString sBuildInfo;
+	CWnd *pCredit = GetDlgItem(IDC_WEBLINK);
+	pCredit = pCredit->GetNextWindow(GW_HWNDPREV);
+	pCredit->GetWindowText(sBuildInfo);
+	sBuildInfo += _T("\n[UTF-8 Revision] Sprite Tong <spritetong@gmail.com>");
+	pCredit->SetWindowText(sBuildInfo);
 	sBuildInfo.Format(_T(" for UTF-8, %s"), CString(TGIT_VERDATE));
 	int nLineEnd = temp.FindOneOf(_T("\r\n"));
 	if (nLineEnd > 0) temp.Insert(nLineEnd, sBuildInfo);
