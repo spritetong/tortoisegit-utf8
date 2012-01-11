@@ -75,7 +75,7 @@
     <ClCompile Include="Patch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\MiscUI\ProgressDlg.cpp">
+    <ClCompile Include="..\Utils\MiscUI\SysProgressDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RightView.cpp">
@@ -335,7 +335,7 @@
     <ClInclude Include="Patch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\MiscUI\ProgressDlg.h">
+    <ClInclude Include="..\Utils\MiscUI\SysProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">

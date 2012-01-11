@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -444,6 +444,7 @@ int git_close_log(GIT_LOG handle)
 			free(p_Rev->pPrivate);
 		free(handle);
 	}
+	free_all_pack();
 
 	free_notes(*display_notes_trees);
 	display_notes_trees = 0;
@@ -557,7 +558,10 @@ int git_diff(GIT_DIFF diff, GIT_HASH hash1, GIT_HASH hash2, GIT_FILE * file, int
 
 	ret = diff_tree_sha1(hash1,hash2,"",&p_Rev->diffopt);
 	if( ret )
+	{
+		free_all_pack();
 		return ret;
+	}
 
 	if(isstat)
 	{
@@ -569,6 +573,7 @@ int git_diff(GIT_DIFF diff, GIT_HASH hash1, GIT_HASH hash2, GIT_FILE * file, int
 			diff_flush_stat(p, &p_Rev->diffopt, &p_Rev->diffstat);
 		}
 	}
+	free_all_pack();
 	if(file)
 		*file = q;
 	if(count)
@@ -855,6 +860,8 @@ static struct cmd_struct commands[] = {
 			if(argv)
 				free(argv);
 
+			free_all_pack();
+
 			return ret;
 
 
@@ -865,8 +872,12 @@ static struct cmd_struct commands[] = {
 
 int git_for_each_ref_in(const char * refname, each_ref_fn fn, void * data)
 {
+	int ret;
 	invalidate_cached_refs();
 	return for_each_ref_in(refname, fn, data);
+	ret = for_each_ref_in(refname, fn, data);
+	free_all_pack();
+	return ret;
 }
 
 const char *git_resolve_ref(const char *ref, unsigned char *sha1, int reading, int *flag)
@@ -935,7 +946,10 @@ int git_checkout_file(const char *ref, const char *path, const char *outputpath)
 	root = parse_tree_indirect(sha1);
 
 	if(!root)
+	{
+		free_all_pack();
 		return -1;
+	}
 
 	/* __TGIT_XUTF8_BUGFIX__ : expand buffer length with PATH_MAX bytes. */
 	ce = xcalloc(1, cache_entry_size(strlen(path)) + PATH_MAX);
@@ -950,6 +964,7 @@ int git_checkout_file(const char *ref, const char *path, const char *outputpath)
 
 	if(ret)
 	{
+		free_all_pack();
 		free(ce);
 		return ret;
 	}
@@ -958,6 +973,7 @@ int git_checkout_file(const char *ref, const char *path, const char *outputpath)
 	state.refresh_cache = 0;
 
 	ret = write_entry(ce, outputpath, &state, 0);
+	free_all_pack();
 	free(ce);
 	return ret;
 }
@@ -976,14 +992,24 @@ static int get_config(const char *key_, const char *value_, void *cb)
 	if(strcmp(key_, buf->key))
 		return 0;
 
-	strncpy(buf->buf,value_,buf->size);
+	if (value_)
+		strncpy(buf->buf,value_,buf->size);
+	else
+	{
+		buf->buf[0] = 't';
+		buf->buf[1] = 'r';
+		buf->buf[2] = 'u';
+		buf->buf[3] = 'e';
+		buf->buf[4] = 0;
+	}
 	buf->seen = 1;
 	return 0;
 
 }
 int git_get_config(const char *key, char *buffer, int size, char *git_path)
 {
-	char *local,*global,*p;
+	char *local, *global;
+	const char *home;
 	struct config_buf buf;
 	buf.buf=buffer;
 	buf.size=size;
@@ -992,19 +1018,11 @@ int git_get_config(const char *key, char *buffer, int size, char *git_path)
 
 	local=global=NULL;
 
-	//local = config_exclusive_filename;
-	if (!local) {
-		const char *home = get_windows_home_directory();
+	home = get_windows_home_directory();
+	if (home)
+		global = xstrdup(mkpath("%s/.gitconfig", home));
 
-		local=p= git_pathdup("config");
-		if(git_path&&strlen(git_path))
-		{
-			local=xstrdup(mkpath("%s/%s", git_path, p));
-			free(p);
-		}
-		if (home)
-			global = xstrdup(mkpath("%s/.gitconfig", home));
-	}
+	local = git_pathdup("config");
 
 	if ( !buf.seen)
 		git_config_from_file(get_config, local, &buf);
@@ -1015,8 +1033,6 @@ int git_get_config(const char *key, char *buffer, int size, char *git_path)
 		free(local);
 	if(global)
 		free(global);
-	//if(system_wide)
-	//	free(system_wide);
 
 	return !buf.seen;
 }
@@ -1042,31 +1058,20 @@ const char *get_windows_home_directory(void)
 
 int get_set_config(const char *key, char *value, CONFIG_TYPE type,char *git_path)
 {
-	char *local,*global,*p;
-	int ret;
-	local=global=NULL;
-
-	//local = config_exclusive_filename;
-	if (!local) {
-		const char *home = get_windows_home_directory();
-
-		local=p= git_pathdup("config");
-		if(git_path&&strlen(git_path))
-		{
-			local=xstrdup(mkpath("%s/%s", git_path, p));
-			free(p);
-		}
-		if (home)
-			global = xstrdup(mkpath("%s/.gitconfig", home));
-	}
-
 	switch(type)
 	{
 	case CONFIG_LOCAL:
-		config_exclusive_filename  = local;
+		config_exclusive_filename  = git_pathdup("config");
 		break;
 	case CONFIG_GLOBAL:
-		config_exclusive_filename = global;
+		{
+			const char *home = get_windows_home_directory();
+			if (home)
+			{
+				config_exclusive_filename = xstrdup(mkpath("%s/.gitconfig", home));
+				free(home);
+			}
+		}
 		break;
 	default:
 		config_exclusive_filename = NULL;
@@ -1076,12 +1081,5 @@ int get_set_config(const char *key, char *value, CONFIG_TYPE type,char *git_path
 	if(!config_exclusive_filename)
 		return -1;
 
-	ret = git_config_set(key, value);
-
-	if(local)
-		free(local);
-	if(global)
-		free(global);
-
-	return ret;
+	return git_config_set(key, value);
 }

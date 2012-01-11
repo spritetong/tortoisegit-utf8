@@ -37,9 +37,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="SshAskPass.ico">
       <Filter>Resource Files</Filter>
     </None>

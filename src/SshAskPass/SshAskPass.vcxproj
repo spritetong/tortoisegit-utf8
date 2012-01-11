@@ -177,7 +177,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="small.ico" />
     <None Include="SshAskPass.ico" />
     <None Include="SshAskPass.rc2" />
   </ItemGroup>

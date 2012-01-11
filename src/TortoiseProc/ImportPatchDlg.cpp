@@ -361,16 +361,20 @@ UINT CImportPatchDlg::PatchThread()
 	path.SetFromWin(g_Git.m_CurrentDir);
 
 	int i=0;
-
+	UpdateOkCancelText();
 	for(i=m_CurrentItem;i<m_cList.GetItemCount();i++)
 	{
 		if (m_pTaskbarList)
 		{
 			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NORMAL);
-			m_pTaskbarList->SetProgressValue(m_hWnd, i + 1, m_cList.GetItemCount());
+			m_pTaskbarList->SetProgressValue(m_hWnd, i, m_cList.GetItemCount());
 		}
 
 		m_cList.SetItemData(i, CPatchListCtrl::STATUS_APPLYING|m_cList.GetItemData(i));
+
+		CRect rect;
+		this->m_cList.GetItemRect(i,&rect,LVIR_BOUNDS);
+		this->m_cList.InvalidateRect(rect);
 
 		if(m_bExitThread)
 			break;
@@ -471,17 +475,9 @@ UINT CImportPatchDlg::PatchThread()
 
 		m_cList.SetItemData(m_CurrentItem, (~CPatchListCtrl::STATUS_APPLYING)&m_cList.GetItemData(i));
 		m_CurrentItem++;
-		m_cList.SetItemData(m_CurrentItem, CPatchListCtrl::STATUS_APPLYING|m_cList.GetItemData(i));
 
-		CRect rect;
 		this->m_cList.GetItemRect(i,&rect,LVIR_BOUNDS);
 		this->m_cList.InvalidateRect(rect);
-
-		this->m_cList.GetItemRect(m_CurrentItem,&rect,LVIR_BOUNDS);
-		this->m_cList.InvalidateRect(rect);
-
-		if (m_pTaskbarList)
-			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NOPROGRESS);
 
 		UpdateOkCancelText();
 	}
@@ -493,6 +489,15 @@ UINT CImportPatchDlg::PatchThread()
 
 	this->m_cList.GetItemRect(m_CurrentItem,&rect,LVIR_BOUNDS);
 	this->m_cList.InvalidateRect(rect);
+
+	if (m_pTaskbarList)
+	{
+		m_pTaskbarList->SetProgressValue(m_hWnd, m_CurrentItem, m_cList.GetItemCount());
+		if (m_bExitThread && m_CurrentItem != m_cList.GetItemCount())
+			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_PAUSED);
+		else if (!m_bExitThread && m_CurrentItem == m_cList.GetItemCount())
+			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NORMAL);
+	}
 
 	EnableInputCtrl(true);
 	InterlockedExchange(&m_bThreadRunning, FALSE);
@@ -601,20 +606,20 @@ void CImportPatchDlg::EnableInputCtrl(BOOL b)
 
 void CImportPatchDlg::UpdateOkCancelText()
 {
-	if( !IsFinish() )
+	if (this->m_bThreadRunning && !IsFinish())
 	{
-		this->GetDlgItem(IDOK)->SetWindowText(_T("&Apply"));
+		this->GetDlgItem(IDOK)->EnableWindow(FALSE);
+		this->GetDlgItem(IDCANCEL)->SetWindowText(_T("A&bort"));
+	}
+	else if (!IsFinish())
+	{
+		this->GetDlgItem(IDOK)->EnableWindow(TRUE);
 	}
 	else
 	{
+		this->GetDlgItem(IDCANCEL)->EnableWindow(FALSE);
 		this->GetDlgItem(IDOK)->SetWindowText(_T("&OK"));
 	}
-
-	if(this->m_bThreadRunning)
-		this->GetDlgItem(IDCANCEL)->SetWindowText(_T("A&bort"));
-	else
-		this->GetDlgItem(IDCANCEL)->SetWindowText(_T("&Cancel"));
-
 }
 void CImportPatchDlg::OnBnClickedCancel()
 {
@@ -623,7 +628,18 @@ void CImportPatchDlg::OnBnClickedCancel()
 		InterlockedExchange(&m_bExitThread,TRUE);
 	}
 	else
+	{
+		CTGitPath path;
+		path.SetFromWin(g_Git.m_CurrentDir);
+		if(path.HasRebaseApply())
+			if(MessageBox(_T("\"git am\" is still in apply mode.\nDo you want to abort?"), _T("TortoiseGit"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				CString output;
+				if(g_Git.Run(_T("git.exe am --abort"), &output, CP_GIT_XUTF8))
+					MessageBox(output, _T("TortoiseGit error"), MB_OK);
+			}
 		OnCancel();
+	}
 }
 
 void CImportPatchDlg::AddLogString(CString str)

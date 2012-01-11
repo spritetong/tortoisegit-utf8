@@ -1,7 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
-// Copyright (C) 2011 - Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2008-2012 - TortoiseGit
+// Copyright (C) 2011-2012 - Sven Strickroth <email@cs-ware.de>
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -1103,9 +1103,9 @@ void CRebaseDlg::SetContinueButtonText()
 	case CHOOSE_BRANCH:
 	case CHOOSE_COMMIT_PICK_MODE:
 		if(this->m_IsFastForward)
-			Text = _T("Start(FastFwd)");
+			Text = _T("Start (FastFwd)");
 		else
-			Text = _T("Start");
+			Text = _T("Start Rebase");
 		break;
 
 	case REBASE_START:
@@ -1495,20 +1495,20 @@ LRESULT CRebaseDlg::OnRebaseUpdateUI(WPARAM,LPARAM)
 		this->m_ctrlTabCtrl.SetActiveTab(REBASE_TAB_CONFLICT);
 		if (m_pTaskbarList)
 			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_ERROR);
-		this->m_LogMessageCtrl.SetText(curRev->GetSubject()+_T("\n")+curRev->GetBody());
 		this->m_LogMessageCtrl.Call(SCI_SETREADONLY, FALSE);
+		this->m_LogMessageCtrl.SetText(curRev->GetSubject()+_T("\n")+curRev->GetBody());
 		break;
 	case REBASE_EDIT:
 		this->m_ctrlTabCtrl.SetActiveTab(REBASE_TAB_MESSAGE);
 		if (m_pTaskbarList)
 			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_PAUSED);
-		this->m_LogMessageCtrl.SetText(curRev->GetSubject()+_T("\n")+curRev->GetBody());
 		this->m_LogMessageCtrl.Call(SCI_SETREADONLY, FALSE);
+		this->m_LogMessageCtrl.SetText(curRev->GetSubject()+_T("\n")+curRev->GetBody());
 		break;
 	case REBASE_SQUASH_EDIT:
 		this->m_ctrlTabCtrl.SetActiveTab(REBASE_TAB_MESSAGE);
-		this->m_LogMessageCtrl.SetText(this->m_SquashMessage);
 		this->m_LogMessageCtrl.Call(SCI_SETREADONLY, FALSE);
+		this->m_LogMessageCtrl.SetText(this->m_SquashMessage);
 		if (m_pTaskbarList)
 			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_PAUSED);
 		break;

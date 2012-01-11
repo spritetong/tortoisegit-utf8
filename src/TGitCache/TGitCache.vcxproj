@@ -199,6 +199,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Utils\SysInfo.cpp" />
     <ClCompile Include="CachedDirectory.cpp" />
     <ClCompile Include="CacheInterface.cpp" />
     <ClCompile Include="DirectoryWatcher.cpp" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\Utils\UnicodeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Utils\SysInfo.h" />
     <ClInclude Include="CachedDirectory.h" />
     <ClInclude Include="CacheInterface.h" />
     <ClInclude Include="DirectoryWatcher.h" />

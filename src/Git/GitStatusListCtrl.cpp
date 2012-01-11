@@ -1,8 +1,8 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
-// Copyright (C) 2010-2011 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2010-2012 Sven Strickroth <email@cs-ware.de>
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -52,6 +52,7 @@
 //#include "EditPropertiesDlg.h"
 //#include "CreateChangelistDlg.h"
 #include "CommonResource.h"
+#include "FormatMessageWrapper.h"
 
 const UINT CGitStatusListCtrl::GITSLNM_ITEMCOUNTCHANGED
 					= ::RegisterWindowMessage(_T("GITSLNM_ITEMCOUNTCHANGED"));
@@ -124,6 +125,7 @@ CGitStatusListCtrl::CGitStatusListCtrl() : CListCtrl()
 	, m_sNoPropValueText(MAKEINTRESOURCE(IDS_STATUSLIST_NOPROPVALUE))
 	, m_amend(false)
 	, m_bDoNotAutoselectSubmodules(false)
+	, m_bHasWC(true)
 {
 	m_FileLoaded=0;
 	m_critSec.Init();
@@ -204,13 +206,14 @@ int CGitStatusListCtrl::GetIndex(const CTGitPath& path)
 }
 #endif
 
-void CGitStatusListCtrl::Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus /* = GitSLC_POPALL */, bool bHasCheckboxes /* = true */)
+void CGitStatusListCtrl::Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus /* = GitSLC_POPALL */, bool bHasCheckboxes /* = true */, bool bHasWC /* = true */)
 {
 	Locker lock(m_critSec);
 
 	m_dwDefaultColumns = dwColumns | 1;
 	m_dwContextMenus = dwContextMenus;
 	m_bHasCheckboxes = bHasCheckboxes;
+	m_bHasWC = bHasWC;
 
 	// set the extended style of the listcontrol
 	// the style LVS_EX_FULLROWSELECT interferes with the background watermark image but it's more important to be able to select in the whole row.
@@ -1721,14 +1724,6 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 
 	//WORD langID = (WORD)CRegStdDWORD(_T("Software\\TortoiseGit\\LanguageID"), GetUserDefaultLangID());
 
-	bool XPorLater = false;
-	OSVERSIONINFOEX inf;
-	SecureZeroMemory(&inf, sizeof(OSVERSIONINFOEX));
-	inf.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	GetVersionEx((OSVERSIONINFO *)&inf);
-	WORD fullver = MAKEWORD(inf.dwMinorVersion, inf.dwMajorVersion);
-	if (fullver >= 0x0501)
-		XPorLater = true;
 	//bool bShift = !!(GetAsyncKeyState(VK_SHIFT) & 0x8000);
 	CTGitPath * filepath;
 
@@ -1740,7 +1735,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 		ClientToScreen(&rect);
 		point = rect.CenterPoint();
 	}
-	if ((GetSelectedCount() == 0)&&(XPorLater)&&(m_bHasCheckboxes))
+	if ((GetSelectedCount() == 0) && (m_bHasCheckboxes))
 	{
 		// nothing selected could mean the context menu is requested for
 		// a group header
@@ -1814,7 +1809,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					popup.SetDefaultItem(IDGITLC_COMPARE, FALSE);
 				}
 
-				if ((m_dwContextMenus & this->GetContextMenuBit(IDGITLC_COMPAREWC)) && GetSelectedCount()>0)
+				if ((m_dwContextMenus & this->GetContextMenuBit(IDGITLC_COMPAREWC)) && GetSelectedCount()>0 && m_bHasWC)
 				{
 					if( (!m_CurrentVersion.IsEmpty()) && m_CurrentVersion != GIT_REV_ZERO)
 						popup.AppendMenuIcon(IDGITLC_COMPAREWC, IDS_LOG_POPUP_COMPARE, IDI_DIFF);
@@ -1885,7 +1880,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 			//Select Multi item
 			if (GetSelectedCount() > 0)
 			{
-				if ((GetSelectedCount() == 2) && (m_dwContextMenus & this->GetContextMenuBit(GITSLC_POPCOMPARETWOFILES)))
+				if ((GetSelectedCount() == 2) && (m_dwContextMenus & this->GetContextMenuBit(GITSLC_POPCOMPARETWOFILES)) && (this->m_CurrentVersion.IsEmpty() || this->m_CurrentVersion == GIT_REV_ZERO))
 				{
 					POSITION pos = GetFirstSelectedItemPosition();
 					int index = GetNextSelectedItem(pos);
@@ -1952,7 +1947,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 			//	}
 			}
 
-			if ( (GetSelectedCount() >0 ) && (!(wcStatus & CTGitPath::LOGACTIONS_UNVER)))
+			if ( (GetSelectedCount() >0 ) && (!(wcStatus & CTGitPath::LOGACTIONS_UNVER)) && m_bHasWC)
 			{
 				if ((m_dwContextMenus & GITSLC_POPREVERT) && (this->m_CurrentVersion.IsEmpty() || this->m_CurrentVersion == GIT_REV_ZERO))
 				{
@@ -1973,7 +1968,11 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 				{
 					popup.AppendMenuIcon(IDGITLC_LOG, IDS_REPOBROWSE_SHOWLOG, IDI_LOG);
 				}
-				if (m_dwContextMenus & GITSLC_POPBLAME && ! filepath->IsDirectory() && !(wcStatus & CTGitPath::LOGACTIONS_DELETED))
+				if (m_dwContextMenus & GITSLC_POPSHOWLOGOLDNAME && (wcStatus & (CTGitPath::LOGACTIONS_REPLACED|CTGitPath::LOGACTIONS_COPY) && !filepath->GetGitOldPathString().IsEmpty()))
+				{
+					popup.AppendMenuIcon(IDGITLC_LOGOLDNAME, IDS_STATUSLIST_SHOWLOGOLDNAME, IDI_LOG);
+				}
+				if (m_dwContextMenus & GITSLC_POPBLAME && ! filepath->IsDirectory() && !(wcStatus & CTGitPath::LOGACTIONS_DELETED) && m_bHasWC)
 				{
 					popup.AppendMenuIcon(IDGITLC_BLAME, IDS_MENUBLAME, IDI_BLAME);
 				}
@@ -1996,7 +1995,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					}
 				}
 
-				if (m_dwContextMenus & GITSLC_POPEXPLORE && !(wcStatus & CTGitPath::LOGACTIONS_DELETED))
+				if (m_dwContextMenus & GITSLC_POPEXPLORE && !(wcStatus & CTGitPath::LOGACTIONS_DELETED) && m_bHasWC)
 				{
 					popup.AppendMenuIcon(IDGITLC_EXPLORE, IDS_STATUSLIST_CONTEXT_EXPLORE, IDI_EXPLORER);
 				}
@@ -2117,7 +2116,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 				popup.AppendMenuIcon(IDGITLC_COPY, IDS_STATUSLIST_CONTEXT_COPY, IDI_COPYCLIP);
 				popup.AppendMenuIcon(IDGITLC_COPYEXT, IDS_STATUSLIST_CONTEXT_COPYEXT, IDI_COPYCLIP);
 #if 0
-				if ((m_dwContextMenus & SVNSLC_POPCHANGELISTS)&&(XPorLater)
+				if ((m_dwContextMenus & SVNSLC_POPCHANGELISTS))
 					&&(wcStatus != git_wc_status_unversioned)&&(wcStatus != git_wc_status_none))
 				{
 					popup.AppendMenu(MF_SEPARATOR);
@@ -2223,7 +2222,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 			case IDGITLC_COMPARETWOFILES:
 				{
 					POSITION pos = GetFirstSelectedItemPosition();
-					CTGitPath * firstfilepath, * secondfilepath;
+					CTGitPath * firstfilepath = NULL, * secondfilepath = NULL;
 					if (pos)
 					{
 						firstfilepath = (CTGitPath * )GetItemData(GetNextSelectedItem(pos));
@@ -2403,6 +2402,18 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					CAppUtils::LaunchApplication(sCmd, NULL, false);
 				}
 				break;
+
+			case IDGITLC_LOGOLDNAME:
+				{
+					CTGitPath oldName(filepath->GetGitOldPathString());
+					CString sCmd;
+					sCmd.Format(_T("\"%s\" /command:log /path:\"%s\""),
+						(LPCTSTR)(CPathUtils::GetAppDirectory() + _T("TortoiseProc.exe")), g_Git.m_CurrentDir + _T("\\") + oldName.GetWinPath());
+
+					CAppUtils::LaunchApplication(sCmd, NULL, false);
+				}
+				break;
+
 
 			case IDGITLC_EDITCONFLICT:
 			{
@@ -4933,27 +4944,9 @@ int CGitStatusListCtrl::UpdateFileList(git_revnum_t hash,CTGitPathList *list)
 				if(g_Git.Run(cmd, &cmdout, &cmdErr))
 				{
 					int last = cmdErr.RevertFind(0,-1);
-					if(last > 0)
-					{
-						CString str;
-						g_Git.StringAppend(&str, &cmdErr[last+1], CP_GIT_XUTF8, cmdErr.size() - last -1);
-						CMessageBox::Show(NULL,str, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
-					}
-					else
-					{
-						cmdout.clear();
-						CString strout, err;
-						if (g_Git.Run(_T("git.exe rev-parse --revs-only ") + head, &strout, &err, CP_UTF8))
-						{
-							CMessageBox::Show(NULL, strout + L"\n" + err, _T("TortoiseGit"), MB_OK);
-							return -1;
-						}
-						if(strout.IsEmpty() && err.IsEmpty())
-							break; //this is initial repository, there are no any history
-
-						CMessageBox::Show(NULL, strout + L"\n" + err, _T("TortoiseGit"), MB_OK);
-						return -1;
-					}
+					CString str;
+					g_Git.StringAppend(&str, &cmdErr[last + 1], CP_GIT_XUTF8, cmdErr.size() - last -1);
+					CMessageBox::Show(NULL, str, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 				}
 
 				out.append(cmdout, 0);
@@ -5298,13 +5291,7 @@ void CGitStatusListCtrl::FileSaveAs(CTGitPath *path)
 		{
 			if(!CopyFile(g_Git.m_CurrentDir +_T("\\") + path->GetWinPath(),filename,false))
 			{
-				LPVOID lpMsgBuf=NULL;
-				FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
-					NULL,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-					(LPTSTR)&lpMsgBuf,
-					0,NULL);
-				CMessageBox::Show(NULL,(TCHAR *)lpMsgBuf,_T("TortoiseGit"),MB_OK);
-				LocalFree(lpMsgBuf);
+				MessageBox(CFormatMessageWrapper(), _T("TortoiseGit"), MB_OK | MB_ICONERROR);
 				return;
 			}
 

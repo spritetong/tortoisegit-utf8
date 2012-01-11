@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -193,6 +193,11 @@ public:
 	bool SetCurrentDir(CString path)
 	{
 		bool b = m_GitDir.HasAdminDir(path,&m_CurrentDir);
+		if (!b && g_GitAdminDir.IsBareRepo(path))
+		{
+			m_CurrentDir = path;
+			b = true;
+		}
 		if(m_CurrentDir.GetLength() == 2 && m_CurrentDir[1] == _T(':')) //C: D:
 		{
 			m_CurrentDir += _T('\\');

@@ -83,7 +83,7 @@ IDI_IMPORTPATHCES_BKG   ICON                    "ImportPatchesBackground.ico"
 IDI_MERGE_BKG           ICON                    "MergeBackground.ico"
 IDI_RENAME_BKG          ICON                    "RenameBackground.ico"
 IDI_SWITCH_BKG          ICON                    "SwitchBackground.ico"
-IDI_TORTOISEBLAME       ICON                    "..\\TortoiseBlame\\TortoiseBlame.ico"
+IDI_TORTOISEBLAME       ICON                    "TortoiseBlame.ico"
 IDI_BUGTRAQ             ICON                    "bugtraq.ico"
 IDI_UP                  ICON                    "..\\Resources\\up.ico"
 IDI_MKDIR               ICON                    "newfolder.ico"
@@ -142,9 +142,9 @@ CAPTION "About TortoiseGit"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Authors:",IDC_STATIC,13,81,54,8
-    LTEXT           "Frank Li (lznuaa@gmail.com)",IDC_STATIC,60,81,258,8
+    LTEXT           "Frank Li (lznuaa@gmail.com), Sven Strickroth <email@cs-ware.de>",IDC_STATIC,60,81,258,8
     LTEXT           "Credits:",IDC_STATIC,14,94,54,8
-	LTEXT           "Sven Strickroth <email@cs-ware.de>, Colin Law <clanlaw@googlemail.com>, Myagi <snowcoder@gmail.com>, Johan 't Hart <johanthart@gmail.com>, Laszlo Papp <djszapi@archlinux.us>\r\n[UTF-8 Revision] - Sprite Tong <spritetong@gmail.com>",IDC_STATIC,61,92,258,33
+    LTEXT           "Colin Law <clanlaw@googlemail.com>, Myagi <snowcoder@gmail.com>, Johan 't Hart <johanthart@gmail.com>, Laszlo Papp <djszapi@archlinux.us>",IDC_STATIC,61,92,258,33
     LTEXT           "Visit our website",IDC_WEBLINK,14,153,312,8
     LTEXT           "and support the developers",IDC_SUPPORTLINK,14,165,312,8
     GROUPBOX        "Version Information",IDC_VERSIONBOX,7,187,319,50
@@ -597,7 +597,7 @@ END
 
 IDD_SETTINGSPROGSDIFF DIALOGEX 0, 0, 300, 217
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "External Programs::Diff Viewer"
+CAPTION "Diff Viewer"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Configure the program used for comparing different revisions of files",IDC_STATIC,7,7,286,87
@@ -607,18 +607,16 @@ BEGIN
     PUSHBUTTON      "...",IDC_EXTDIFFBROWSE,274,41,14,14
     LTEXT           "Click on ""Advanced"" to specify alternate diff programs based on file extension",IDC_STATIC,16,65,160,25
     PUSHBUTTON      "&Advanced...",IDC_EXTDIFFADVANCED,201,65,87,14
-    GROUPBOX        "Configure the program used for comparing different revisions of properties",IDC_STATIC,7,104,286,63
-    CONTROL         "&TortoiseMerge",IDC_EXTDIFFPROPS_OFF,"Button",BS_AUTORADIOBUTTON | WS_GROUP,12,120,74,10
-    CONTROL         "&External",IDC_EXTDIFFPROPS_ON,"Button",BS_AUTORADIOBUTTON,92,120,71,10
-    EDITTEXT        IDC_EXTDIFFPROPS,14,139,256,14,ES_AUTOHSCROLL | WS_GROUP
-    PUSHBUTTON      "...",IDC_EXTDIFFPROPSBROWSE,274,139,14,14
-    CONTROL         "&Convert files when diffing against BASE",IDC_DONTCONVERT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,176,286,10
+    GROUPBOX        "Configure viewer program for GNU diff files (patch files)",IDC_STATIC,7,104,286,63
+    CONTROL         "Tortoise&UDiff",IDC_DIFFVIEWER_OFF,"Button",BS_AUTORADIOBUTTON | WS_GROUP,12,120,74,10
+    CONTROL         "E&xternal",IDC_DIFFVIEWER_ON,"Button",BS_AUTORADIOBUTTON,92,120,71,10
+    EDITTEXT        IDC_DIFFVIEWER,14,139,256,14,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "...",IDC_DIFFVIEWERBROWSE,274,139,14,14
 END
 
 IDD_SETTINGSPROGSMERGE DIALOGEX 0, 0, 300, 217
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "External Programs::Merge Tool"
+CAPTION "Diff Viewer::Merge Tool"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Configure the program used to resolve conflicted files.",IDC_STATIC,7,7,251,8
@@ -628,18 +626,6 @@ BEGIN
     PUSHBUTTON      "...",IDC_EXTMERGEBROWSE,279,41,14,14
     LTEXT           "Click on ""Advanced"" to specify alternate merge programs based on file extension",IDC_STATIC,7,70,160,33
     PUSHBUTTON      "&Advanced...",IDC_EXTMERGEADVANCED,206,73,87,14
-END
-
-IDD_SETTINGSPROGSUNIDIFF DIALOGEX 0, 0, 300, 217
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "External Programs::Unified Diff Viewer"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    LTEXT           "Configure viewer program for GNU diff files (patch files).",IDC_STATIC,7,7,286,8
-    CONTROL         "&TortoiseUDiff",IDC_DIFFVIEWER_OFF,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,23,74,10
-    CONTROL         "&Custom",IDC_DIFFVIEWER_ON,"Button",BS_AUTORADIOBUTTON,89,23,74,10
-    EDITTEXT        IDC_DIFFVIEWER,7,41,266,14,ES_AUTOHSCROLL | WS_GROUP
-    PUSHBUTTON      "...",IDC_DIFFVIEWERBROWSE,279,41,14,14
 END
 
 IDD_SETTINGSLOOKANDFEEL DIALOGEX 0, 0, 300, 225
@@ -667,7 +653,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,33,150,10
     CONTROL         "Relative Times in log",IDC_RELATIVETIMES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,33,120,10
     CONTROL         "Use system locale for date/time",IDC_SYSTEMLOCALEFORDATES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,44,270,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,44,150,10
+    CONTROL         "apply --topo-order",IDC_TOPOORDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,44,120,10
     CONTROL         "Can double-click in log list to compare with previous revision",IDC_DIFFBYDOUBLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,55,270,10
     GROUPBOX        "Misc",IDC_STATIC,7,73,286,47
@@ -1381,7 +1368,7 @@ END
 
 IDD_SETTINGIT_CONFIG DIALOGEX 0, 0, 300, 217
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "Git::Config"
+CAPTION "Git"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "User Info",IDC_STATIC,7,7,286,68
@@ -1393,7 +1380,8 @@ BEGIN
     EDITTEXT        IDC_GIT_USERESINGNINGKEY,68,54,215,12,ES_AUTOHSCROLL
     GROUPBOX        "Auto CrLf convert",IDC_STATIC,7,81,286,32
     CONTROL         "Auto&Crlf",IDC_CHECK_AUTOCRLF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,43,10
-    CONTROL         "&SafeCrlF",IDC_CHECK_SAFECRLF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,96,43,10
+    LTEXT           "Sa&feCrLf:",IDC_STATIC,104,96,32,8
+    COMBOBOX        IDC_COMBO_SAFECRLF,141,94,44,12,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Warn on missing Signed-Off-By on commit",IDC_CHECK_WARN_NO_SIGNED_OFF_BY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,120,149,10
     CONTROL         "Save as &Global",IDC_CHECK_GLOBAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,136,63,10
@@ -1535,7 +1523,7 @@ END
 
 IDD_SETTINGSPROGSALTERNATIVEEDITOR DIALOGEX 0, 0, 300, 217
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "External Programs::Alternative editor"
+CAPTION "General::Alternative editor"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Configure alternative editor. Preferably one which can handle *nix file endings.",IDC_STATIC,7,7,286,8
@@ -1573,6 +1561,24 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,99,76,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,154,76,50,14
     PUSHBUTTON      "Help",IDHELP,210,76,50,14
+END
+
+IDD_DIFFSUBMODULE DIALOGEX 0, 0, 301, 121
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Submodule Diff"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Submodule",IDC_SUBMODULEDIFFTITLE,7,7,287,8
+    GROUPBOX        "From",IDC_FROMGROUP,7,20,288,45
+    LTEXT           "Revision:",IDC_STATIC,15,32,33,8
+    EDITTEXT        IDC_FROMHASH,52,32,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    LTEXT           "Subject:",IDC_STATIC,15,49,33,8
+    EDITTEXT        IDC_FROMSUBJECT,52,49,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    GROUPBOX        "To",IDC_TOGROUP,7,69,288,45
+    LTEXT           "Revision:",IDC_STATIC,15,82,33,8
+    EDITTEXT        IDC_TOHASH,52,82,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    LTEXT           "Subject:",IDC_STATIC,15,96,33,8
+    EDITTEXT        IDC_TOSUBJECT,52,96,234,12,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
 
 
@@ -1837,15 +1843,6 @@ BEGIN
     END
 
     IDD_SETTINGSPROGSMERGE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 293
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 210
-        HORZGUIDE, 33
-    END
-
-    IDD_SETTINGSPROGSUNIDIFF, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 293
@@ -2323,6 +2320,16 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 90
     END
+
+    IDD_DIFFSUBMODULE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 294
+        VERTGUIDE, 52
+        VERTGUIDE, 286
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 114
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2496,9 +2503,6 @@ BEGIN
                             "A viewer program for GNU diff files (patch files).\r\nIf you don't have one use NotePad."
     IDS_SETTINGS_AUTOCLOSE_TT 
                             "Select the behaviour of the progress dialog at the end of the operation."
-    IDS_UTILS_SELECTTEXTVIEWER "Select text editor application"
-    IDS_SETTINGS_CONVERTBASE_TT 
-                            "If checked, TortoiseGit creates a temporary file of the BASE to do the diff\nwith the keywords expanded and the line endings adjusted."
     IDS_PROC_WARNREVERT     "Are you sure you want to revert %d item(s)? You will lose <b>all</b> changes since the last update!"
     IDS_PROC_CLEANUPFINISHED 
                             "Cleanup has successfully processed the following paths:\n%s"
@@ -3645,6 +3649,12 @@ BEGIN
     IDS_STATGRAPH_PERCENTAGE_OF_AUTHORSHIP "Percent of authorship"
     IDS_STATGRAPH_PERCENTAGE_OF_AUTHORSHIPY "Percents"
     IDS_STATGRAPH_COMMITSBYDATEXDAY "day"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LOG_FILTER_SUBJECT  "Subject"
+    IDS_STATUSLIST_SHOWLOGOLDNAME "Show log &before rename/copy"
 END
 
 #endif    // English (U.S.) resources

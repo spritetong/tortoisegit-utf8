@@ -46,7 +46,6 @@
 #define IDI_SET_OVERLAYS                190
 #define IDD_SETTINGSPROGSDIFF           192
 #define IDD_SETTINGSPROGSMERGE          193
-#define IDD_SETTINGSPROGSUNIDIFF        194
 #define IDD_SETTINGSLOOKANDFEEL         195
 #define IDI_GENERAL                     195
 #define IDD_SETTINGSDIALOGS             196
@@ -183,7 +182,6 @@
 #define IDC_EXTDIFF                     1015
 #define IDS_ERR_TGITBLAME               1015
 #define IDC_EXTMERGE                    1016
-#define IDC_EXTDIFFPROPS                1016
 #define IDS_PROC_RESETBRANCH            1016
 #define IDC_DIFFVIEWER                  1017
 #define IDS_LOG_PUSH                    1017
@@ -193,12 +191,13 @@
 #define IDC_EXTDIFFBROWSE               1021
 #define IDS_B_T_INVALID                 1021
 #define IDC_EXTMERGEBROWSE              1022
-#define IDC_EXTDIFFPROPSBROWSE          1022
 #define IDS_B_T_LOCALEMPTY              1022
 #define IDC_CHANGEDDIRS                 1023
 #define IDC_ENABLE                      1023
 #define IDC_SAVECHECK                   1023
 #define IDS_B_T_BOTHEMPTY               1023
+#define IDS_LOG_FILTER_SUBJECT          1024
+#define IDS_STATUSLIST_SHOWLOGOLDNAME   1025
 #define IDC_NAME                        1027
 #define IDC_SERVERADDRESS               1027
 #define IDC_USEREDIT                    1027
@@ -240,10 +239,10 @@
 #define IDC_SSHBROWSE                   1069
 #define IDC_DEFAULTLOG                  1071
 #define IDC_RELATIVETIMES               1072
-#define IDC_DONTCONVERT                 1073
 #define IDC_RAM                         1073
 #define IDC_CHECKNEWERVERSION           1073
 #define IDC_SHOWUNVERSIONED             1073
+#define IDC_TOPOORDER                   1073
 #define IDC_EXPORT_CHECKOUTDIR          1074
 #define IDC_VERSIONBOX                  1075
 #define IDC_LABEL                       1076
@@ -266,9 +265,7 @@
 #define IDC_EXTDIFF_OFF                 1091
 #define IDC_EXTDIFF_ON                  1092
 #define IDC_EXTMERGEADVANCED            1093
-#define IDC_EXTDIFFPROPS_OFF            1093
 #define IDC_EXTMERGE_OFF                1094
-#define IDC_EXTDIFFPROPS_ON             1094
 #define IDC_EXTMERGE_ON                 1095
 #define IDC_DIFFVIEWER_OFF              1096
 #define IDC_DIFFVIEWER_ON               1097
@@ -470,9 +467,7 @@
 #define IDC_MERGEDCOLOR                 1252
 #define IDS_SETTINGS_AUTOCLOSE_TT       1253
 #define IDC_MODIFIEDCOLOR               1253
-#define IDS_UTILS_SELECTTEXTVIEWER      1254
 #define IDC_RESTORE                     1254
-#define IDS_SETTINGS_CONVERTBASE_TT     1255
 #define IDC_DELETEDNODECOLOR            1255
 #define IDS_PROC_WARNREVERT             1256
 #define IDC_ADDEDNODECOLOR              1256
@@ -556,6 +551,7 @@
 #define IDC_FIRSTURL                    1301
 #define IDS_ERR_SSL_EXPIRED             1302
 #define IDC_DIFFSTATIC1                 1302
+#define IDC_SUBMODULEDIFFTITLE          1302
 #define IDS_ERR_COPYITSELF              1303
 #define IDC_SECONDURL                   1303
 #define IDS_ERR_INVALIDREV              1304
@@ -934,7 +930,7 @@
 #define IDC_RADIO_CLEAN_IGNORE          1629
 #define IDC_GROUP_CLEAN_TYPE            1630
 #define IDC_CHECK_AUTOCRLF              1631
-#define IDC_CHECK_SAFECRLF              1632
+#define IDC_COMBO_SAFECRLF              1632
 #define IDC_CHECK4                      1634
 #define IDC_CHECK_AUTORETRY             1634
 #define IDC_STATIC_MERGE_MESSAGE        1635
@@ -976,6 +972,11 @@
 #define IDC_GROUP_STASHMESSAGE          1673
 #define IDC_STASHMESSAGE                1674
 #define IDC_FOLLOWRENAMES               1675
+#define IDC_TOGROUP                     1676
+#define IDC_FROMHASH                    1677
+#define IDC_FROMSUBJECT                 1678
+#define IDC_TOHASH                      1679
+#define IDC_TOSUBJECT                   1680
 #define IDS_ABOUTVERSION                1700
 #define IDS_ABOUTVERSIONBOX             1701
 #define IDS_DLGTITLE_ADD_DIFF_TOOL      1750
@@ -1346,6 +1347,7 @@
 #define IDD_SETTINGSEXTMENU             4573
 #define IDD_BISECTSTART                 4574
 #define IDD_STASH                       4575
+#define IDD_DIFFSUBMODULE               4576
 #define IDC_COMBOBOXEX_LOCAL_BRANCH     5000
 #define IDC_COMBOBOXEX_REMOTE_BRANCH    5001
 #define IDC_COMBOBOXEX_BAD              5001
@@ -1547,7 +1549,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        339
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1676
+#define _APS_NEXT_CONTROL_VALUE         1681
 #define _APS_NEXT_SYMED_VALUE           201
 #endif
 #endif

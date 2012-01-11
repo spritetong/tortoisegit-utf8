@@ -29,7 +29,6 @@
 #include "TortoiseGitBlameDoc.h"
 #include "TortoiseGitBlameView.h"
 #include "MainFrm.h"
-#include "Balloon.h"
 #include "EditGotoDlg.h"
 #include "TortoiseGitBlameAppUtils.h"
 #include "FileTextLines.h"
@@ -142,6 +141,14 @@ CTortoiseGitBlameView::CTortoiseGitBlameView()
 	{
 		m_DateFormat = DATE_LONGDATE;
 	}
+	// get relative time display setting from registry
+	DWORD regRelativeTimes = CRegDWORD(_T("Software\\TortoiseGit\\RelativeTimes"), FALSE);
+	m_bRelativeTimes = (regRelativeTimes != 0);
+
+	m_sRev.LoadString(IDS_LOG_REVISION);
+	m_sAuthor.LoadString(IDS_LOG_AUTHOR);
+	m_sDate.LoadString(IDS_LOG_DATE);
+	m_sMessage.LoadString(IDS_LOG_MESSAGE);
 
 	m_Buffer = NULL;
 }
@@ -239,7 +246,6 @@ int CTortoiseGitBlameView::OnCreate(LPCREATESTRUCT lpcs)
 	CreateFont();
 	InitialiseEditor();
 	m_ToolTip.Create(this->GetParent());
-	m_ToolTip.AddTool(this,_T("Test"));
 
 	::AfxGetApp()->GetMainWnd();
 	return CView::OnCreate(lpcs);
@@ -2757,7 +2763,6 @@ void CTortoiseGitBlameView::FocusOn(GitRev *pRev)
 
 void CTortoiseGitBlameView::OnMouseHover(UINT nFlags, CPoint point)
 {
-
 	LONG_PTR line = SendEditor(SCI_GETFIRSTVISIBLELINE);
 	LONG_PTR height = SendEditor(SCI_TEXTHEIGHT);
 	line = line + (point.y/height);
@@ -2778,29 +2783,22 @@ void CTortoiseGitBlameView::OnMouseHover(UINT nFlags, CPoint point)
 				pRev=&this->GetLogData()->GetGitRevAt(this->GetLogList()->GetItemCount()-m_ID[line]);
 			}
 
-			this->ClientToScreen(&point);
-
 			CString str;
-			str.Format(_T("%s\n<b>%s</b>\n%s %s\n%s"),pRev->m_CommitHash.ToString(),
-														pRev->GetSubject(),
-														pRev->GetAuthorName(),
-														CAppUtils::FormatDateAndTime( pRev->GetAuthorDate(), m_DateFormat ),
-														pRev->GetBody());
-			m_ToolTip.AddTool(this,str);
-			m_ToolTip.DisplayToolTip(&point);
+			str.Format(_T("%s: %s\n%s: %s\n%s: %s\n%s:\n%s\n%s"),	m_sRev, pRev->m_CommitHash.ToString(),
+																	m_sAuthor, pRev->GetAuthorName(),
+																	m_sDate, CAppUtils::FormatDateAndTime(pRev->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes),
+																	m_sMessage, pRev->GetSubject(),
+																	pRev->GetBody());
+
+			m_ToolTip.Pop();
+			m_ToolTip.AddTool(this, str);
 
 			CRect rect;
-			this->ScreenToClient(&point);
 			rect.left=LOCATOR_WIDTH;
 			rect.right=this->m_blamewidth+rect.left;
 			rect.top=point.y-height;
 			rect.bottom=point.y+height;
 			this->InvalidateRect(rect);
-
-		}
-		else
-		{
-			m_MouseLine=-1;
 		}
 	}
 }

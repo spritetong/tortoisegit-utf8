@@ -197,9 +197,9 @@
     <ClCompile Include="StdioFileT.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="SysImageList.cpp" />
+    <ClCompile Include="SysInfo.cpp" />
     <ClCompile Include="TempFile.cpp" />
     <ClCompile Include="UnicodeUtils.cpp" />
-    <ClCompile Include="MiscUI\Balloon.cpp" />
     <ClCompile Include="MiscUI\BaseWindow.cpp" />
     <ClCompile Include="MiscUI\BrowseFolder.cpp" />
     <ClCompile Include="MiscUI\BufferDC.cpp" />
@@ -216,7 +216,7 @@
     <ClCompile Include="MiscUI\MessageBox.cpp" />
     <ClCompile Include="MiscUI\MyGraph.cpp" />
     <ClCompile Include="MiscUI\Picture.cpp" />
-    <ClCompile Include="MiscUI\ProgressDlg.cpp" />
+    <ClCompile Include="MiscUI\SysProgressDlg.cpp" />
     <ClCompile Include="MiscUI\ScrollTool.cpp" />
     <ClCompile Include="MiscUI\SplitterControl.cpp" />
     <ClCompile Include="MiscUI\Tooltip.cpp" />
@@ -237,6 +237,7 @@
     <ClInclude Include="MailMsg.h" />
     <ClInclude Include="SoundUtils.h" />
     <ClInclude Include="strconv.h" />
+    <ClInclude Include="SysInfo.h" />
     <ClInclude Include="TempFile.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TreePropSheet\PropPageFrame.h" />

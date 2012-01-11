@@ -1002,7 +1002,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\TortoiseBlame\TortoiseBlame.ico"
+				RelativePath="..\Resources\TortoiseBlame.ico"
 				>
 			</File>
 			<File
@@ -1725,10 +1725,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Settings\SettingsProgsUniDiff.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Settings\SettingsPropPage.cpp"
 					>
 				</File>
@@ -2187,6 +2183,14 @@
 			</File>
 			<File
 				RelativePath=".\ResetDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SubmoduleDiffDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SubmoduleDiffDlg.h"
 				>
 			</File>
 		</Filter>

@@ -179,7 +179,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\TortoiseMerge;..\crashrpt;..\;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -196,7 +196,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/libintl/libintl3-win32/lib/intl3_tsvn.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -213,7 +213,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\SubVersion\subversion\include;.\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_WINDOWS;_DEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -230,7 +230,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/libintl/libintl3-x64/lib/intl3_tsvn.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -247,7 +247,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\SubVersion\subversion\include;.\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -262,7 +262,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/libintl/libintl3-win32/lib/intl3_tsvn.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -279,7 +279,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\SubVersion\subversion\include;.\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -294,7 +294,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/libintl/libintl3-x64/lib/intl3_tsvn.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -310,7 +310,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\SubVersion\subversion\include;.\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -326,7 +326,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;Rpcrt4.lib;../../ext/Subversion\releasestatic_win32\libsvn_diff-nonet.lib;../../ext/Subversion\releasestatic_win32\libsvn_subr-nonet.lib;../../ext/Subversion\releasestatic_win32\libsvn_client-nonet.lib;../../ext/apr\releasestatic_win32\libapr_tsvn.lib;../../ext/apr-util\releasestatic_win32\libaprutil_tsvn.lib;../../ext/Subversion\releasestatic_win32\libsvn_wc-nonet.lib;../../ext/Subversion\releasestatic_win32\libsvn_delta-nonet.lib;../../ext/apr-util\xml\expat\lib\releasestatic_win32\xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -346,7 +346,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\Subversion\subversion\include;..\..\ext\Subversion\subversion\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -362,7 +362,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/Subversion\release_x64\libsvn_diff-nonet.lib;../../ext/Subversion\release_x64\libsvn_subr-nonet.lib;../../ext/Subversion\release_x64\libsvn_client-nonet.lib;../../ext/apr\release_x64\libapr_tsvn.lib;../../ext/apr-util\release_x64\libaprutil_tsvn.lib;../../ext/libintl/libintl3-x64/lib/intl3_tsvn.lib;../../ext/Subversion\release_x64\libsvn_wc-nonet.lib;../../ext/Subversion\release_x64\libsvn_delta-nonet.lib;../../ext/apr-util\xml\expat\lib\release_x64\xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -381,7 +381,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\SubVersion\subversion\include;.\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -397,7 +397,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;Rpcrt4.lib;../../ext/Subversion\debugstatic_win32\libsvn_diff-nonet.lib;../../ext/Subversion\debugstatic_win32\libsvn_subr-nonet.lib;../../ext/Subversion\debugstatic_win32\libsvn_client-nonet.lib;../../ext/apr\debugstatic_win32\libapr_tsvn.lib;../../ext/apr-util\debugstatic_win32\libaprutil_tsvn.lib;../../ext/Subversion\debugstatic_win32\libsvn_wc-nonet.lib;../../ext/Subversion\debugstatic_win32\libsvn_delta-nonet.lib;../../ext/apr-util\xml\expat\lib\debugstatic_win32\xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -417,7 +417,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\ext\apr\include;..\..\ext\apr-util\include;..\..\ext\Subversion\subversion\include;..\..\ext\Subversion\subversion\libsvn_diff;..\Utils;..\Utils\NewMenu;..\Utils\ColourPickerXP;..\TortoiseMerge;..\crashrpt;..\;..\SVN;..\Utils\MiscUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\git;.\svninclude;..\..\ext\apr\include;..\..\ext\apr-util\include;.\libsvn_diff;..\Utils;..\crashrpt;..\;..\Utils\MiscUI</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;APR_DECLARE_STATIC;APU_DECLARE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -433,7 +433,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib;../../ext/Subversion\release_x64\libsvn_diff-nonet.lib;../../ext/Subversion\release_x64\libsvn_subr-nonet.lib;../../ext/Subversion\release_x64\libsvn_client-nonet.lib;../../ext/apr\release_x64\libapr_tsvn.lib;../../ext/apr-util\release_x64\libaprutil_tsvn.lib;../../ext/libintl/libintl3-x64/lib/intl3_tsvn.lib;../../ext/Subversion\release_x64\libsvn_wc-nonet.lib;../../ext/Subversion\release_x64\libsvn_delta-nonet.lib;../../ext/apr-util\xml\expat\lib\release_x64\xml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;shlwapi.lib;Version.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -461,7 +461,7 @@
     <ClCompile Include="..\Utils\MiscUI\MessageBox.cpp" />
     <ClCompile Include="OpenDlg.cpp" />
     <ClCompile Include="Patch.cpp" />
-    <ClCompile Include="..\Utils\MiscUI\ProgressDlg.cpp" />
+    <ClCompile Include="..\Utils\MiscUI\SysProgressDlg.cpp" />
     <ClCompile Include="RightView.cpp" />
     <ClCompile Include="SetColorPage.cpp" />
     <ClCompile Include="SetMainPage.cpp" />
@@ -1453,7 +1453,7 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OpenDlg.h" />
     <ClInclude Include="Patch.h" />
-    <ClInclude Include="..\Utils\MiscUI\ProgressDlg.h" />
+    <ClInclude Include="..\Utils\MiscUI\SysProgressDlg.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RightView.h" />
     <ClInclude Include="SetColorPage.h" />

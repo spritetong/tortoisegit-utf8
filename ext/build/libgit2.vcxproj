@@ -172,6 +172,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\libgit2\src\attr.c" />
+    <ClCompile Include="..\libgit2\src\attr_file.c" />
     <ClCompile Include="..\libgit2\src\blob.c" />
     <ClCompile Include="..\libgit2\src\buffer.c" />
     <ClCompile Include="..\libgit2\src\cache.c" />
@@ -231,6 +233,11 @@
     <ClCompile Include="..\libgit2\deps\http-parser\http_parser.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\libgit2\include\git2\attr.h" />
+    <ClInclude Include="..\libgit2\include\git2\threads.h" />
+    <ClInclude Include="..\libgit2\include\git2\version.h" />
+    <ClInclude Include="..\libgit2\include\git2\windows.h" />
+    <ClInclude Include="..\libgit2\src\attr_file.h" />
     <ClInclude Include="..\libgit2\src\blob.h" />
     <ClInclude Include="..\libgit2\src\bswap.h" />
     <ClInclude Include="..\libgit2\src\buffer.h" />
@@ -257,6 +264,7 @@
     <ClInclude Include="..\libgit2\src\pkt.h" />
     <ClInclude Include="..\libgit2\src\posix.h" />
     <ClInclude Include="..\libgit2\src\pqueue.h" />
+    <ClInclude Include="..\libgit2\src\protocol.h" />
     <ClInclude Include="..\libgit2\src\reflog.h" />
     <ClInclude Include="..\libgit2\src\refs.h" />
     <ClInclude Include="..\libgit2\src\refspec.h" />

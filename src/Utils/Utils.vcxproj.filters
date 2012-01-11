@@ -117,9 +117,6 @@
     <ClCompile Include="UnicodeUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MiscUI\Balloon.cpp">
-      <Filter>MiscUi</Filter>
-    </ClCompile>
     <ClCompile Include="MiscUI\BaseWindow.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
@@ -168,7 +165,7 @@
     <ClCompile Include="MiscUI\Picture.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
-    <ClCompile Include="MiscUI\ProgressDlg.cpp">
+    <ClCompile Include="MiscUI\SysProgressDlg.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
     <ClCompile Include="MiscUI\ScrollTool.cpp">
@@ -191,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="TreePropSheet\TreePropSheet.cpp">
       <Filter>Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="SysInfo.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="TreePropSheet\TreePropSheet.h">
       <Filter>Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="SysInfo.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

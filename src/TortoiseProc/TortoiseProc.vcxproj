@@ -323,7 +323,6 @@
     <ClCompile Include="Settings\SettingsProgsAlternativeEditor.cpp" />
     <ClCompile Include="Settings\SettingsProgsDiff.cpp" />
     <ClCompile Include="Settings\SettingsProgsMerge.cpp" />
-    <ClCompile Include="Settings\SettingsProgsUniDiff.cpp" />
     <ClCompile Include="Settings\SettingsPropPage.cpp" />
     <ClCompile Include="Settings\SettingsTBlame.cpp" />
     <ClCompile Include="Settings\ToolAssocDlg.cpp" />
@@ -348,6 +347,7 @@
     <ClCompile Include="StashSave.cpp" />
     <ClCompile Include="BrowseRefsDlg.cpp" />
     <ClCompile Include="Commands\SVNDCommitCommand.cpp" />
+    <ClCompile Include="SubmoduleDiffDlg.cpp" />
     <ClCompile Include="SVNDCommitDlg.cpp" />
     <ClCompile Include="Commands\SVNFetchCommand.cpp" />
     <ClCompile Include="Commands\SVNIgnoreCommand.cpp" />
@@ -384,6 +384,7 @@
     <ClCompile Include="TortoiseProc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Utils\tgit_xutf8.h" />
     <ClInclude Include="AddRemoteDlg.h" />
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="LogFile.h" />
@@ -493,6 +494,7 @@
     <ClInclude Include="BrowseRefsDlg.h" />
     <ClInclude Include="Commands\RefBrowseCommand.h" />
     <ClInclude Include="Commands\SVNDCommitCommand.h" />
+    <ClInclude Include="SubmoduleDiffDlg.h" />
     <ClInclude Include="SVNDCommitDlg.h" />
     <ClInclude Include="Commands\SVNFetchCommand.h" />
     <ClInclude Include="Commands\SVNIgnoreCommand.h" />
@@ -649,7 +651,7 @@
     <None Include="..\Resources\Tortoise13by13.ico" />
     <None Include="..\Resources\Tortoise16by16.ico" />
     <None Include="..\Resources\Tortoise20by16.ico" />
-    <None Include="..\TortoiseBlame\TortoiseBlame.ico" />
+    <None Include="..\Resources\TortoiseBlame.ico" />
     <None Include="..\Resources\tortoisegit_logoflipped.bmp" />
     <None Include="..\Resources\TortoiseMerge.ico" />
     <None Include="..\Resources\TortoiseSmall.ico" />

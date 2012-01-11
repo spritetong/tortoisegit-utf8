@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -193,7 +193,7 @@ static char g_Buffer[4096];
 int CGit::RunAsync(CString cmd, PROCESS_INFORMATION *piOut, HANDLE *hReadOut, HANDLE *hErrReadOut, CString *StdioFile)
 {
 	SECURITY_ATTRIBUTES sa;
-	HANDLE hRead, hWrite, hReadErr, hWriteErr;
+	HANDLE hRead, hWrite, hReadErr = NULL, hWriteErr = NULL;
 	HANDLE hStdioFile = NULL;
 
 	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -613,7 +613,11 @@ int CGit::GetCurrentBranchFromFile(const CString &sProjectRoot, CString &sBranch
 	if ( sProjectRoot.IsEmpty() )
 		return -1;
 
-	CString sHeadFile = sProjectRoot + _T("\\") + g_GitAdminDir.GetAdminDirName() + _T("\\HEAD");
+	CString sDotGitPath;
+	if (!g_GitAdminDir.GetAdminDirPath(sProjectRoot, sDotGitPath))
+		return -1;
+
+	CString sHeadFile = sDotGitPath + _T("HEAD");
 
 	FILE *pFile;
 	_tfopen_s(&pFile, sHeadFile.GetString(), _T("r"));
@@ -799,6 +803,9 @@ CString CGit::GetLogCmd( const CString &hash, CTGitPath *path, int count, int ma
 
 		param += _T(" --regexp-ignore-case --extended-regexp ");
 	}
+
+	if (CRegDWORD(_T("Software\\TortoiseGit\\LogTopoOrder"), TRUE))
+		param += _T(" --topo-order");
 
 	if(paramonly) //tgit.dll.Git.cpp:setup_revisions() only looks at args[1] and greater.  To account for this, pass a dummy parameter in the 0th place
 		cmd.Format(_T("--ignore-this-parameter %s -z %s --parents "), num, param);
@@ -1039,7 +1046,9 @@ CString	CGit::FixBranchName(const CString& branchName)
 CString CGit::DerefFetchHead()
 {
 	using namespace std;
-	ifstream fetchHeadFile((m_CurrentDir + L"\\.git\\FETCH_HEAD").GetString(), ios::in | ios::binary);
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(m_CurrentDir, dotGitPath);
+	ifstream fetchHeadFile((dotGitPath + L"FETCH_HEAD").GetString(), ios::in | ios::binary);
 	int forMergeLineCount = 0;
 	string line;
 	string hashToReturn;
@@ -1232,7 +1241,7 @@ BOOL CGit::CheckMsysGitDir()
 	m_Environment.CopyProcessEnvironment();
 
 	TCHAR *oldpath;
-	size_t homesize,size,httpsize;
+	size_t homesize,size;
 
 	// set HOME if not set already
 	_tgetenv_s(&homesize, NULL, 0, _T("HOME"));
@@ -1251,15 +1260,8 @@ BOOL CGit::CheckMsysGitDir()
 
 	if(!sshclient.IsEmpty())
 	{
-		m_Environment.SetEnv(_T("GIT_SSH"),sshclient.GetBuffer());
-
-		//Setup SVN_SSH
-		CString ssh=sshclient;
-		ssh.Replace(_T("/"),_T("\\"));
-		ssh.Replace(_T("\\"),_T("\\\\"));
-		ssh=CString(_T("\""))+ssh+_T('\"');
-		m_Environment.SetEnv(_T("SVN_SSH"),ssh.GetBuffer());
-
+		m_Environment.SetEnv(_T("GIT_SSH"), sshclient.GetBuffer());
+		m_Environment.SetEnv(_T("SVN_SSH"), sshclient.GetBuffer());
 	}
 	else
 	{
@@ -1269,13 +1271,7 @@ BOOL CGit::CheckMsysGitDir()
 		if (ptr) {
 			_tcscpy(ptr + 1, _T("TortoisePlink.exe"));
 			m_Environment.SetEnv(_T("GIT_SSH"), sPlink);
-
-			//Setup SVN_SSH
-			CString ssh=sPlink;
-			ssh.Replace(_T("/"),_T("\\"));
-			ssh.Replace(_T("\\"),_T("\\\\"));
-			ssh=CString(_T("\""))+ssh+_T('\"');
-			m_Environment.SetEnv(_T("SVN_SSH"),ssh.GetBuffer());
+			m_Environment.SetEnv(_T("SVN_SSH"), sPlink);
 		}
 	}
 
@@ -1367,7 +1363,7 @@ public:
 
 	BYTE_VECTOR		m_DataCollector;
 
-	virtual bool	OnOutputErrData(const BYTE* data, size_t size)
+	virtual bool	OnOutputErrData(const BYTE*, size_t)
 	{
 		return false; //ignore error data
 	}
@@ -1561,7 +1557,7 @@ BOOL CGit::CheckCleanWorkTree()
 
 	return TRUE;
 }
-int CGit::Revert(CString commit, CTGitPathList &list,bool keep)
+int CGit::Revert(CString commit, CTGitPathList &list, bool)
 {
 	int ret;
 	for(int i=0;i<list.GetCount();i++)

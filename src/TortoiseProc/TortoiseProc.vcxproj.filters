@@ -410,9 +410,6 @@
     <ClCompile Include="Settings\SettingsProgsMerge.cpp">
       <Filter>Commands\setting</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\SettingsProgsUniDiff.cpp">
-      <Filter>Commands\setting</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\SettingsPropPage.cpp">
       <Filter>Commands\setting</Filter>
     </ClCompile>
@@ -571,6 +568,9 @@
     </ClCompile>
     <ClCompile Include="TortoiseProc.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SubmoduleDiffDlg.cpp">
+      <Filter>Utility Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -988,6 +988,12 @@
     <ClInclude Include="TortoiseProc.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="SubmoduleDiffDlg.h">
+      <Filter>Utility Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\tgit_xutf8.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\actionad.ico">
@@ -1365,7 +1371,7 @@
     <None Include="..\Resources\Tortoise20by16.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\TortoiseBlame\TortoiseBlame.ico">
+    <None Include="..\Resources\TortoiseBlame.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\tortoisegit_logoflipped.bmp">

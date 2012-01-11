@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2007 - TortoiseSVN
+// Copyright (C) 2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,22 +17,32 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include "Command.h"
+#include "HorizontalResizableStandAloneDialog.h"
+#include "resource.h"
 
-/**
- * \ingroup TortoiseProc
- * Copies dropped items.
- */
-class DropCopyAddCommand : public Command
+class CSubmoduleDiffDlg : public CHorizontalResizableStandAloneDialog
 {
+	DECLARE_DYNAMIC(CSubmoduleDiffDlg)
+
 public:
-	/**
-	 * Executes the command.
-	 */
-	virtual bool			Execute();
+	CSubmoduleDiffDlg(CWnd* pParent = NULL);
+	virtual ~CSubmoduleDiffDlg();
 
-private:
-	void ShowErrorMessage();
+	enum { IDD = IDD_DIFFSUBMODULE };
+
+	void SetDiff(CString path, bool fromIsWorkingCopy, CString fromHash, CString fromSubject, CString toHash, CString toSubject);
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual BOOL OnInitDialog();
+
+	DECLARE_MESSAGE_MAP()
+
+	bool	m_bFromIsWorkingCopy;
+	CString	m_sPath;
+
+	CString	m_sFromHash;
+	CString	m_sFromSubject;
+	CString	m_sToHash;
+	CString	m_sToSubject;
 };
-
-

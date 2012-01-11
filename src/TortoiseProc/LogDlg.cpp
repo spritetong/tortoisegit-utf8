@@ -242,10 +242,10 @@ BOOL CLogDlg::OnInitDialog()
 	m_LogList.DeleteAllItems();
 
 	m_LogList.m_Path=m_path;
-	m_LogList.m_bShowWC = true;
+	m_LogList.m_hasWC = m_LogList.m_bShowWC = !g_GitAdminDir.IsBareRepo(g_Git.m_CurrentDir);
 	m_LogList.InsertGitColumn();
 
-	m_ChangedFileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("LogDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT|GITSLC_POPIGNORE)),false);
+	m_ChangedFileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL, _T("LogDlg"), (GITSLC_POPALL ^ (GITSLC_POPCOMMIT|GITSLC_POPIGNORE)), false, m_LogList.m_hasWC);
 
 	GetDlgItem(IDC_LOGLIST)->UpdateData(FALSE);
 
@@ -438,7 +438,7 @@ LRESULT CLogDlg::OnLogListLoading(WPARAM wParam, LPARAM /*lParam*/)
 		DialogEnableWindow(IDC_SHOWWHOLEPROJECT, TRUE);
 
 		//DialogEnableWindow(IDC_GETALL, TRUE);
-		DialogEnableWindow(IDC_STATBUTTON, !(m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1));
+		DialogEnableWindow(IDC_STATBUTTON, !(m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1 && m_LogList.m_bShowWC));
 		DialogEnableWindow(IDC_REFRESH, TRUE);
 		DialogEnableWindow(IDC_HIDEPATHS,TRUE);
 
@@ -1646,7 +1646,7 @@ void CLogDlg::EditLogMessage(int /*index*/)
 BOOL CLogDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// Skip Ctrl-C when copying text out of the log message or search filter
-	BOOL bSkipAccelerator = ( pMsg->message == WM_KEYDOWN && pMsg->wParam=='C' && (GetFocus()==GetDlgItem(IDC_MSGVIEW) || GetFocus()==GetDlgItem(IDC_SEARCHEDIT) ) && GetKeyState(VK_CONTROL)&0x8000 );
+	bool bSkipAccelerator = (pMsg->message == WM_KEYDOWN && (pMsg->wParam == 'C' || pMsg->wParam == VK_INSERT) && (GetFocus() == GetDlgItem(IDC_MSGVIEW) || GetFocus() == GetDlgItem(IDC_SEARCHEDIT)) && GetKeyState(VK_CONTROL) & 0x8000);
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam=='\r')
 	{
 		if (GetFocus()==GetDlgItem(IDC_LOGLIST))
@@ -1887,7 +1887,7 @@ void CLogDlg::OnBnClickedStatbutton()
 {
 	if (this->IsThreadRunning())
 		return;
-	if (m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1)
+	if (m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1 && m_LogList.m_bShowWC)
 		return;		// nothing or just the working copy changes are shown, so no statistics.
 	// the statistics dialog expects the log entries to be sorted by date
 	SortByColumn(3, false);
@@ -2050,6 +2050,9 @@ LRESULT CLogDlg::OnClickedInfoIcon(WPARAM /*wParam*/, LPARAM lParam)
 
 		popup.AppendMenu(MF_SEPARATOR, NULL);
 
+		temp.LoadString(IDS_LOG_FILTER_SUBJECT);
+		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_SUBJECT), LOGFILTER_SUBJECT, temp);
+
 		temp.LoadString(IDS_LOG_FILTER_MESSAGES);
 		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_MESSAGES), LOGFILTER_MESSAGES, temp);
 
@@ -2062,7 +2065,7 @@ LRESULT CLogDlg::OnClickedInfoIcon(WPARAM /*wParam*/, LPARAM lParam)
 		temp.LoadString(IDS_LOG_FILTER_REVS);
 		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_REVS), LOGFILTER_REVS, temp);
 
-		if (m_LogList.m_bShowBugtraqColumn == true) {
+		if (m_LogList.m_bShowBugtraqColumn == TRUE) {
 			temp.LoadString(IDS_LOG_FILTER_BUGIDS);
 			popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_BUGID), LOGFILTER_BUGID, temp);
 		}
@@ -2134,6 +2137,9 @@ void CLogDlg::SetFilterCueText()
 	{
 	case LOGFILTER_ALL:
 		temp.LoadString(IDS_LOG_FILTER_ALL);
+		break;
+	case LOGFILTER_SUBJECT:
+		temp.LoadString(IDS_LOG_FILTER_SUBJECT);
 		break;
 	case LOGFILTER_MESSAGES:
 		temp.LoadString(IDS_LOG_FILTER_MESSAGES);
@@ -2219,7 +2225,7 @@ void CLogDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdateLogInfoLabel();
 #endif
 	} // if (nIDEvent == LOGFILTER_TIMER)
-	DialogEnableWindow(IDC_STATBUTTON, !(((this->IsThreadRunning())||(m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1))));
+	DialogEnableWindow(IDC_STATBUTTON, !(((this->IsThreadRunning())||(m_LogList.m_arShownList.IsEmpty() || m_LogList.m_arShownList.GetCount() == 1 && m_LogList.m_bShowWC))));
 	__super::OnTimer(nIDEvent);
 }
 

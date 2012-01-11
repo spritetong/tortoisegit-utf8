@@ -65,7 +65,8 @@ CBrowseRefsDlg::CBrowseRefsDlg(CString cmdPath, CWnd* pParent /*=NULL*/)
 	m_currSortDesc(false),
 	m_initialRef(L"HEAD"),
 	m_pickRef_Kind(gPickRef_All),
-	m_pListCtrlRoot(NULL)
+	m_pListCtrlRoot(NULL),
+	m_bHasWC(true)
 {
 
 }
@@ -126,6 +127,8 @@ BOOL CBrowseRefsDlg::OnInitDialog()
 	CString sWindowTitle;
 	GetWindowText(sWindowTitle);
 	CAppUtils::SetWindowTitle(m_hWnd, g_Git.m_CurrentDir, sWindowTitle);
+
+	m_bHasWC = !g_GitAdminDir.IsBareRepo(g_Git.m_CurrentDir);
 
 	m_ListRefLeafs.SetFocus();
 	return FALSE;
@@ -305,7 +308,7 @@ bool CBrowseRefsDlg::SelectRef(CString refName, bool bExactMatch)
 			refName = newRefName;
 		//else refName is not a valid ref. Try to select as good as possible.
 	}
-	if(wcsnicmp(refName,L"refs/",5)!=0)
+	if(_wcsnicmp(refName, L"refs/", 5) != 0)
 		return false; // Not a ref name
 
 	CShadowTree& treeLeafHead=GetTreeNode(refName,NULL,false);
@@ -339,7 +342,7 @@ CShadowTree& CBrowseRefsDlg::GetTreeNode(CString refName, CShadowTree* pTreePos,
 {
 	if(pTreePos==NULL)
 	{
-		if(wcsnicmp(refName,L"refs/",5)==0)
+		if(_wcsnicmp(refName, L"refs/", 5) == 0)
 			refName=refName.Mid(5);
 		pTreePos=&m_TreeRoot;
 	}
@@ -688,9 +691,12 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 		if(bAddSeparator)
 			popupMenu.AppendMenu(MF_SEPARATOR);
 
-		popupMenu.AppendMenuIcon(eCmd_Switch, L"Switch to this Ref", IDI_SWITCH);
 		bAddSeparator = false;
-		popupMenu.AppendMenu(MF_SEPARATOR);
+		if (m_bHasWC)
+		{
+			popupMenu.AppendMenuIcon(eCmd_Switch, L"Switch to this Ref", IDI_SWITCH);
+			popupMenu.AppendMenu(MF_SEPARATOR);
+		}
 
 		if(bShowCreateBranchOption)
 		{

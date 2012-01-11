@@ -545,6 +545,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SysInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SysInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TempFile.cpp"
 				>
 			</File>
@@ -576,10 +584,6 @@
 		<Filter
 			Name="MiscUi"
 			>
-			<File
-				RelativePath=".\MiscUI\Balloon.cpp"
-				>
-			</File>
 			<File
 				RelativePath=".\MiscUI\BaseWindow.cpp"
 				>
@@ -645,7 +649,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MiscUI\ProgressDlg.cpp"
+				RelativePath=".\MiscUI\SysProgressDlg.cpp"
 				>
 			</File>
 			<File

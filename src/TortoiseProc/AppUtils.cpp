@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 // Copyright (C) 2003-2011 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -58,6 +58,7 @@
 #include "RebaseDlg.h"
 #include "PropKey.h"
 #include "StashSave.h"
+#include "FormatMessageWrapper.h"
 
 CAppUtils::CAppUtils(void)
 {
@@ -464,56 +465,6 @@ bool CAppUtils::StartExtDiff(
 	return LaunchApplication(viewer, IDS_ERR_EXTDIFFSTART, flags.bWait);
 }
 
-BOOL CAppUtils::StartExtDiffProps(const CTGitPath& file1, const CTGitPath& file2, const CString& sName1, const CString& sName2, BOOL bWait, BOOL bReadOnly)
-{
-	CRegString diffpropsexe(_T("Software\\TortoiseGit\\DiffProps"));
-	CString viewer = diffpropsexe;
-	bool bInternal = false;
-	if (viewer.IsEmpty()||(viewer.Left(1).Compare(_T("#"))==0))
-	{
-		//no registry entry (or commented out) for a diff program
-		//use TortoiseMerge
-		bInternal = true;
-		viewer = CPathUtils::GetAppDirectory();
-		viewer += _T("TortoiseMerge.exe");
-		viewer = _T("\"") + viewer + _T("\"");
-		viewer = viewer + _T(" /base:%base /mine:%mine /basename:%bname /minename:%yname");
-	}
-	// check if the params are set. If not, just add the files to the command line
-	if ((viewer.Find(_T("%base"))<0)&&(viewer.Find(_T("%mine"))<0))
-	{
-		viewer += _T(" \"")+file1.GetWinPathString()+_T("\"");
-		viewer += _T(" \"")+file2.GetWinPathString()+_T("\"");
-	}
-	if (viewer.Find(_T("%base")) >= 0)
-	{
-		viewer.Replace(_T("%base"),  _T("\"")+file1.GetWinPathString()+_T("\""));
-	}
-	if (viewer.Find(_T("%mine")) >= 0)
-	{
-		viewer.Replace(_T("%mine"),  _T("\"")+file2.GetWinPathString()+_T("\""));
-	}
-
-	if (sName1.IsEmpty())
-		viewer.Replace(_T("%bname"), _T("\"") + file1.GetUIFileOrDirectoryName() + _T("\""));
-	else
-		viewer.Replace(_T("%bname"), _T("\"") + sName1 + _T("\""));
-
-	if (sName2.IsEmpty())
-		viewer.Replace(_T("%yname"), _T("\"") + file2.GetUIFileOrDirectoryName() + _T("\""));
-	else
-		viewer.Replace(_T("%yname"), _T("\"") + sName2 + _T("\""));
-
-	if ((bReadOnly)&&(bInternal))
-		viewer += _T(" /readonly");
-
-	if(!LaunchApplication(viewer, IDS_ERR_EXTDIFFSTART, !!bWait))
-	{
-		return FALSE;
-	}
-	return TRUE;
-}
-
 BOOL CAppUtils::StartUnifiedDiffViewer(const CString& patchfile, const CString& title, BOOL bWait)
 {
 	CString viewer;
@@ -573,48 +524,7 @@ BOOL CAppUtils::StartTextViewer(CString file)
 	file = _T("\"")+file+_T("\"");
 	if (viewer.IsEmpty())
 	{
-		OPENFILENAME ofn = {0};				// common dialog box structure
-		TCHAR szFile[MAX_PATH] = {0};		// buffer for file name. Explorer can't handle paths longer than MAX_PATH.
-		// Initialize OPENFILENAME
-		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = NULL;
-		ofn.lpstrFile = szFile;
-		ofn.nMaxFile = _countof(szFile);
-		CString sFilter;
-		sFilter.LoadString(IDS_PROGRAMSFILEFILTER);
-		TCHAR * pszFilters = new TCHAR[sFilter.GetLength()+4];
-		_tcscpy_s (pszFilters, sFilter.GetLength()+4, sFilter);
-		// Replace '|' delimiters with '\0's
-		TCHAR *ptr = pszFilters + _tcslen(pszFilters);  //set ptr at the NULL
-		while (ptr != pszFilters)
-		{
-			if (*ptr == '|')
-				*ptr = '\0';
-			ptr--;
-		}
-		ofn.lpstrFilter = pszFilters;
-		ofn.nFilterIndex = 1;
-		ofn.lpstrFileTitle = NULL;
-		ofn.nMaxFileTitle = 0;
-		ofn.lpstrInitialDir = NULL;
-		CString temp;
-		temp.LoadString(IDS_UTILS_SELECTTEXTVIEWER);
-		CStringUtils::RemoveAccelerators(temp);
-		ofn.lpstrTitle = temp;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-		// Display the Open dialog box.
-
-		if (GetOpenFileName(&ofn)==TRUE)
-		{
-			delete [] pszFilters;
-			viewer = CString(ofn.lpstrFile);
-		}
-		else
-		{
-			delete [] pszFilters;
-			return FALSE;
-		}
+		viewer = _T("RUNDLL32 Shell32,OpenAs_RunDLL");
 	}
 	if (viewer.Find(_T("\"%1\"")) >= 0)
 	{
@@ -687,21 +597,9 @@ bool CAppUtils::LaunchApplication(const CString& sCommandLine, UINT idErrMessage
 	{
 		if(idErrMessageFormat != 0)
 		{
-			LPVOID lpMsgBuf;
-			FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-				FORMAT_MESSAGE_FROM_SYSTEM |
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-				NULL,
-				GetLastError(),
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-				(LPTSTR) &lpMsgBuf,
-				0,
-				NULL
-				);
 			CString temp;
-			temp.Format(idErrMessageFormat, lpMsgBuf);
-			CMessageBox::Show(NULL, temp, _T("TortoiseGit"), MB_OK | MB_ICONINFORMATION);
-			LocalFree( lpMsgBuf );
+			temp.Format(idErrMessageFormat, CFormatMessageWrapper());
+			MessageBox(NULL, temp, _T("TortoiseGit"), MB_OK | MB_ICONINFORMATION);
 		}
 		return false;
 	}
@@ -1113,7 +1011,7 @@ bool CAppUtils::StartShowUnifiedDiff(HWND /*hWnd*/, const CTGitPath& url1, const
 
 	if( !url1.IsEmpty() )
 	{
-		cmd += _T(" \"");
+		cmd += _T(" -- \"");
 		cmd += url1.GetGitPathString();
 		cmd += _T("\" ");
 	}
@@ -1168,13 +1066,11 @@ bool CAppUtils::Export(CString *BashHash)
 	if (dlg.DoModal() == IDOK)
 	{
 		CString cmd;
-		cmd.Format(_T("git.exe archive --format=zip --verbose %s"),
-					g_Git.FixBranchName(dlg.m_VersionName));
+		cmd.Format(_T("git.exe archive --output=\"%s\" --format=zip --verbose %s"),
+					dlg.m_strExportDirectory, g_Git.FixBranchName(dlg.m_VersionName));
 
-		//g_Git.RunLogFile(cmd,dlg.m_strExportDirectory);
 		CProgressDlg pro;
 		pro.m_GitCmd=cmd;
-		pro.m_LogFile=dlg.m_strExportDirectory;
 		pro.DoModal();
 		return TRUE;
 	}
@@ -2307,7 +2203,7 @@ bool CAppUtils::Fetch(CString remoteName, bool allowRebase, bool autoClose)
 
 		progress.m_PostCmdList.Add(_T("Show Log"));
 
-		if(!dlg.m_bRebase)
+		if(!dlg.m_bRebase && !g_GitAdminDir.IsBareRepo(g_Git.m_CurrentDir))
 		{
 			progress.m_PostCmdList.Add(_T("&Rebase"));
 		}

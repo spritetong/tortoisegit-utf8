@@ -1,8 +1,8 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
-// Copyright (C) 2010-2011 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2010-2012 Sven Strickroth <email@cs-ware.de>
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -111,6 +111,7 @@ GITSLC_SHOWINCOMPLETE|GITSLC_SHOWEXTERNAL|GITSLC_SHOWINEXTERNALS)
 #define GITSLC_POPREVERT				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_REVERT)
 #define GITSLC_POPUPDATE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_UPDATE)
 #define GITSLC_POPSHOWLOG				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOG)
+#define GITSLC_POPSHOWLOGOLDNAME		CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOGOLDNAME)
 #define GITSLC_POPOPEN					CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_OPEN)
 #define GITSLC_POPDELETE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_DELETE)
 #define GITSLC_POPADD					CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_ADD)
@@ -303,15 +304,6 @@ public:
 	}
 	void OnContextMenuHeader(CWnd * pWnd, CPoint point, bool isGroundEnable=false)
 	{
-		bool XPorLater = false;
-		OSVERSIONINFOEX inf;
-		SecureZeroMemory(&inf, sizeof(OSVERSIONINFOEX));
-		inf.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-		GetVersionEx((OSVERSIONINFO *)&inf);
-		WORD fullver = MAKEWORD(inf.dwMinorVersion, inf.dwMajorVersion);
-		if (fullver >= 0x0501)
-			XPorLater = true;
-
 		CHeaderCtrl * pHeaderCtrl = (CHeaderCtrl *)pWnd;
 		if ((point.x == -1) && (point.y == -1))
 		{
@@ -332,11 +324,8 @@ public:
 
 			// build control menu
 
-			if (XPorLater)
-			{
-				//temp.LoadString(IDS_STATUSLIST_SHOWGROUPS);
-				//popup.AppendMenu(isGroundEnable? uCheckedFlags : uUnCheckedFlags, columnCount, temp);
-			}
+			//temp.LoadString(IDS_STATUSLIST_SHOWGROUPS);
+			//popup.AppendMenu(isGroundEnable? uCheckedFlags : uUnCheckedFlags, columnCount, temp);
 
 			if (AnyUnusedProperties())
 			{
@@ -535,6 +524,7 @@ public:
 		IDGITLC_GNUDIFF1		 ,
 		IDGITLC_UPDATE          ,
 		IDGITLC_LOG              ,
+		IDGITLC_LOGOLDNAME,
 		IDGITLC_EDITCONFLICT     ,
 		IDGITLC_IGNOREMASK	    ,
 		IDGITLC_ADD			    ,
@@ -752,8 +742,9 @@ public:
 	 * \param dwContextMenus mask of context menus to be active, not all make sense for every use of this control.
 	 *                       Use the GitSLC_POPxxx defines.
 	 * \param bHasCheckboxes TRUE if the control should show check boxes on the left of each file entry.
+	 * \param bHasWC TRUE if the reporisty is not a bare repository (hides wc related items on the contextmenu)
 	 */
-	void Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus = (GITSLC_POPALL ^ GITSLC_POPCOMMIT), bool bHasCheckboxes = true);
+	void Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus = (GITSLC_POPALL ^ GITSLC_POPCOMMIT), bool bHasCheckboxes = true, bool bHasWC = true);
 	/**
 	 * Sets a background image for the list control.
 	 * The image is shown in the right bottom corner.
@@ -1109,6 +1100,7 @@ private:
 	bool					    m_bAscending;		///< sort direction
 	int					        m_nSortedColumn;	///< which column to sort
 	bool						m_bHasCheckboxes;
+	bool						m_bHasWC;
 	bool						m_bUnversionedLast;
 	bool						m_bHasExternalsFromDifferentRepos;
 	bool						m_bHasExternals;

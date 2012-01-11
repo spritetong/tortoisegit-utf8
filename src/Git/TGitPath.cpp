@@ -1,7 +1,8 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
-// Copyright (C) 2010-2011 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2008-2012 - TortoiseGit
+// Copyright (C) 2010-2012 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -809,7 +810,7 @@ bool CTGitPath::HasSubmodules() const
 int CTGitPath::GetAdminDirMask() const
 {
 	int status = 0;
-	CString topdir,path;
+	CString topdir;
 	if(!g_GitAdminDir.HasAdminDir(GetWinPathString(),&topdir))
 	{
 		return status;
@@ -825,30 +826,19 @@ int CTGitPath::GetAdminDirMask() const
 			status |= ITEMIS_WCROOT;
 	}
 
-	path=topdir;
-	path += _T("\\");
-	path += g_GitAdminDir.GetAdminDirName();
-	path += _T("\\BISECT_START");
-	if (PathFileExists(path))
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(g_Git.m_CurrentDir, dotGitPath);
+
+	if (PathFileExists(dotGitPath + _T("BISECT_START")))
 		status |= ITEMIS_BISECT;
 
-	path=topdir;
-	path += _T("\\");
-	path += g_GitAdminDir.GetAdminDirName();
-	path += _T("\\refs\\stash");
-	if( PathFileExists(path) )
+	if (PathFileExists(dotGitPath + _T("refs\\stash")))
 		status |= ITEMIS_STASH;
 
-	path=topdir;
-	path += _T("\\");
-	path += g_GitAdminDir.GetAdminDirName();
-	path += _T("\\svn");
-	if( PathFileExists(path) )
+	if (PathFileExists(dotGitPath + _T("svn")))
 		status |= ITEMIS_GITSVN;
 
-	path=topdir;
-	path += _T("\\.gitmodules");
-	if( PathFileExists(path) )
+	if (PathFileExists(topdir + _T("\\.gitmodules")))
 		status |= ITEMIS_SUBMODULECONTAINER;
 
 	return status;
@@ -861,10 +851,11 @@ bool CTGitPath::HasStashDir() const
 	{
 		return false;
 	}
-	topdir += _T("\\");
-	topdir += g_GitAdminDir.GetAdminDirName();
-	topdir += _T("\\refs\\stash");
-	return !!PathFileExists(topdir);
+
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);
+
+	return !!PathFileExists(dotGitPath + _T("\\refs\\stash"));
 }
 bool CTGitPath::HasGitSVNDir() const
 {
@@ -873,10 +864,11 @@ bool CTGitPath::HasGitSVNDir() const
 	{
 		return false;
 	}
-	topdir += _T("\\");
-	topdir += g_GitAdminDir.GetAdminDirName();
-	topdir += _T("\\svn");
-	return !!PathFileExists(topdir);
+
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);
+
+	return !!PathFileExists(dotGitPath + _T("svn"));
 }
 bool CTGitPath::IsBisectActive() const
 {
@@ -885,10 +877,11 @@ bool CTGitPath::IsBisectActive() const
 	{
 		return false;
 	}
-	topdir += _T("\\");
-	topdir += g_GitAdminDir.GetAdminDirName();
-	topdir += _T("\\BISECT_START");
-	return !!PathFileExists(topdir);
+
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);
+
+	return !!PathFileExists(dotGitPath + _T("BISECT_START"));
 }
 bool CTGitPath::IsMergeActive() const
 {
@@ -897,10 +890,11 @@ bool CTGitPath::IsMergeActive() const
 	{
 		return false;
 	}
-	topdir += _T("\\");
-	topdir += g_GitAdminDir.GetAdminDirName();
-	topdir += _T("\\MERGE_HEAD");
-	return !!PathFileExists(topdir);
+
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);	
+
+	return !!PathFileExists(dotGitPath + _T("MERGE_HEAD"));
 }
 bool CTGitPath::HasRebaseApply() const
 {
@@ -909,10 +903,11 @@ bool CTGitPath::HasRebaseApply() const
 	{
 		return false;
 	}
-	topdir += _T("\\");
-	topdir += g_GitAdminDir.GetAdminDirName();
-	topdir += _T("\\rebase-apply");
-	return !!PathFileExists(topdir);
+
+	CString dotGitPath;
+	g_GitAdminDir.GetAdminDirPath(topdir, dotGitPath);
+
+	return !!PathFileExists(dotGitPath + _T("rebase-apply"));
 }
 
 bool CTGitPath::HasAdminDir(CString *ProjectTopDir) const
