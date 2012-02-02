@@ -294,7 +294,7 @@ void CPushDlg::OnBnClickedOk()
 	{
 		if (m_BranchRemote.GetString().Trim().IsEmpty())
 		{
-			CMessageBox::Show(NULL,IDS_B_T_INVALID,IDS_TORTOISEGIT,MB_OK|MB_ICONERROR);
+			CMessageBox::Show(NULL,_T("Remote Branch can not be empty.\n"),_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 			return;
 		}
 	}

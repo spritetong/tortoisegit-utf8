@@ -572,6 +572,18 @@
     <ClCompile Include="SubmoduleDiffDlg.cpp">
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="MassiveGitTask.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\SettingsAdvanced.cpp">
+      <Filter>Commands\setting</Filter>
+    </ClCompile>
+    <ClCompile Include="LoglistUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\Libraries.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddRemoteDlg.h">
@@ -992,6 +1004,18 @@
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\Utils\tgit_xutf8.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MassiveGitTask.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingsAdvanced.h">
+      <Filter>Commands\setting</Filter>
+    </ClInclude>
+    <ClInclude Include="LoglistUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\Libraries.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>

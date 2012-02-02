@@ -217,6 +217,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\TortoiseProc\Colors.cpp" />
+    <ClCompile Include="..\TortoiseProc\LoglistUtils.cpp" />
+    <ClCompile Include="..\Utils\CommonAppUtils.cpp" />
     <ClCompile Include="EditGotoDlg.cpp" />
     <ClCompile Include="..\TortoiseMerge\FileTextLines.cpp" />
     <ClCompile Include="..\TortoiseProc\FindDlg.cpp" />
@@ -240,11 +242,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TortoiseGitBlame.cpp" />
-    <ClCompile Include="TortoiseGitBlameAppUtils.cpp" />
     <ClCompile Include="TortoiseGitBlameDoc.cpp" />
     <ClCompile Include="TortoiseGitBlameView.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\TortoiseProc\LoglistUtils.h" />
+    <ClInclude Include="..\Utils\CommonAppUtils.h" />
     <ClInclude Include="GitBlameLogList.h" />
     <ClInclude Include="..\TortoiseProc\gitlogcache.h" />
     <ClInclude Include="..\TortoiseProc\GitLogListBase.h" />
@@ -264,28 +267,17 @@
     <ClInclude Include="TortoiseGitBlameView.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="hlp\Images\Bullet.gif" />
-    <None Include="res\output_wnd.ico" />
     <None Include="..\Resources\blameres\output_wnd.ico" />
-    <None Include="res\output_wnd_hc.ico" />
+    <None Include="hlp\Images\Bullet.gif" />
     <None Include="..\Resources\blameres\output_wnd_hc.ico" />
     <None Include="..\Resources\blameres\properties.bmp" />
-    <None Include="res\properties.bmp" />
     <None Include="..\Resources\blameres\properties_hc.bmp" />
-    <None Include="res\properties_hc.bmp" />
     <None Include="..\Resources\blameres\properties_wnd.ico" />
-    <None Include="res\properties_wnd.ico" />
-    <None Include="res\properties_wnd_hc.ico" />
     <None Include="..\Resources\blameres\properties_wnd_hc.ico" />
     <None Include="..\Resources\blameres\Toolbar.bmp" />
-    <None Include="res\Toolbar.bmp" />
     <None Include="..\Resources\blameres\Toolbar256.bmp" />
-    <None Include="res\Toolbar256.bmp" />
-    <None Include="res\TortoiseGitBlame.ico" />
     <None Include="..\Resources\blameres\TortoiseGitBlame.ico" />
     <None Include="..\Resources\blameres\TortoiseGitBlameDoc.ico" />
-    <None Include="res\TortoiseGitBlameDoc.ico" />
-    <None Include="UserImages.bmp" />
     <None Include="hlp\afx_hidd_color.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>

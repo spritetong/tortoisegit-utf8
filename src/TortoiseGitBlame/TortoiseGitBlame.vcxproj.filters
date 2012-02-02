@@ -80,13 +80,16 @@
     <ClCompile Include="TortoiseGitBlame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TortoiseGitBlameAppUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TortoiseGitBlameDoc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TortoiseGitBlameView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\CommonAppUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TortoiseProc\LoglistUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -142,18 +145,15 @@
     <ClInclude Include="TortoiseGitBlameView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\CommonAppUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TortoiseProc\LoglistUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="hlp\Images\Bullet.gif">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\output_wnd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\blameres\output_wnd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\output_wnd_hc.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\blameres\output_wnd_hc.ico">
@@ -162,22 +162,10 @@
     <None Include="..\Resources\blameres\properties.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\properties.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\blameres\properties_hc.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\properties_hc.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\blameres\properties_wnd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\properties_wnd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\properties_wnd_hc.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\blameres\properties_wnd_hc.ico">
@@ -186,28 +174,13 @@
     <None Include="..\Resources\blameres\Toolbar.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\Toolbar.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\blameres\Toolbar256.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\Toolbar256.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\TortoiseGitBlame.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\blameres\TortoiseGitBlame.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\blameres\TortoiseGitBlameDoc.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\TortoiseGitBlameDoc.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="UserImages.bmp">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="hlp\afx_hidd_color.htm">
@@ -434,6 +407,9 @@
     </None>
     <None Include="hlp\TortoiseGitBlame.hhk">
       <Filter>HTML Help Files</Filter>
+    </None>
+    <None Include="..\Resources\blameres\output_wnd.ico">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

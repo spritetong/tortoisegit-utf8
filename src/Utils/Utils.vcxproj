@@ -160,6 +160,7 @@
     <ClCompile Include="CBase64.cpp" />
     <ClCompile Include="CmdLineParser.cpp" />
     <ClCompile Include="COMError.cpp" />
+    <ClCompile Include="CommonAppUtils.cpp" />
     <ClCompile Include="CSmtp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -229,6 +230,7 @@
     <ClInclude Include="ACEdit.h" />
     <ClInclude Include="ACListWnd.h" />
     <ClInclude Include="base64.h" />
+    <ClInclude Include="CommonAppUtils.h" />
     <ClInclude Include="CSmtp.h" />
     <ClInclude Include="DirFileEnum.h" />
     <ClInclude Include="Hooks.h" />

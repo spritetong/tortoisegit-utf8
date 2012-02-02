@@ -192,6 +192,9 @@
     <ClCompile Include="SysInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommonAppUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ACEdit.h">
@@ -243,6 +246,9 @@
       <Filter>Tree</Filter>
     </ClInclude>
     <ClInclude Include="SysInfo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonAppUtils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
