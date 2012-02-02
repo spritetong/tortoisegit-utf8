@@ -42,7 +42,9 @@
 #include "IconMenu.h"
 #include "BugTraqAssociations.h"
 #include "patch.h"
+#include "MassiveGitTask.h"
 #include "git2.h"
+#include "SmartHandle.h"
 
 static UINT WM_GITPROGRESS = RegisterWindowMessage(_T("TORTOISEGIT_GITPROGRESS_MSG"));
 
@@ -764,7 +766,7 @@ BOOL CGitProgressDlg::OnInitDialog()
 	// not elevated, this is a no-op.
 	CHANGEFILTERSTRUCT cfs = { sizeof(CHANGEFILTERSTRUCT) };
 	typedef BOOL STDAPICALLTYPE ChangeWindowMessageFilterExDFN(HWND hWnd, UINT message, DWORD action, PCHANGEFILTERSTRUCT pChangeFilterStruct);
-	HMODULE hUser = ::LoadLibrary(_T("user32.dll"));
+	CAutoLibrary hUser = ::LoadLibrary(_T("user32.dll"));
 	if (hUser)
 	{
 		ChangeWindowMessageFilterExDFN *pfnChangeWindowMessageFilterEx = (ChangeWindowMessageFilterExDFN*)GetProcAddress(hUser, "ChangeWindowMessageFilterEx");
@@ -772,7 +774,6 @@ BOOL CGitProgressDlg::OnInitDialog()
 		{
 			pfnChangeWindowMessageFilterEx(m_hWnd, WM_TASKBARBTNCREATED, MSGFLT_ALLOW, &cfs);
 		}
-		FreeLibrary(hUser);
 	}
 	m_pTaskbarList.Release();
 	m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
@@ -1055,13 +1056,10 @@ void CGitProgressDlg::OnBnClickedLogbutton()
 	case GitProgress_Add:
 	case GitProgress_Resolve:
 		{
-			CString cmd;
-			cmd = CPathUtils::GetAppDirectory()+_T("TortoiseProc.exe");
-			cmd += _T(" /command:commit");
-
+			CString cmd = _T(" /command:commit");
 			cmd += _T(" /path:\"")+g_Git.m_CurrentDir+_T("\"");
 
-			CAppUtils::LaunchApplication(cmd,NULL,false);
+			CAppUtils::RunTortoiseProc(cmd);
 			this->EndDialog(IDOK);
 			break;
 		}
@@ -1859,7 +1857,7 @@ bool CGitProgressDlg::CmdAdd(CString& sWindowTitle, bool& localoperation)
 	ReportCmd(CString(MAKEINTRESOURCE(IDS_PROGRS_CMD_ADD)));
 
 	// HACK for separate-git-dir, libgit2 doesn't support it atm
-	if (CTGitPath(g_Git.m_CurrentDir + _T("/.git")).IsDirectory())
+	if (CTGitPath(g_Git.m_CurrentDir + _T("/.git")).IsDirectory() && CRegDWORD(_T("Software\\TortoiseGit\\UseLibgit2"), FALSE) == TRUE)
 	{
 		git_repository *repo = NULL;
 		git_index *index;
@@ -1909,18 +1907,8 @@ bool CGitProgressDlg::CmdAdd(CString& sWindowTitle, bool& localoperation)
 	}
 	else
 	{
-		for(int i = 0; i < m_targetPathList.GetCount(); i++)
-		{
-			CString	cmd, out;
-			cmd.Format(_T("git.exe add -f -- \"%s\""),m_targetPathList[i].GetGitPathString());
-			if(g_Git.Run(cmd, &out, CP_GIT_XUTF8))
-			{
-				MessageBox(out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
-				m_bErrorsOccurred = true;
-				return false;
-			}
-			Notify(m_targetPathList[i], git_wc_notify_add);
-		}
+		MassiveGitTask mgt(L"add -f");
+		mgt.ExecuteWithNotify(&m_targetPathList, m_bCancelled, git_wc_notify_add, this, &CGitProgressDlg::Notify);
 	}
 
 	CShellUpdater::Instance().AddPathsForUpdate(m_targetPathList);
@@ -2286,7 +2274,7 @@ bool CGitProgressDlg::CmdSendMail(CString& sWindowTitle, bool& /*localoperation*
 
 LRESULT CGitProgressDlg::OnTaskbarBtnCreated(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    m_pTaskbarList.Release();
-    m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
-    return 0;
+	m_pTaskbarList.Release();
+	m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
+	return 0;
 }

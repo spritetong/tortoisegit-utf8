@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -29,8 +29,6 @@
 #include "RefLogDlg.h"
 
 #include "GitStatusListCtrl.h"
-
-#include "CommonResource.h"
 
 IMPLEMENT_DYNAMIC(CChangedDlg, CResizableStandAloneDialog)
 CChangedDlg::CChangedDlg(CWnd* pParent /*=NULL*/)
@@ -89,7 +87,7 @@ BOOL CChangedDlg::OnInitDialog()
 	UpdateData(FALSE);
 
 	m_FileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS, _T("ChangedDlg"),
-						(GITSLC_POPALL ^ GITSLC_POPSAVEAS), false);
+						(GITSLC_POPALL ^ (GITSLC_POPSAVEAS|GITSLC_POPRESTORE)), false);
 	m_FileListCtrl.SetCancelBool(&m_bCanceled);
 	m_FileListCtrl.SetBackgroundImage(IDI_CFM_BKG);
 	m_FileListCtrl.SetEmptyString(IDS_REPOSTATUS_EMPTYFILELIST);
@@ -362,16 +360,14 @@ void CChangedDlg::UpdateStatistics()
 
 void CChangedDlg::OnBnClickedCommit()
 {
-	CString proc = CPathUtils::GetAppDirectory();
-	proc += _T("TortoiseProc.exe /command:commit");
-	proc += _T(" /path:\"");
+	CString cmd = _T("/command:commit /path:\"");
 	bool bSingleFile = ((m_pathList.GetCount()==1)&&(!m_pathList[0].IsEmpty())&&(!m_pathList[0].IsDirectory()));
 	if (bSingleFile)
-		proc += m_pathList[0].GetWinPathString();
+		cmd += m_pathList[0].GetWinPathString();
 	else
-		proc += m_FileListCtrl.GetCommonDirectory(false);
+		cmd += m_FileListCtrl.GetCommonDirectory(false);
 
-	CAppUtils::LaunchApplication(proc, IDS_ERROR_CANNON_FIND_TORTOISEPROC, false);
+	CAppUtils::RunTortoiseProc(cmd);
 }
 
 void CChangedDlg::OnBnClickedStash()

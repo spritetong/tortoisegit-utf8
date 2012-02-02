@@ -51,8 +51,8 @@
 //#include "AddDlg.h"
 //#include "EditPropertiesDlg.h"
 //#include "CreateChangelistDlg.h"
-#include "CommonResource.h"
 #include "FormatMessageWrapper.h"
+#include "MassiveGitTask.h"
 
 const UINT CGitStatusListCtrl::GITSLNM_ITEMCOUNTCHANGED
 					= ::RegisterWindowMessage(_T("GITSLNM_ITEMCOUNTCHANGED"));
@@ -228,6 +228,8 @@ void CGitStatusListCtrl::Init(DWORD dwColumns, const CString& sColumnInfoContain
 	SetWindowTheme(m_hWnd, L"Explorer", NULL);
 
 	m_nIconFolder = SYS_IMAGE_LIST().GetDirIconIndex();
+	m_nRestoreOvl = SYS_IMAGE_LIST().AddIcon((HICON)LoadImage(AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_RESTOREOVL), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE));
+	SYS_IMAGE_LIST().SetOverlayImage(m_nRestoreOvl, OVL_RESTORE);
 	SetImageList(&SYS_IMAGE_LIST(), LVSIL_SMALL);
 
 	// keep CSorter::operator() in sync!!
@@ -994,6 +996,8 @@ void CGitStatusListCtrl::AddEntry(CTGitPath * GitPath, WORD /*langID*/, int list
 	}
 
 	InsertItem(index, entryname, icon_idx);
+	if (m_restorepaths.find(GitPath->GetWinPathString()) != m_restorepaths.end())
+		SetItemState(index, INDEXTOOVERLAYMASK(OVL_RESTORE), TVIS_OVERLAYMASK);
 
 	this->SetItemData(index, (DWORD_PTR)GitPath);
 	// SVNSLC_COLFILENAME
@@ -1954,6 +1958,14 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					popup.AppendMenuIcon(IDGITLC_REVERT, IDS_MENUREVERT, IDI_REVERT);
 				}
 
+				if (m_dwContextMenus & GITSLC_POPRESTORE && !filepath->IsDirectory())
+				{
+					if (m_restorepaths.find(filepath->GetWinPathString()) == m_restorepaths.end())
+						popup.AppendMenuIcon(IDGITLC_CREATERESTORE, IDS_MENUCREATERESTORE, IDI_RESTORE);
+					else
+						popup.AppendMenuIcon(IDGITLC_RESTOREPATH, IDS_MENURESTORE, IDI_RESTORE);
+				}
+
 				if ((m_dwContextMenus & GetContextMenuBit(IDGITLC_REVERTTOREV)) && ( !this->m_CurrentVersion.IsEmpty() )
 					&& this->m_CurrentVersion != GIT_REV_ZERO && !(wcStatus & CTGitPath::LOGACTIONS_DELETED))
 				{
@@ -2186,7 +2198,51 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					ShellExecute(this->m_hWnd, _T("explore"), filepath->GetDirectory().GetWinPath(), NULL, NULL, SW_SHOW);
 				}
 				break;
-
+			case IDGITLC_CREATERESTORE:
+				{
+					POSITION pos = GetFirstSelectedItemPosition();
+					while (pos)
+					{
+						int index = GetNextSelectedItem(pos);
+						CTGitPath * entry2 = (CTGitPath * )GetItemData(index);
+						ASSERT(entry2 != NULL);
+						if (entry2 == NULL)
+							continue;
+						if (m_restorepaths.find(entry2->GetWinPathString()) != m_restorepaths.end())
+							continue;
+						CTGitPath tempFile = CTempFiles::Instance().GetTempFilePath(false);
+						if (CopyFile(g_Git.m_CurrentDir + _T("\\") + entry2->GetWinPathString(), tempFile.GetWinPath(), FALSE))
+						{
+							m_restorepaths[entry2->GetWinPathString()] = tempFile.GetWinPathString();
+							SetItemState(index, INDEXTOOVERLAYMASK(OVL_RESTORE), LVIS_OVERLAYMASK);
+						}
+					}
+					Invalidate();
+				}
+				break;
+			case IDGITLC_RESTOREPATH:
+				{
+					if (CMessageBox::Show(m_hWnd, _T("Do you really want to restore the copy? You will loose all changes that you have done after creating the copy."), _T("TortoiseGit"), 2, IDI_QUESTION, _T("Restore"), _T("Abort")) == 2)
+						break;
+					POSITION pos = GetFirstSelectedItemPosition();
+					while (pos)
+					{
+						int index = GetNextSelectedItem(pos);
+						CTGitPath * entry2 = (CTGitPath * )GetItemData(index);
+						ASSERT(entry2 != NULL);
+						if (entry2 == NULL)
+							continue;
+						if (m_restorepaths.find(entry2->GetWinPathString()) == m_restorepaths.end())
+							continue;
+						if (CopyFile(m_restorepaths[entry2->GetWinPathString()], g_Git.m_CurrentDir + _T("\\") + entry2->GetWinPathString(), FALSE))
+						{
+							m_restorepaths.erase(entry2->GetWinPathString());
+							SetItemState(index, 0, LVIS_OVERLAYMASK);
+						}
+					}
+					Invalidate();
+				}
+				break;
 			// Compare current version and work copy.
 			case IDGITLC_COMPAREWC:
 				{
@@ -2226,12 +2282,19 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					if (pos)
 					{
 						firstfilepath = (CTGitPath * )GetItemData(GetNextSelectedItem(pos));
+						ASSERT(firstfilepath != NULL);
+						if (firstfilepath == NULL)
+							break;
+
 						secondfilepath = (CTGitPath * )GetItemData(GetNextSelectedItem(pos));
+						ASSERT(secondfilepath != NULL);
+						if (secondfilepath == NULL)
+							break;
+
+						CString sCmd;
+						sCmd.Format(_T("/command:diff /path:\"%s\" /path2:\"%s\" /hwnd:%ld"), firstfilepath->GetWinPath(), secondfilepath->GetWinPath(), (unsigned long)m_hWnd);
+						CAppUtils::RunTortoiseProc(sCmd);
 					}
-					ASSERT(firstfilepath != NULL && secondfilepath != NULL);
-					CString sCmd;
-					sCmd.Format(_T("\"%s\" /command:diff /path:\"%s\" /path2:\"%s\" /hwnd:%ld"), (LPCTSTR)(CPathUtils::GetAppDirectory() + _T("TortoiseProc.exe")), firstfilepath->GetWinPath(), secondfilepath->GetWinPath(), (unsigned long)m_hWnd);
-					CAppUtils::LaunchApplication(sCmd, NULL, false);
 				}
 				break;
 			case IDGITLC_GNUDIFF1:
@@ -2266,8 +2329,8 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 								str.Format(_T("%s^%d"),m_CurrentVersion,(filepath->m_ParentNo&PARENT_MASK)+1);
 							}
 
-							CAppUtils::StartShowUnifiedDiff(m_hWnd,*filepath,m_CurrentVersion,
-															*filepath,str, false,false,false,
+							CAppUtils::StartShowUnifiedDiff(m_hWnd,*filepath, str,
+															*filepath, m_CurrentVersion, false, false, false,
 															!!(filepath->m_ParentNo & MERGE_MASK));
 						}
 					}
@@ -2294,35 +2357,24 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 
 					POSITION pos = GetFirstSelectedItemPosition();
 					int index;
+					MassiveGitTask mgt(L"add -f");
 					while ((index = GetNextSelectedItem(pos)) >= 0)
 					{
-						selectIndex.push_back(index);
-					}
-					for(int i=0;i<selectIndex.size();i++)
-					{
-						index=selectIndex[i];
-
-						CTGitPath * path=(CTGitPath*)GetItemData(index);
+						CTGitPath * path = (CTGitPath *)GetItemData(index);
 						ASSERT(path);
 						if(path == NULL)
 							continue;
-						CString cmd;
-						cmd.Format(_T("git.exe add -f -- \"%s\""), path->GetGitPathString());
-						CString output;
-						if (!g_Git.Run(cmd, &output, NULL, CP_GIT_XUTF8))
-						{
-							path->m_Action = CTGitPath::LOGACTIONS_ADDED;
-							SetEntryCheck(path,index,true);
 
-							SetItemGroup(index,0);
-							this->m_StatusFileList.AddPath(*path);
-							this->m_UnRevFileList.RemoveItem(*path);
-							this->m_IgnoreFileList.RemoveItem(*path);
-
-							Show(this->m_dwShow,0,true,true,true);
-						}
+						selectIndex.push_back(index);
+						mgt.AddFile(*path);
 					}
+					BOOL cancel = FALSE;
+					mgt.Execute(cancel);
 
+					if (NULL != GetParent() && NULL != GetParent()->GetSafeHwnd())
+						GetParent()->SendMessage(GITSLNM_NEEDSREFRESH);
+
+					SetRedraw(TRUE);
 				}
 				break;
 
@@ -2396,10 +2448,8 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 			case IDGITLC_LOG:
 				{
 					CString sCmd;
-					sCmd.Format(_T("\"%s\" /command:log /path:\"%s\""),
-						(LPCTSTR)(CPathUtils::GetAppDirectory()+_T("TortoiseProc.exe")), g_Git.m_CurrentDir+_T("\\")+filepath->GetWinPath());
-
-					CAppUtils::LaunchApplication(sCmd, NULL, false);
+					sCmd.Format(_T("/command:log /path:\"%s\""), g_Git.m_CurrentDir + _T("\\") + filepath->GetWinPath());
+					CAppUtils::RunTortoiseProc(sCmd);
 				}
 				break;
 
@@ -2407,10 +2457,8 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 				{
 					CTGitPath oldName(filepath->GetGitOldPathString());
 					CString sCmd;
-					sCmd.Format(_T("\"%s\" /command:log /path:\"%s\""),
-						(LPCTSTR)(CPathUtils::GetAppDirectory() + _T("TortoiseProc.exe")), g_Git.m_CurrentDir + _T("\\") + oldName.GetWinPath());
-
-					CAppUtils::LaunchApplication(sCmd, NULL, false);
+					sCmd.Format(_T("/command:log /path:\"%s\""), g_Git.m_CurrentDir + _T("\\") + oldName.GetWinPath());
+					CAppUtils::RunTortoiseProc(sCmd);
 				}
 				break;
 
@@ -3628,6 +3676,9 @@ void CGitStatusListCtrl::StartDiff(int fileindex)
 		}
 		else if (file1.m_Action == file1.LOGACTIONS_DELETED)
 		{
+			if (file1.m_ParentNo > 0)
+				fromwhere.Format(_T("%s^%d"), m_CurrentVersion, file1.m_ParentNo + 1);
+
 			CGitDiff::DiffNull(&file1,fromwhere,false);
 		}
 		else

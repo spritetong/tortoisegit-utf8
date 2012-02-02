@@ -95,6 +95,9 @@ IDI_OPEN                ICON                    "open.ico"
 IDI_GITCONFIG           ICON                    "gitconfig.ico"
 IDI_GITREMOTE           ICON                    "gitremote.ico"
 IDI_ACTIONFETCHING      ICON                    "..\\resources\\actionfetching.ico"
+IDI_LIBRARY             ICON                    "Library.ico"
+IDI_RESTORE             ICON                    "restore.ico"
+IDI_RESTOREOVL          ICON                    "restoreovl.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -249,8 +252,10 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS
 CAPTION "Commit"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Commit to:",IDC_COMMITLABEL,6,7,43,8
-    EDITTEXT        IDC_COMMIT_TO,53,7,96,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    LTEXT           "Commit to:",IDC_COMMITLABEL,6,7,46,8
+    EDITTEXT        IDC_COMMIT_TO,48,7,80,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_NEWBRANCH,46,5,80,12,ES_AUTOHSCROLL | NOT WS_VISIBLE
+    CONTROL         "new branch",IDC_CHECK_NEWBRANCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,131,5,54,12
     LTEXT           "Bug-ID/Issue-Nr:",IDC_BUGIDLABEL,149,6,87,8,0,WS_EX_RIGHT
     PUSHBUTTON      "{BugTraq}",IDC_BUGTRAQBUTTON,215,3,78,14,NOT WS_VISIBLE | WS_DISABLED
     EDITTEXT        IDC_BUGID,244,3,49,14,ES_AUTOHSCROLL
@@ -931,6 +936,15 @@ BEGIN
     PUSHBUTTON      "Help",IDHELP,338,101,50,14,WS_DISABLED
 END
 
+IDD_SETTINGS_CONFIG DIALOGEX 0, 0, 300, 217
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Advanced"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_CONFIG,"SysListView32",LVS_REPORT | LVS_EDITLABELS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,286,145
+    LTEXT           "WARNING:\r\nOnly change these settings if you are absolutely sure what you are doing!\r\nTo set the values to their default, delete the value text.",IDC_STATIC,7,160,286,50
+END
+
 IDD_CLONE DIALOGEX 0, 0, 319, 207
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Git clone - TortoiseGit"
@@ -1071,7 +1085,7 @@ BEGIN
     EDITTEXT        IDC_REMOTE_BRANCH,62,44,242,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,141,70,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,197,70,50,14
-    PUSHBUTTON      "Help",IDHELP,254,70,50,14,WS_DISABLED
+    PUSHBUTTON      "Help",IDHELP,254,70,50,14
 END
 
 IDD_GITSWITCH DIALOGEX 0, 0, 296, 185
@@ -2040,6 +2054,13 @@ BEGIN
         BOTTOMMARGIN, 115
     END
 
+    IDD_SETTINGS_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
     IDD_CLONE, DIALOG
     BEGIN
         LEFTMARGIN, 6
@@ -2588,7 +2609,7 @@ BEGIN
     IDS_FILEDIFF_STATADD    "Add"
     IDS_FILEDIFF_STATDEL    "Del"
     IDS_LOG_FILE_LINE_ADD   "Add"
-    1014                    "Del"
+    IDS_MENURESTORE         "Restore"
     IDS_ERR_TGITBLAME       "Could not start TortoiseGitBlame"
     IDS_PROC_RESETBRANCH    "Reset current branch ""%s"" to ""%s"""
     IDS_LOG_PUSH            "Push..."
@@ -2857,6 +2878,19 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDS_SVN_PROGRESS_SPEED  "Transferring at %s"
+    IDS_SVN_PROGRESS_TOTALTRANSFERRED "%I64d kBytes transferred"
+    IDS_SVN_PROGRESS_TOTALMBTRANSFERRED "%.2f MBytes transferred"
+    IDS_SVN_PROGRESS_TOTALANDSPEED "%s, at %s"
+    IDS_SVN_PROGRESS_TOTALBYTESTRANSFERRED "%I64d Bytes transferred"
+    IDS_SVN_PROGRESS_BYTES_SEC "%ld Bytes/s"
+    IDS_SVN_PROGRESS_KBYTES_SEC "%.2f kBytes/s"
+    IDS_SETTINGS_CONF_NAMECOL "Option"
+    IDS_SETTINGS_CONF_VALUECOL "Value"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CHECKNEWER_YOURVERSION "Your version is: %d.%d.%d.%d"
     IDS_CHECKNEWER_CURRENTVERSION "Current version is: %s"
     IDS_CHECKNEWER_YOURUPTODATE 
@@ -2901,17 +2935,6 @@ BEGIN
     IDS_CONNECTIONSTATE_OFFLINE "offline"
     IDS_STATUSLIST_COLADD   "Add"
     IDS_STATUSLIST_COLDEL   "Del"
-    IDS_YEAR_AGO            "%1!d! Year ago"
-    IDS_YEARS_AGO           "%1!d! Years ago"
-    IDS_MONTH_AGO           "%1!d! Month ago"
-    IDS_MONTHS_AGO          "%1!d! Months ago"
-    IDS_WEEK_AGO            "%1!d! Week ago"
-    IDS_WEEKS_AGO           "%1!d! Weeks ago"
-    IDS_DAY_AGO             "%1!d! Day ago"
-    IDS_DAYS_AGO            "%1!d! Days ago"
-    IDS_HOUR_AGO            "%1!d! Hour ago"
-    IDS_HOURS_AGO           "%1!d! Hours ago"
-    IDS_MINUTE_AGO          "%1!d! Minute ago"
 END
 
 STRINGTABLE 
@@ -3167,17 +3190,6 @@ BEGIN
     IDS_SETTINGS_CONNECTIVITY_OFFLINEFOREVER 
                             "Never try to contact the repository again"
     IDS_SETTINGS_MULTIPLEURLSFORUUID "multiple URLs (e.g. %s)"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_SVN_PROGRESS_SPEED  "Transferring at %s"
-    IDS_SVN_PROGRESS_TOTALTRANSFERRED "%I64d kBytes transferred"
-    IDS_SVN_PROGRESS_TOTALMBTRANSFERRED "%.2f MBytes transferred"
-    IDS_SVN_PROGRESS_TOTALANDSPEED "%s, at %s"
-    IDS_SVN_PROGRESS_TOTALBYTESTRANSFERRED "%I64d Bytes transferred"
-    IDS_SVN_PROGRESS_BYTES_SEC "%ld Bytes/s"
-    IDS_SVN_PROGRESS_KBYTES_SEC "%.2f kBytes/s"
 END
 
 STRINGTABLE 
@@ -3586,11 +3598,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MINUTES_AGO         "%1!d! minutes ago"
-    IDS_SECOND_AGO          "%1!d! Second ago"
-    IDS_SECONDS_AGO         "%1!d! Seconds ago"
     IDS_B_T_NOTEMPTY        "Branch/Tag name must not be empty or is invalid."
-    IDS_TORTOISEGIT         "TortoiseGit"
     IDS_CHOOSE_REPOSITORY   "Choose Repository"
     IDS_ERR_NOT_REPOSITORY  """%s"" is not git repository"
     IDS_ERR_ADDRESS_NO_EMPTY "Email Address To or CC can't empty"
@@ -3609,7 +3617,6 @@ BEGIN
     IDS_MENU_VIEWWITHMERGE  "Review Path with TortoiseMerge"
     IDS_MENU_APPLY          "Apply Patch..."
     IDS_MENU_SENDMAIL       "Send Mail..."
-    IDS_ERR_PROC            "Can't open TortoiseProc"
     IDS_ERROR_NOREF         "No reference found"
     IDS_ERROR_INDEX         "Out of ref array"
     IDS_ERROR_HEAD          "Can't delete ""HEAD"""
@@ -3624,7 +3631,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERROR_CANNON_FIND_TORTOISEPROC "Can't found application TortoiseProc"
     IDS_REBASE_FASTFORWARD_FMT 
                             "Branch %s behind %s\r\n%s will fastforward to %s"
     IDS_REBASE_EQUAL_FMT    "Nothing need rebase\r\n%s equal %s"
@@ -3655,6 +3661,8 @@ STRINGTABLE
 BEGIN
     IDS_LOG_FILTER_SUBJECT  "Subject"
     IDS_STATUSLIST_SHOWLOGOLDNAME "Show log &before rename/copy"
+    IDS_APPNAME             "TortoiseGit"
+    IDS_MENUCREATERESTORE   "Restore after commit"
 END
 
 #endif    // English (U.S.) resources

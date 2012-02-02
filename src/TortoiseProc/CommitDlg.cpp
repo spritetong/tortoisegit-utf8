@@ -31,8 +31,8 @@
 #include "GitStatus.h"
 #include "HistoryDlg.h"
 #include "Hooks.h"
-#include "CommonResource.h"
 #include "UnicodeUtils.h"
+#include "../TGitCache/CacheInterface.h"
 #include "ProgressDlg.h"
 #include "ShellUpdater.h"
 #include "Commands/PushCommand.h"
@@ -66,6 +66,7 @@ CCommitDlg::CCommitDlg(CWnd* pParent /*=NULL*/)
 	, m_bNoPostActions(FALSE)
 	, m_bAutoClose(false)
 	, m_bSetCommitDateTime(FALSE)
+	, m_bCreateNewBranch(FALSE)
 {
 	this->m_bCommitAmend=FALSE;
 	m_bPushAfterCommit = FALSE;
@@ -86,6 +87,8 @@ void CCommitDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LOGMESSAGE, m_cLogMessage);
 	DDX_Check(pDX, IDC_SHOWUNVERSIONED, m_bShowUnversioned);
 	DDX_Check(pDX, IDC_COMMIT_SETDATETIME, m_bSetCommitDateTime);
+	DDX_Check(pDX, IDC_CHECK_NEWBRANCH, m_bCreateNewBranch);
+	DDX_Text(pDX, IDC_NEWBRANCH, m_sCreateNewBranch);
 	DDX_Control(pDX, IDC_SELECTALL, m_SelectAll);
 	DDX_Text(pDX, IDC_BUGID, m_sBugID);
 	DDX_Check(pDX, IDC_WHOLE_PROJECT, m_bWholeProject);
@@ -129,6 +132,7 @@ BEGIN_MESSAGE_MAP(CCommitDlg, CResizableStandAloneDialog)
 	ON_BN_CLICKED(IDC_COMMIT_AMENDDIFF, &CCommitDlg::OnBnClickedCommitAmenddiff)
 	ON_BN_CLICKED(IDC_NOAUTOSELECTSUBMODULES, &CCommitDlg::OnBnClickedNoautoselectsubmodules)
 	ON_BN_CLICKED(IDC_COMMIT_SETDATETIME, &CCommitDlg::OnBnClickedCommitSetDateTime)
+	ON_BN_CLICKED(IDC_CHECK_NEWBRANCH, &CCommitDlg::OnBnClickedCheckNewBranch)
 END_MESSAGE_MAP()
 
 BOOL CCommitDlg::OnInitDialog()
@@ -154,6 +158,10 @@ BOOL CCommitDlg::OnInitDialog()
 			}
 		}
 	}
+
+	if (CTGitPath(g_Git.m_CurrentDir).IsMergeActive())
+		DialogEnableWindow(IDC_CHECK_NEWBRANCH, FALSE);
+
 	m_regAddBeforeCommit = CRegDWORD(_T("Software\\TortoiseGit\\AddBeforeCommit"), TRUE);
 	m_bShowUnversioned = m_regAddBeforeCommit;
 
@@ -271,6 +279,8 @@ BOOL CCommitDlg::OnInitDialog()
 	AddAnchor(IDC_BUGID, TOP_RIGHT);
 	AddAnchor(IDC_BUGTRAQBUTTON, TOP_RIGHT);
 	AddAnchor(IDC_COMMIT_TO, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_CHECK_NEWBRANCH, TOP_RIGHT);
+	AddAnchor(IDC_NEWBRANCH, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_MESSAGEGROUP, TOP_LEFT, TOP_RIGHT);
 //	AddAnchor(IDC_HISTORY, TOP_LEFT);
 	AddAnchor(IDC_LOGMESSAGE, TOP_LEFT, TOP_RIGHT);
@@ -408,6 +418,12 @@ void CCommitDlg::OnOK()
 	}
 	this->UpdateData();
 
+	if (m_bCreateNewBranch && !g_Git.IsBranchNameValid(m_sCreateNewBranch))
+	{
+		ShowEditBalloon(IDC_NEWBRANCH, IDS_B_T_NOTEMPTY, TTI_ERROR);
+		return;
+	}
+
 	CString id;
 	GetDlgItemText(IDC_BUGID, id);
 	if (!m_ProjectProperties.CheckBugID(id))
@@ -513,6 +529,8 @@ void CCommitDlg::OnOK()
 		sysProgressDlg.SetShowProgressBar(true);
 		sysProgressDlg.ShowModal(this, true);
 	}
+
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
 
 	for (int j=0; j<nListItems; j++)
 	{
@@ -650,6 +668,20 @@ void CCommitDlg::OnOK()
 	if (sysProgressDlg.IsValid())
 		sysProgressDlg.Stop();
 
+	if (m_bCreateNewBranch)
+	{
+		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_ACP))
+		{
+			MessageBox(_T("Creating branch failed:\n") + out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+			bAddSuccess = false;
+		}
+		if (g_Git.Run(_T("git checkout ") + m_sCreateNewBranch, &out, CP_ACP))
+		{
+			MessageBox(_T("Switching to new branch failed:\n") + out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+			bAddSuccess = false;
+		}
+	}
+
 	//if(uncheckedfiles.GetLength()>0)
 	//{
 	//	cmd.Format(_T("git.exe reset -- %s"),uncheckedfiles);
@@ -669,16 +701,8 @@ void CCommitDlg::OnOK()
 			m_sLogMessage = sBugID + _T("\n") + m_sLogMessage;
 	}
 
-	BOOL bIsMerge=false;
-	//
-	CString dotGitPath;
-	g_GitAdminDir.GetAdminDirPath(g_Git.m_CurrentDir, dotGitPath);
-	if(PathFileExists(dotGitPath + _T("MERGE_HEAD")))
-	{
-		bIsMerge=true;
-	}
 	//if(checkedfiles.GetLength()>0)
-	if( bAddSuccess && (nchecked||m_bCommitAmend||bIsMerge) )
+	if (bAddSuccess && (nchecked || m_bCommitAmend ||  CTGitPath(g_Git.m_CurrentDir).IsMergeActive()))
 	{
 	//	cmd.Format(_T("git.exe update-index -- %s"),checkedfiles);
 	//	g_Git.Run(cmd,&out);
@@ -787,7 +811,7 @@ void CCommitDlg::OnOK()
 				SysFreeString(temp);
 			}
 		}
-
+		RestoreFiles(progress.m_GitStatus == 0);
 	}
 	else if(bAddSuccess)
 	{
@@ -1130,6 +1154,7 @@ void CCommitDlg::OnCancel()
 	if (m_ProjectProperties.sLogTemplate.Compare(m_sLogMessage) != 0)
 		m_History.AddEntry(m_sLogMessage);
 	m_History.Save();
+	RestoreFiles();
 	SaveSplitterPos();
 	CResizableStandAloneDialog::OnCancel();
 }
@@ -2172,5 +2197,30 @@ void CCommitDlg::OnBnClickedCommitSetDateTime()
 	{
 		GetDlgItem(IDC_COMMIT_DATEPICKER)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_COMMIT_TIMEPICKER)->ShowWindow(SW_HIDE);
+	}
+}
+
+void CCommitDlg::OnBnClickedCheckNewBranch()
+{
+	UpdateData();
+	if (m_bCreateNewBranch)
+	{
+		GetDlgItem(IDC_COMMIT_TO)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_NEWBRANCH)->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		GetDlgItem(IDC_NEWBRANCH)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_COMMIT_TO)->ShowWindow(SW_SHOW);
+	}
+}
+
+void CCommitDlg::RestoreFiles(bool doNotAsk)
+{
+	if (m_ListCtrl.m_restorepaths.size() && (doNotAsk || CMessageBox::Show(m_hWnd, _T("You marked some files as \"Restore after commit\".\nDo you want to restore them now? You might loose all changes to this file after marking it."), _T("TortoiseGit"), 2, IDI_QUESTION, _T("Restore old state"), _T("Keep current state")) == 1))
+	{
+		for (std::map<CString, CString>::iterator it = m_ListCtrl.m_restorepaths.begin(); it != m_ListCtrl.m_restorepaths.end(); ++it)
+			CopyFile(it->second, g_Git.m_CurrentDir + _T("\\") + it->first, FALSE);
+		m_ListCtrl.m_restorepaths.clear();
 	}
 }

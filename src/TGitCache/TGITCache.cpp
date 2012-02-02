@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// External Cache Copyright (C) 2005 - 2006 - Will Dean, Stefan Kueng
+// External Cache Copyright (C) 2005 - 2006,2010 - Will Dean, Stefan Kueng
 // Copyright (C) 2008-2011 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@
 #include "ioevent.h"
 #include "..\version.h"
 //#include "svn_dso.h"
+#include "SmartHandle.h"
 
 #include <ShellAPI.h>
 
@@ -65,13 +66,12 @@ volatile LONG		nThreadCount = 0;
 #define PACKVERSION(major,minor) MAKELONG(minor,major)
 DWORD GetDllVersion(LPCTSTR lpszDllName)
 {
-	HINSTANCE hinstDll;
 	DWORD dwVersion = 0;
 
 	/* For security purposes, LoadLibrary should be provided with a 
 	fully-qualified path to the DLL. The lpszDllName variable should be
 	tested to ensure that it is a fully qualified path before it is used. */
-	hinstDll = LoadLibrary(lpszDllName);
+	CAutoLibrary hinstDll = LoadLibrary(lpszDllName);
 
 	if(hinstDll)
 	{
@@ -99,8 +99,6 @@ DWORD GetDllVersion(LPCTSTR lpszDllName)
 				dwVersion = PACKVERSION(dvi.dwMajorVersion, dvi.dwMinorVersion);
 			}
 		}
-
-		FreeLibrary(hinstDll);
 	}
 	return dwVersion;
 }
@@ -134,9 +132,9 @@ void DebugOutputLastError()
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int /*cmdShow*/)
 {
 	SetDllDirectory(L"");
-	HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, GetCacheMutexName());
+	CAutoGeneralHandle hReloadProtection = ::CreateMutex(NULL, FALSE, GetCacheMutexName());
 
-	if (hReloadProtection == 0 || GetLastError() == ERROR_ALREADY_EXISTS)
+	if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
 	{
 		// An instance of TGitCache is already running
 		ATLTRACE("TGitCache ignoring restart\n");
@@ -152,8 +150,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*
 	SecureZeroMemory(szCurrentCrawledPath, sizeof(szCurrentCrawledPath));
 	
 	DWORD dwThreadId; 
-	HANDLE hPipeThread; 
-	HANDLE hCommandWaitThread;
 	MSG msg;
 	TCHAR szWindowClass[] = {TGIT_CACHE_WINDOW_NAME};
 
@@ -215,7 +211,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*
 	}
 	
 	// Create a thread which waits for incoming pipe connections 
-	hPipeThread = CreateThread( 
+	CAutoGeneralHandle hPipeThread = CreateThread( 
 		NULL,              // no security attribute 
 		0,                 // default stack size 
 		PipeThread, 
@@ -223,16 +219,16 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*
 		0,                 // not suspended 
 		&dwThreadId);      // returns thread ID 
 
-	if (hPipeThread == NULL) 
+	if (!hPipeThread)
 	{
 		//OutputDebugStringA("TSVNCache: Could not create pipe thread\n");
 		//DebugOutputLastError();
 		return 0;
 	}
-	else CloseHandle(hPipeThread); 
+	else hPipeThread.CloseHandle();
 
 	// Create a thread which waits for incoming pipe connections 
-	hCommandWaitThread = CreateThread( 
+	CAutoGeneralHandle hCommandWaitThread = CreateThread( 
 		NULL,              // no security attribute 
 		0,                 // default stack size 
 		CommandWaitThread, 
@@ -240,13 +236,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*
 		0,                 // not suspended 
 		&dwThreadId);      // returns thread ID 
 
-	if (hCommandWaitThread == NULL) 
+	if (!hCommandWaitThread)
 	{
 		//OutputDebugStringA("TSVNCache: Could not create command wait thread\n");
 		//DebugOutputLastError();
 		return 0;
 	}
-	else CloseHandle(hCommandWaitThread); 
 
 
 	// loop to handle window messages.
@@ -513,8 +508,7 @@ DWORD WINAPI PipeThread(LPVOID lpvParam)
 	// with that client, and the loop is repeated. 
 	DWORD dwThreadId; 
 	BOOL fConnected;
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	HANDLE hInstanceThread = INVALID_HANDLE_VALUE;
+	CAutoFile hPipe;
 
 	while (*bRun) 
 	{ 
@@ -530,7 +524,7 @@ DWORD WINAPI PipeThread(LPVOID lpvParam)
 			NMPWAIT_USE_DEFAULT_WAIT, // client time-out 
 			NULL);					  // NULL DACL
 
-		if (hPipe == INVALID_HANDLE_VALUE) 
+		if (!hPipe)
 		{
 			//OutputDebugStringA("TSVNCache: CreatePipe failed\n");
 			//DebugOutputLastError();
@@ -546,34 +540,34 @@ DWORD WINAPI PipeThread(LPVOID lpvParam)
 		if (fConnected) 
 		{ 
 			// Create a thread for this client. 
-			hInstanceThread = CreateThread( 
+			CAutoGeneralHandle hInstanceThread = CreateThread( 
 				NULL,              // no security attribute 
 				0,                 // default stack size 
 				InstanceThread, 
-				(LPVOID) hPipe,    // thread parameter 
+				(HANDLE) hPipe,    // thread parameter 
 				0,                 // not suspended 
 				&dwThreadId);      // returns thread ID 
 
-			if (hInstanceThread == NULL) 
+			if (!hInstanceThread)
 			{
 				//OutputDebugStringA("TSVNCache: Could not create Instance thread\n");
 				//DebugOutputLastError();
 				DisconnectNamedPipe(hPipe);
-				CloseHandle(hPipe);
 				// since we're now closing this thread, we also have to close the whole application!
 				// otherwise the thread is dead, but the app is still running, refusing new instances
 				// but no pipe will be available anymore.
 				PostMessage(hWnd, WM_CLOSE, 0, 0);
 				return 1;
 			}
-			else CloseHandle(hInstanceThread); 
-		} 
+			// detach the handle, since we passed it to the thread
+			hPipe.Detach();
+		}
 		else
 		{
 			// The client could not connect, so close the pipe. 
 			//OutputDebugStringA("TSVNCache: ConnectNamedPipe failed\n");
 			//DebugOutputLastError();
-			CloseHandle(hPipe); 
+			hPipe.CloseHandle();
 			if (*bRun)
 				Sleep(200);
 			continue;	// don't end the thread!
@@ -593,8 +587,7 @@ DWORD WINAPI CommandWaitThread(LPVOID lpvParam)
 	// with that client, and the loop is repeated. 
 	DWORD dwThreadId; 
 	BOOL fConnected;
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	HANDLE hCommandThread = INVALID_HANDLE_VALUE;
+	CAutoFile hPipe;
 
 	while (*bRun) 
 	{ 
@@ -610,7 +603,7 @@ DWORD WINAPI CommandWaitThread(LPVOID lpvParam)
 			NMPWAIT_USE_DEFAULT_WAIT, // client time-out 
 			NULL);                // NULL DACL
 
-		if (hPipe == INVALID_HANDLE_VALUE) 
+		if (!hPipe)
 		{
 			//OutputDebugStringA("TSVNCache: CreatePipe failed\n");
 			//DebugOutputLastError();
@@ -626,34 +619,35 @@ DWORD WINAPI CommandWaitThread(LPVOID lpvParam)
 		if (fConnected) 
 		{ 
 			// Create a thread for this client. 
-			hCommandThread = CreateThread( 
+			CAutoGeneralHandle hCommandThread = CreateThread( 
 				NULL,              // no security attribute 
 				0,                 // default stack size 
 				CommandThread, 
-				(LPVOID) hPipe,    // thread parameter 
+				(HANDLE) hPipe,    // thread parameter 
 				0,                 // not suspended 
 				&dwThreadId);      // returns thread ID 
 
-			if (hCommandThread == NULL) 
+			if (!hCommandThread)
 			{
 				//OutputDebugStringA("TSVNCache: Could not create Command thread\n");
 				//DebugOutputLastError();
 				DisconnectNamedPipe(hPipe);
-				CloseHandle(hPipe);
+				hPipe.CloseHandle();
 				// since we're now closing this thread, we also have to close the whole application!
 				// otherwise the thread is dead, but the app is still running, refusing new instances
 				// but no pipe will be available anymore.
 				PostMessage(hWnd, WM_CLOSE, 0, 0);
 				return 1;
 			}
-			else CloseHandle(hCommandThread); 
-		} 
+			// detach the handle, since we passed it to the thread
+			hPipe.Detach();
+		}
 		else
 		{
 			// The client could not connect, so close the pipe. 
 			//OutputDebugStringA("TSVNCache: ConnectNamedPipe failed\n");
 			//DebugOutputLastError();
-			CloseHandle(hPipe); 
+			hPipe.CloseHandle();
 			if (*bRun)
 				Sleep(200);
 			continue;	// don't end the thread!
@@ -669,11 +663,11 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 	TGITCacheResponse response; 
 	DWORD cbBytesRead, cbWritten; 
 	BOOL fSuccess; 
-	HANDLE hPipe; 
+	CAutoFile hPipe;
 
 	// The thread's parameter is a handle to a pipe instance. 
 
-	hPipe = (HANDLE) lpvParam; 
+	hPipe = lpvParam;
 	InterlockedIncrement(&nThreadCount);
 	while (bRun) 
 	{ 
@@ -689,7 +683,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 		if (! fSuccess || cbBytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe); 
-			CloseHandle(hPipe); 
 			ATLTRACE("Instance thread exited\n");
 			InterlockedDecrement(&nThreadCount);
 			if (nThreadCount == 0)
@@ -711,7 +704,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 		if (! fSuccess || responseLength != cbWritten)
 		{
 			DisconnectNamedPipe(hPipe); 
-			CloseHandle(hPipe); 
 			ATLTRACE("Instance thread exited\n");
 			InterlockedDecrement(&nThreadCount);
 			if (nThreadCount == 0)
@@ -726,7 +718,6 @@ DWORD WINAPI InstanceThread(LPVOID lpvParam)
 
 	FlushFileBuffers(hPipe); 
 	DisconnectNamedPipe(hPipe); 
-	CloseHandle(hPipe); 
 	ATLTRACE("Instance thread exited\n");
 	InterlockedDecrement(&nThreadCount);
 	if (nThreadCount == 0)
@@ -739,11 +730,11 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 	ATLTRACE("CommandThread started\n");
 	DWORD cbBytesRead; 
 	BOOL fSuccess; 
-	HANDLE hPipe; 
+	CAutoFile hPipe;
 
 	// The thread's parameter is a handle to a pipe instance. 
 
-	hPipe = (HANDLE) lpvParam; 
+	hPipe = lpvParam;
 
 	while (bRun) 
 	{ 
@@ -759,7 +750,6 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 		if (! fSuccess || cbBytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe); 
-			CloseHandle(hPipe); 
 			ATLTRACE("Command thread exited\n");
 			return 1;
 		}
@@ -769,7 +759,6 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 			case TGITCACHECOMMAND_END:
 				FlushFileBuffers(hPipe); 
 				DisconnectNamedPipe(hPipe); 
-				CloseHandle(hPipe); 
 				ATLTRACE("Command thread exited\n");
 				return 0;
 			case TGITCACHECOMMAND_CRAWL:
@@ -799,9 +788,24 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 					CGitStatusCache::Instance().Done();
 				}
 				break;
-
+			case TGITCACHECOMMAND_BLOCK:
+				{
+					CTGitPath changedpath;
+					changedpath.SetFromWin(CString(command.path));
+					ATLTRACE(_T("block path %s\n"), changedpath.GetWinPath());
+					CGitStatusCache::Instance().BlockPath(changedpath);
+				}
+				break;
+			case TGITCACHECOMMAND_UNBLOCK:
+				{
+					CTGitPath changedpath;
+					changedpath.SetFromWin(CString(command.path));
+					ATLTRACE(_T("block path %s\n"), changedpath.GetWinPath());
+					CGitStatusCache::Instance().UnBlockPath(changedpath);
+				}
+				break;
 		}
-	} 
+	}
 
 	// Flush the pipe to allow the client to read the pipe's contents 
 	// before disconnecting. Then disconnect the pipe, and close the 
@@ -809,7 +813,6 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 
 	FlushFileBuffers(hPipe); 
 	DisconnectNamedPipe(hPipe); 
-	CloseHandle(hPipe); 
 	ATLTRACE("Command thread exited\n");
 	return 0;
 }

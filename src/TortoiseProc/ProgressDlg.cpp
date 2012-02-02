@@ -26,9 +26,11 @@
 #include "atlconv.h"
 #include "UnicodeUtils.h"
 #include "IconMenu.h"
-#include "CommonResource.h"
+#include "LoglistCommonResource.h"
 #include "Tlhelp32.h"
 #include "AppUtils.h"
+#include "SmartHandle.h"
+#include "../TGitCache/CacheInterface.h"
 
 // CProgressDlg dialog
 
@@ -78,7 +80,7 @@ BOOL CProgressDlg::OnInitDialog()
 	// not elevated, this is a no-op.
 	CHANGEFILTERSTRUCT cfs = { sizeof(CHANGEFILTERSTRUCT) };
 	typedef BOOL STDAPICALLTYPE ChangeWindowMessageFilterExDFN(HWND hWnd, UINT message, DWORD action, PCHANGEFILTERSTRUCT pChangeFilterStruct);
-	HMODULE hUser = ::LoadLibrary(_T("user32.dll"));
+	CAutoLibrary hUser = ::LoadLibrary(_T("user32.dll"));
 	if (hUser)
 	{
 		ChangeWindowMessageFilterExDFN *pfnChangeWindowMessageFilterEx = (ChangeWindowMessageFilterExDFN*)GetProcAddress(hUser, "ChangeWindowMessageFilterEx");
@@ -86,7 +88,6 @@ BOOL CProgressDlg::OnInitDialog()
 		{
 			pfnChangeWindowMessageFilterEx(m_hWnd, WM_TASKBARBTNCREATED, MSGFLT_ALLOW, &cfs);
 		}
-		FreeLibrary(hUser);
 	}
 	m_pTaskbarList.Release();
 	m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
@@ -158,6 +159,8 @@ UINT CProgressDlg::RunCmdList(CWnd *pWnd,std::vector<CString> &cmdlist,bool bSho
 
 	memset(&pi,0,sizeof(PROCESS_INFORMATION));
 
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
+
 	pWnd->PostMessage(MSG_PROGRESSDLG_UPDATE_UI,MSG_PROGRESSDLG_START,0);
 
 	if(pdata)
@@ -220,7 +223,7 @@ UINT CProgressDlg::RunCmdList(CWnd *pWnd,std::vector<CString> &cmdlist,bool bSho
 
 			CloseHandle(hRead);
 
-			pWnd->PostMessage(MSG_PROGRESSDLG_UPDATE_UI,MSG_PROGRESSDLG_FAILED,0);
+			pWnd->PostMessage(MSG_PROGRESSDLG_UPDATE_UI, MSG_PROGRESSDLG_FAILED, status);
 			return TGIT_GIT_ERROR_GET_EXIT_CODE;
 		}
 		ret |= status;
@@ -230,7 +233,7 @@ UINT CProgressDlg::RunCmdList(CWnd *pWnd,std::vector<CString> &cmdlist,bool bSho
 
 	CloseHandle(hRead);
 
-	pWnd->PostMessage(MSG_PROGRESSDLG_UPDATE_UI,MSG_PROGRESSDLG_END,0);
+	pWnd->PostMessage(MSG_PROGRESSDLG_UPDATE_UI, MSG_PROGRESSDLG_END, ret);
 
 	return ret;
 
@@ -287,6 +290,8 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 		m_Animate.Stop();
 		m_Progress.SetPos(100);
 		this->DialogEnableWindow(IDOK,TRUE);
+
+		m_GitStatus = lParam;
 
 		CString err;
 		err.Format(_T("\r\n\r\ngit did not exit cleanly (exit code %d)\r\n"), m_GitStatus);

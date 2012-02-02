@@ -156,6 +156,10 @@
 #define IDB_BITMAP_REFTYPE              336
 #define IDI_IMPORTPATHCES_BKG           337
 #define IDD_SETTINGSOVERLAYHANDLERS     338
+#define IDI_LIBRARY                     339
+#define IDD_SETTINGS_CONFIG             340
+#define IDI_RESTORE                     341
+#define IDI_RESTOREOVL                  342
 #define IDS_CHSTAT_FILECOL              1000
 #define IDS_CHSTAT_WCCOL                1001
 #define IDS_CHSTAT_REPOCOL              1002
@@ -178,6 +182,7 @@
 #define IDC_LOGMESSAGE                  1014
 #define IDS_LOG_FILE_LINE_Del           1014
 #define IDS_LOG_FILE_LINE_DEL           1014
+#define IDS_MENURESTORE                 1014
 #define IDC_LOGMSG                      1015
 #define IDC_EXTDIFF                     1015
 #define IDS_ERR_TGITBLAME               1015
@@ -198,9 +203,11 @@
 #define IDS_B_T_BOTHEMPTY               1023
 #define IDS_LOG_FILTER_SUBJECT          1024
 #define IDS_STATUSLIST_SHOWLOGOLDNAME   1025
+#define IDS_APPNAME                     1026
 #define IDC_NAME                        1027
 #define IDC_SERVERADDRESS               1027
 #define IDC_USEREDIT                    1027
+#define IDS_MENUCREATERESTORE           1027
 #define IDC_URLCOMBO                    1029
 #define IDC_FONTNAMES                   1030
 #define IDC_LOGBUTTON                   1031
@@ -655,6 +662,7 @@
 #define IDC_FROMGROUP                   1385
 #define IDC_BUTTON_REMOVE               1385
 #define IDC_BUTTON_DOWN2                1385
+#define IDC_CONFIG                      1385
 #define IDC_MSGGROUP                    1386
 #define IDC_FILTER                      1387
 #define IDC_REVISIONGROUP               1393
@@ -703,6 +711,7 @@
 #define IDC_EDIT_SVN_FROM               1470
 #define IDC_VER2EDIT                    1470
 #define IDC_REV2EDIT                    1470
+#define IDC_NEWBRANCH                   1470
 #define IDC_BUGTRAQCOPYBUTTON           1471
 #define IDC_GIT_USERESINGNINGKEY        1471
 #define IDC_BUGTRAQWCPATHLABEL          1472
@@ -977,6 +986,7 @@
 #define IDC_FROMSUBJECT                 1678
 #define IDC_TOHASH                      1679
 #define IDC_TOSUBJECT                   1680
+#define IDC_CHECK_NEWBRANCH             1681
 #define IDS_ABOUTVERSION                1700
 #define IDS_ABOUTVERSIONBOX             1701
 #define IDS_DLGTITLE_ADD_DIFF_TOOL      1750
@@ -1382,6 +1392,8 @@
 #define IDS_SVN_PROGRESS_TOTALBYTESTRANSFERRED 5704
 #define IDS_SVN_PROGRESS_BYTES_SEC      5705
 #define IDS_SVN_PROGRESS_KBYTES_SEC     5706
+#define IDS_SETTINGS_CONF_NAMECOL       5707
+#define IDS_SETTINGS_CONF_VALUECOL      5708
 #define IDS_COLOURPICKER_CUSTOMTEXT     7000
 #define IDS_COLOURPICKER_DEFAULTTEXT    7001
 #define IDS_COPYDLG_FROMURL             8000
@@ -1456,22 +1468,7 @@
 #define IDS_CONNECTIONSTATE_OFFLINE     9602
 #define IDS_STATUSLIST_COLADD           9603
 #define IDS_STATUSLIST_COLDEL           9604
-#define IDS_YEAR_AGO                    9605
-#define IDS_YEARS_AGO                   9606
-#define IDS_MONTH_AGO                   9607
-#define IDS_MONTHS_AGO                  9608
-#define IDS_WEEK_AGO                    9609
-#define IDS_WEEKS_AGO                   9610
-#define IDS_DAY_AGO                     9611
-#define IDS_DAYS_AGO                    9612
-#define IDS_HOUR_AGO                    9613
-#define IDS_HOURS_AGO                   9614
-#define IDS_MINUTE_AGO                  9615
-#define IDS_MINUTES_AGO                 9616
-#define IDS_SECOND_AGO                  9617
-#define IDS_SECONDS_AGO                 9618
 #define IDS_B_T_NOTEMPTY                9619
-#define IDS_TORTOISEGIT                 9620
 #define IDS_CHOOSE_REPOSITORY           9621
 #define IDS_ERR_NOT_REPOSITORY          9622
 #define IDS_ERR_ADDRESS_NO_EMPTY        9623
@@ -1486,7 +1483,6 @@
 #define IDS_MENU_VIEWWITHMERGE          9634
 #define IDS_MENU_APPLY                  9635
 #define IDS_MENU_SENDMAIL               9636
-#define IDS_ERR_PROC                    9637
 #define IDS_ERROR_NOREF                 9638
 #define IDS_ERROR_INDEX                 9639
 #define IDS_ERROR_HEAD                  9640
@@ -1497,7 +1493,6 @@
 #define IDS_REBASE_UPTODATE_FMT         9645
 #define IDS_REBASE_FORCE_TT             9646
 #define IDS_REBASE_ABORT_TT             9647
-#define IDS_ERROR_CANNON_FIND_TORTOISEPROC 9648
 #define IDS_REBASE_FASTFORWARD_FMT      9649
 #define IDS_REBASE_EQUAL_FMT            9650
 #define IDS_CLONE_DEPTH_TT              9651
@@ -1547,9 +1542,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        339
+#define _APS_NEXT_RESOURCE_VALUE        343
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1681
+#define _APS_NEXT_CONTROL_VALUE         1682
 #define _APS_NEXT_SYMED_VALUE           201
 #endif
 #endif

@@ -405,11 +405,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Utils\Libraries.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LogFile.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\LogFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MassiveGitTask.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MassiveGitTask.h"
 				>
 			</File>
 			<File
@@ -698,6 +710,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Resources\Library.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\Resources\lineadded.ico"
 				>
 			</File>
@@ -911,6 +927,14 @@
 			</File>
 			<File
 				RelativePath="..\Resources\ResolveBackground.ico"
+				>
+			</File>
+			<File
+				RelativePath="..\Resources\restore.ico"
+				>
+			</File>
+			<File
+				RelativePath="..\Resources\restoreovl.ico"
 				>
 			</File>
 			<File
@@ -1186,6 +1210,14 @@
 				</File>
 				<File
 					RelativePath=".\LogDlgHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\LoglistUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LoglistUtils.h"
 					>
 				</File>
 				<File
@@ -1658,6 +1690,14 @@
 				</File>
 				<File
 					RelativePath=".\Settings\Settings.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\SettingsAdvanced.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\SettingsAdvanced.h"
 					>
 				</File>
 				<File

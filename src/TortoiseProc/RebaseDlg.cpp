@@ -25,10 +25,14 @@
 #include "TortoiseProc.h"
 #include "RebaseDlg.h"
 #include "AppUtils.h"
+#include "LoglistUtils.h"
 #include "MessageBox.h"
 #include "UnicodeUtils.h"
 #include "BrowseRefsDlg.h"
 #include "ProgressDlg.h"
+#include "SmartHandle.h"
+#include "../TGitCache/CacheInterface.h"
+
 // CRebaseDlg dialog
 
 IMPLEMENT_DYNAMIC(CRebaseDlg, CResizableStandAloneDialog)
@@ -124,7 +128,7 @@ BOOL CRebaseDlg::OnInitDialog()
 	// not elevated, this is a no-op.
 	CHANGEFILTERSTRUCT cfs = { sizeof(CHANGEFILTERSTRUCT) };
 	typedef BOOL STDAPICALLTYPE ChangeWindowMessageFilterExDFN(HWND hWnd, UINT message, DWORD action, PCHANGEFILTERSTRUCT pChangeFilterStruct);
-	HMODULE hUser = ::LoadLibrary(_T("user32.dll"));
+	CAutoLibrary hUser = ::LoadLibrary(_T("user32.dll"));
 	if (hUser)
 	{
 		ChangeWindowMessageFilterExDFN *pfnChangeWindowMessageFilterEx = (ChangeWindowMessageFilterExDFN*)GetProcAddress(hUser, "ChangeWindowMessageFilterEx");
@@ -132,7 +136,6 @@ BOOL CRebaseDlg::OnInitDialog()
 		{
 			pfnChangeWindowMessageFilterEx(m_hWnd, WM_TASKBARBTNCREATED, MSGFLT_ALLOW, &cfs);
 		}
-		FreeLibrary(hUser);
 	}
 	m_pTaskbarList.Release();
 	m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
@@ -188,7 +191,7 @@ BOOL CRebaseDlg::OnInitDialog()
 
 
 
-	m_FileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("RebaseDlg"),(GITSLC_POPALL ^ GITSLC_POPCOMMIT),false);
+	m_FileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("RebaseDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT|GITSLC_POPRESTORE)),false);
 
 	m_ctrlTabCtrl.AddTab(&m_FileListCtrl,_T("Revision Files"));
 	m_ctrlTabCtrl.AddTab(&m_LogMessageCtrl,_T("Commit Message"),1);
@@ -596,7 +599,7 @@ void CRebaseDlg::AddBranchToolTips(CHistoryCombo *pBranch)
 		tooltip.Format(_T("CommitHash:%s\nCommit by: %s  %s\n <b>%s</b> \n %s"),
 			rev.m_CommitHash.ToString(),
 			rev.GetAuthorName(),
-			CAppUtils::FormatDateAndTime(rev.GetAuthorDate(),DATE_LONGDATE),
+			CLoglistUtils::FormatDateAndTime(rev.GetAuthorDate(), DATE_LONGDATE),
 			rev.GetSubject(),
 			rev.GetBody());
 
@@ -1406,6 +1409,8 @@ BOOL CRebaseDlg::IsEnd()
 
 int CRebaseDlg::RebaseThread()
 {
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
+
 	int ret=0;
 	while(1)
 	{

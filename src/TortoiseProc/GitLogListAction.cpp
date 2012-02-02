@@ -58,6 +58,7 @@
 #include "CommitDlg.h"
 #include "RebaseDlg.h"
 #include "GitDiff.h"
+#include "../TGitCache/CacheInterface.h"
 
 IMPLEMENT_DYNAMIC(CGitLogList, CHintListCtrl)
 
@@ -81,6 +82,8 @@ int CGitLogList::RevertSelectedCommits()
 		progress.SetTime(true);
 		progress.ShowModeless(this);
 	}
+
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
 
 	POSITION pos = GetFirstSelectedItemPosition();
 	int i=0;
@@ -145,6 +148,8 @@ int CGitLogList::CherryPickFrom(CString from, CString to)
 		progress.SetTime(true);
 		progress.ShowModeless(this);
 	}
+
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
 
 	for(int i=logs.size()-1;i>=0;i--)
 	{
@@ -621,55 +626,71 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 
 			break;
 
-		case ID_STASH_APPLY:
+		case ID_STASH_SAVE:
+			if (CAppUtils::StashSave())
+				Refresh();
+			break;
+
+		case ID_STASH_POP:
+			if (CAppUtils::StashPop())
+				Refresh();
+			break;
+
+		case ID_STASH_LIST:
+			CAppUtils::RunTortoiseProc(_T("/command:reflog /ref:refs/stash"));
+			break;
+
+		case ID_REFLOG_STASH_APPLY:
 			CAppUtils::StashApply(pSelLogEntry->m_Ref);
 			break;
 
 		case ID_REFLOG_DEL:
 			{
-				CString ref = pSelLogEntry->m_Ref;
-				if (ref.Find(_T("refs/")) == 0)
-					ref = ref.Mid(5);
-				int pos = ref.ReverseFind('{');
-				if (pos > 0 && ref.Mid(pos, 2) != _T("@{"))
-					ref = ref.Left(pos) + _T("@")+ ref.Mid(pos);
 				CString str;
-				str.Format(_T("Warning: \"%s\" will be permanently deleted. It can <ct=0x0000FF><b>NOT</b></ct> be recovered!\r\n\r\nDo you really want to continue?"), ref);
-				if(CMessageBox::Show(NULL, str, _T("TortoiseGit"), 1, IDI_QUESTION, _T("&Delete"), _T("&Abort")) == 1)
+				if (GetSelectedCount() > 1)
+					str.Format(_T("Do you really want to permanently delete the %d selected refs? It can <ct=0x0000FF><b>NOT</b></ct> be recovered!"), GetSelectedCount());
+				else
+					str.Format(_T("Warning: \"%s\" will be permanently deleted. It can <ct=0x0000FF><b>NOT</b></ct> be recovered!\r\n\r\nDo you really want to continue?"), pSelLogEntry->m_Ref);
+
+				if (CMessageBox::Show(NULL, str, _T("TortoiseGit"), 1, IDI_QUESTION, _T("&Delete"), _T("&Abort")) == 2)
+					return;
+
+				POSITION pos = GetFirstSelectedItemPosition();
+				while (pos)
 				{
-					CString cmd,out;
+					CString ref = ((GitRev *)m_arShownList[GetNextSelectedItem(pos)])->m_Ref;
+					if (ref.Find(_T("refs/")) == 0)
+						ref = ref.Mid(5);
+					int refpos = ref.ReverseFind('{');
+					if (refpos > 0 && ref.Mid(refpos, 2) != _T("@{"))
+						ref = ref.Left(refpos) + _T("@")+ ref.Mid(refpos);
+
+					CString cmd, out;
 					if (ref.Find(_T("stash")) == 0)
-					{
 						cmd.Format(_T("git.exe stash drop %s"), ref);
-					}
 					else
 						cmd.Format(_T("git.exe reflog delete %s"), ref);
+
 					if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
-					{
 						CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK);
-					}
+
 					::PostMessage(this->GetParent()->m_hWnd,MSG_REFLOG_CHANGED,0,0);
 				}
 			}
 			break;
 		case ID_LOG:
 			{
-				CString cmd;
-				cmd = CPathUtils::GetAppDirectory()+_T("TortoiseProc.exe");
-				cmd += _T(" /command:log");
+				CString cmd = _T("/command:log");
 				cmd += _T(" /path:\"")+g_Git.m_CurrentDir+_T("\" ");
 				GitRev * r1 = reinterpret_cast<GitRev*>(m_arShownList.GetAt(FirstSelect));
 				cmd += _T(" /endrev:")+r1->m_CommitHash.ToString();
-				CAppUtils::LaunchApplication(cmd,IDS_ERR_PROC,false);
+				CAppUtils::RunTortoiseProc(cmd);
 			}
 			break;
 		case ID_CREATE_PATCH:
 			{
 				int select=this->GetSelectedCount();
-				CString cmd;
-				cmd = CPathUtils::GetAppDirectory()+_T("TortoiseProc.exe");
-				cmd += _T(" /command:formatpatch");
-
+				CString cmd = _T("/command:formatpatch");
 				cmd += _T(" /path:\"")+g_Git.m_CurrentDir+_T("\" ");
 
 				GitRev * r1 = reinterpret_cast<GitRev*>(m_arShownList.GetAt(FirstSelect));
@@ -695,7 +716,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 
 				}
 
-				CAppUtils::LaunchApplication(cmd,IDS_ERR_PROC,false);
+				CAppUtils::RunTortoiseProc(cmd);
 			}
 			break;
 		case ID_PUSH:

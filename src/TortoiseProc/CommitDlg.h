@@ -140,6 +140,8 @@ protected:
 	INT_PTR				m_itemsCount;
 	CComPtr<IBugTraqProvider> m_BugTraqProvider;
 	CString				m_NoAmendStr;
+	BOOL				m_bCreateNewBranch;
+	CString				m_sCreateNewBranch;
 
 	int					CheckHeadDetach();
 
@@ -176,6 +178,7 @@ private:
 
 	CBugTraqAssociation	m_bugtraq_association;
 	HACCEL				m_hAccel;
+	void				RestoreFiles(bool doNotAsk = false);
 
 protected:
 	afx_msg void OnBnClickedSignOff();
@@ -189,4 +192,5 @@ protected:
 	afx_msg void OnBnClickedCommitAmenddiff();
 	afx_msg void OnBnClickedNoautoselectsubmodules();
 	afx_msg void OnBnClickedCommitSetDateTime();
+	afx_msg void OnBnClickedCheckNewBranch();
 };

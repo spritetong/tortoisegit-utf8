@@ -21,7 +21,6 @@
 #pragma once
 
 #include "HintListCtrl.h"
-#include "CommonResource.h"
 #include "Git.h"
 #include "ProjectProperties.h"
 #include "TGitPath.h"
@@ -261,7 +260,10 @@ public:
 	ID_REBASE_SQUASH,
 	ID_REBASE_SKIP,
 	ID_COMBINE_COMMIT,
-	ID_STASH_APPLY,
+	ID_STASH_SAVE,
+	ID_STASH_LIST,
+	ID_STASH_POP,
+	ID_REFLOG_STASH_APPLY,
 	ID_REFLOG_DEL,
 	ID_REBASE_TO_VERSION,
 	ID_CREATE_PATCH,

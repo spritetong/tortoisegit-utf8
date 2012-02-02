@@ -37,7 +37,7 @@
 #include "Logdlg.h"
 #include "MessageBox.h"
 #include "Registry.h"
-#include "AppUtils.h"
+#include "LoglistUtils.h"
 #include "PathUtils.h"
 #include "StringUtils.h"
 #include "UnicodeUtils.h"
@@ -1292,7 +1292,7 @@ void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 	case this->LOGLIST_DATE: //Date
 		if ( pLogEntry && (!pLogEntry->m_CommitHash.IsEmpty()) )
 			lstrcpyn(pItem->pszText,
-				CAppUtils::FormatDateAndTime( pLogEntry->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes ),
+				CLoglistUtils::FormatDateAndTime(pLogEntry->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes),
 				pItem->cchTextMax);
 		break;
 
@@ -1314,7 +1314,7 @@ void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 	case this->LOGLIST_COMMIT_DATE: //Commit Date
 		if (pLogEntry)
 			lstrcpyn(pItem->pszText,
-				CAppUtils::FormatDateAndTime( pLogEntry->GetCommitterDate(), m_DateFormat, true, m_bRelativeTimes ),
+				CLoglistUtils::FormatDateAndTime(pLogEntry->GetCommitterDate(), m_DateFormat, true, m_bRelativeTimes),
 				pItem->cchTextMax);
 		break;
 	case this->LOGLIST_BUG: //Bug ID
@@ -1529,6 +1529,23 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 
 				//popup.AppendMenuIcon(ID_BLAMEWITHPREVIOUS, IDS_LOG_POPUP_BLAMEWITHPREVIOUS, IDI_BLAME);
 				popup.AppendMenu(MF_SEPARATOR, NULL);
+
+				if (pSelLogEntry->m_CommitHash.IsEmpty())
+				{
+					if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_SAVE))
+						popup.AppendMenuIcon(ID_STASH_SAVE, IDS_MENUSTASHSAVE, IDI_COMMIT);
+
+					if (CTGitPath(g_Git.m_CurrentDir).HasStashDir())
+					{
+						if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_POP))
+							popup.AppendMenuIcon(ID_STASH_POP, IDS_MENUSTASHPOP, IDI_RELOCATE);
+
+						if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_LIST))
+							popup.AppendMenuIcon(ID_STASH_LIST, IDS_MENUSTASHLIST, IDI_LOG);
+					}
+
+					popup.AppendMenu(MF_SEPARATOR, NULL);
+				}
 			}
 
 //			if (!m_ProjectProperties.sWebViewerRev.IsEmpty())
@@ -1641,11 +1658,11 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 
 		}
 
-		if(!pSelLogEntry->m_Ref.IsEmpty() && GetSelectedCount() == 1)
+		if(!pSelLogEntry->m_Ref.IsEmpty())
 		{
 			popup.AppendMenuIcon(ID_REFLOG_DEL, IDS_REFLOG_DEL, IDI_DELETE);
-			if (pSelLogEntry->m_Ref.Find(_T("refs/stash")) == 0)
-				popup.AppendMenuIcon(ID_STASH_APPLY, IDS_MENUSTASHAPPLY, IDI_RELOCATE);
+			if (GetSelectedCount() == 1 && pSelLogEntry->m_Ref.Find(_T("refs/stash")) == 0)
+				popup.AppendMenuIcon(ID_REFLOG_STASH_APPLY, IDS_MENUSTASHAPPLY, IDI_RELOCATE);
 			popup.AppendMenu(MF_SEPARATOR, NULL);
 		}
 
@@ -1883,7 +1900,7 @@ void CGitLogListBase::CopySelectionToClipBoard(bool HashOnly)
 					(LPCTSTR)sRev, pLogEntry->m_CommitHash.ToString(),
 					(LPCTSTR)sAuthor, (LPCTSTR)pLogEntry->GetAuthorName(),
 					(LPCTSTR)sDate,
-					(LPCTSTR)CAppUtils::FormatDateAndTime( pLogEntry->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes ),
+					(LPCTSTR)CLoglistUtils::FormatDateAndTime(pLogEntry->GetAuthorDate(), m_DateFormat, true, m_bRelativeTimes),
 					(LPCTSTR)sMessage, pLogEntry->GetSubject().Trim() + _T("\r\n\r\n") + body.Trim(),
 					(LPCTSTR)sPaths);
 				sClipdata +=  sLogCopyText;

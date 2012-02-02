@@ -19,6 +19,10 @@
 				<firstname>Frank</firstname>
 				<surname>Li</surname>
 			</author>
+			<author>
+				<firstname>Sven</firstname>
+				<surname>Strickroth</surname>
+			</author>
 		</authorgroup>
 		<xi:include href="../pubdate.xml"/>
 	</bookinfo>
@@ -42,9 +46,8 @@
 	<xi:include href="./tsvn_app_cli.xml"/>
 	-->
 	<xi:include href="./tsvn_app_internals.xml"/>
-	<!--
+
 	<xi:include href="./tsvn_app_ssh.xml"/>
-	-->
 
 	<xi:include href="./git_doc/git-doc.xml"/>
 
