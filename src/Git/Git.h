@@ -259,8 +259,6 @@ public:
 					  CString *from=NULL,CString *to=NULL, bool paramonly=false,
 					  CFilterData * filter =NULL);
 
-	BOOL EnumFiles(const TCHAR *pszProjectPath, const TCHAR *pszSubPath, unsigned int nFlags, WGENUMFILECB *pEnumCb, void *pUserData);
-
 	CGitHash GetHash(TCHAR* friendname);
 	CGitHash GetHash(CString ref){return GetHash(ref.GetBuffer());}
 
@@ -312,10 +310,3 @@ extern CString GetTempFile();
 
 
 extern CGit g_Git;
-
-#if 0
-inline static BOOL wgEnumFiles(const TCHAR *pszProjectPath, const TCHAR *pszSubPath, unsigned int nFlags, WGENUMFILECB *pEnumCb, void *pUserData)
-{
-	return g_Git.EnumFiles(pszProjectPath, pszSubPath, nFlags, pEnumCb, pUserData);
-}
-#endif

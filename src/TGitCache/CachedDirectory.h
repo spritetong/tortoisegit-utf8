@@ -41,6 +41,7 @@ public:
 	CCachedDirectory(const CTGitPath& directoryPath);
 	~CCachedDirectory(void);
 	CStatusCacheEntry GetStatusForMember(const CTGitPath& path, bool bRecursive, bool bFetch = true);
+	CStatusCacheEntry GetCacheStatusForMember(const CTGitPath& path);
 
 	// If path is not emtpy, means fetch special file status.
 	int EnumFiles(CTGitPath *path = NULL, bool isFull=true);
@@ -65,7 +66,6 @@ private:
 	CString GetFullPathString(const CString& cacheKey);
 	CStatusCacheEntry LookForItemInCache(const CTGitPath& path, bool &bFound);
 	void UpdateChildDirectoryStatus(const CTGitPath& childDir, git_wc_status_kind childStatus);
-	void UpdateParentsStatus(const CTGitPath& path, git_wc_status_kind childStatus);
 
 	// Calculate the complete, composite status from ourselves, our files, and our descendants
 	git_wc_status_kind CalculateRecursiveStatus();

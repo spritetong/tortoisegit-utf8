@@ -188,6 +188,7 @@
     <ClCompile Include="..\libgit2\src\global.c" />
     <ClCompile Include="..\libgit2\src\hash.c" />
     <ClCompile Include="..\libgit2\src\hashtable.c" />
+    <ClCompile Include="..\libgit2\src\ignore.c" />
     <ClCompile Include="..\libgit2\src\index.c" />
     <ClCompile Include="..\libgit2\src\indexer.c" />
     <ClCompile Include="..\libgit2\src\mwindow.c" />
@@ -237,6 +238,7 @@
     <ClInclude Include="..\libgit2\include\git2\threads.h" />
     <ClInclude Include="..\libgit2\include\git2\version.h" />
     <ClInclude Include="..\libgit2\include\git2\windows.h" />
+    <ClInclude Include="..\libgit2\src\attr.h" />
     <ClInclude Include="..\libgit2\src\attr_file.h" />
     <ClInclude Include="..\libgit2\src\blob.h" />
     <ClInclude Include="..\libgit2\src\bswap.h" />
@@ -254,6 +256,7 @@
     <ClInclude Include="..\libgit2\src\global.h" />
     <ClInclude Include="..\libgit2\src\hash.h" />
     <ClInclude Include="..\libgit2\src\hashtable.h" />
+    <ClInclude Include="..\libgit2\src\ignore.h" />
     <ClInclude Include="..\libgit2\src\index.h" />
     <ClInclude Include="..\libgit2\src\map.h" />
     <ClInclude Include="..\libgit2\src\mwindow.h" />
