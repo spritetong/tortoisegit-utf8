@@ -19,5 +19,5 @@ for /f "tokens=2,3*" %%i in (%TGIT_HOME%\src\version.h) do (
 	if "%%i" == "FILEVER" set BUILD_VER=%%j
 )
 set BUILD_VER=%BUILD_VER:,=.%
-move /y "%TGIT_HOME%\bin\setup\%1\TortoiseGit.msi" "%TGIT_HOME%\..\TortoiseGit-%BUILD_VER%-%1-%BUILD_DATE%.msi" >nul
+move /y "%TGIT_HOME%\bin\setup\%1\TortoiseGit.msi" "%TGIT_HOME%\..\TortoiseGit-utf8-%BUILD_VER%-%1-%BUILD_DATE%.msi" >nul
 goto :EOF

@@ -237,6 +237,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\scintilla\lexers\LexAVS.cxx" />
+    <ClCompile Include="..\scintilla\lexers\LexCoffeeScript.cxx" />
+    <ClCompile Include="..\scintilla\lexers\LexTCMD.cxx" />
     <ClCompile Include="..\scintilla\src\AutoComplete.cxx" />
     <ClCompile Include="..\scintilla\src\CallTip.cxx" />
     <ClCompile Include="..\scintilla\src\Catalogue.cxx" />

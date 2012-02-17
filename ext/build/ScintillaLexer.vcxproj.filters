@@ -367,6 +367,15 @@
     <ClCompile Include="..\scintilla\win32\ScintillaWin.cxx">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexAVS.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexCoffeeScript.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexTCMD.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\scintilla\src\AutoComplete.h">
