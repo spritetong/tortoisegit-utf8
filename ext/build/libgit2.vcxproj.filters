@@ -30,6 +30,12 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{f2d61e41-010a-4154-9db4-22314d939775}</UniqueIdentifier>
     </Filter>
+    <Filter Include="deps\regex">
+      <UniqueIdentifier>{474bcfee-1559-4f4f-b059-affca75a8f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xdiff">
+      <UniqueIdentifier>{c707c231-fbe7-43e9-94f9-711a8d931253}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libgit2\src\blob.c">
@@ -210,6 +216,60 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\ignore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\deps\regex\regcomp.c">
+      <Filter>deps\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\deps\regex\regex.c">
+      <Filter>deps\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\deps\regex\regex_internal.c">
+      <Filter>deps\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\deps\regex\regexec.c">
+      <Filter>deps\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xdiffi.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xemit.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xhistogram.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xmerge.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xpatience.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xprepare.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\xdiff\xutils.c">
+      <Filter>Source Files\xdiff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\diff_output.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\iterator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\filter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\config_cache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\crlf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\diff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\notes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -470,6 +530,51 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\ignore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\deps\regex\config.h">
+      <Filter>deps\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\deps\regex\regex.h">
+      <Filter>deps\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\deps\regex\regex_internal.h">
+      <Filter>deps\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xdiff.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xdiffi.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xemit.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xinclude.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xmacros.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xprepare.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xtypes.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\xdiff\xutils.h">
+      <Filter>Source Files\xdiff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\diff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\notes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
