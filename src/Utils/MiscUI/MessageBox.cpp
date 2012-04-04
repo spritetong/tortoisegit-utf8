@@ -67,7 +67,7 @@ UINT CMessageBox::ShowCheck(HWND hWnd, LPCTSTR lpMessage, LPCTSTR lpCaption, int
 #ifdef XMESSAGEBOX_APPREGPATH
 	path = XMESSAGEBOX_APPREGPATH;
 #else
-	path = "Software\\";
+	path = "Software\\TortoiseGit\\";
 	path += AfxGetAppName();
 #endif
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, path, 0, KEY_EXECUTE, &hKey)==ERROR_SUCCESS)
@@ -167,7 +167,7 @@ UINT CMessageBox::ShowCheck(HWND hWnd, LPCTSTR lpMessage, LPCTSTR lpCaption, UIN
 #ifdef XMESSAGEBOX_APPREGPATH
 	path = XMESSAGEBOX_APPREGPATH;
 #else
-	path = "Software\\";
+	path = "Software\\TortoiseGit\\";
 	path += AfxGetAppName();
 #endif
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, path, 0, KEY_EXECUTE, &hKey)==ERROR_SUCCESS)
@@ -431,12 +431,33 @@ int CMessageBox::FillBoxStandard(UINT uType)
 
 UINT CMessageBox::GoModal(CWnd * pWnd, const CString& title, const CString& msg, int nDefaultButton)
 {
+	// pre Vista struct, needed for Windows XP
+	struct OLD_NONCLIENTMETRICS
+	{
+		UINT	cbSize;
+		int		iBorderWidth;
+		int		iScrollWidth;
+		int		iScrollHeight;
+		int		iCaptionWidth;
+		int		iCaptionHeight;
+		LOGFONT	lfCaptionFont;
+		int		iSmCaptionWidth;
+		int		iSmCaptionHeight;
+		LOGFONT	lfSmCaptionFont;
+		int		iMenuWidth;
+		int		iMenuHeight;
+		LOGFONT	lfMenuFont;
+		LOGFONT	lfStatusFont;
+		LOGFONT	lfMessageFont;
+	};
+	const UINT cbProperSize = sizeof(OLD_NONCLIENTMETRICS);
+
 	NONCLIENTMETRICS ncm;
 	memset(&ncm,0,sizeof(NONCLIENTMETRICS));
-	ncm.cbSize = sizeof(NONCLIENTMETRICS);
+	ncm.cbSize = cbProperSize;
 	SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
 	
-    memcpy(&m_LogFont, &(ncm.lfMessageFont), sizeof(LOGFONT));
+	memcpy(&m_LogFont, &(ncm.lfMessageFont), sizeof(LOGFONT));
 
 	//the problem with the LOGFONT lfHeight is that it is not in pixels,
 	//but the dialog template needs the height in pixels.
@@ -471,7 +492,7 @@ void CMessageBox::SetRegistryValue(const CString& sValue, DWORD value)
 #ifdef XMESSAGEBOX_APPREGPATH
 	path = XMESSAGEBOX_APPREGPATH;
 #else
-	path = "Software\\";
+	path = "Software\\TortoiseGit\\";
 	path += AfxGetAppName();
 #endif
 	DWORD disp;

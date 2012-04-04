@@ -479,7 +479,7 @@ STDMETHODIMP CShellExt::Initialize(LPCITEMIDLIST pIDFolder,
 
 	}
 
-	return NOERROR;
+	return S_OK;
 }
 
 void CShellExt::InsertGitMenu(BOOL istop, HMENU menu, UINT pos, UINT_PTR id, UINT stringid, UINT icon, UINT idCmdFirst, GitCommands com, UINT /*uFlags*/)
@@ -561,7 +561,7 @@ void CShellExt::InsertGitMenu(BOOL istop, HMENU menu, UINT pos, UINT_PTR id, UIN
 		menuiteminfo.fMask |= MIIM_BITMAP;
 		menuiteminfo.hbmpItem = (SysInfo::Instance().IsVistaOrLater()) ? IconToBitmapPARGB32(icon) : HBMMENU_CALLBACK;
 	}
-	menuiteminfo.wID = id;
+	menuiteminfo.wID = (UINT)id;
 	InsertMenuItem(menu, pos, TRUE, &menuiteminfo);
 
 	if (istop)
@@ -708,7 +708,7 @@ bool CShellExt::WriteClipboardPathsToTempFile(stdstring& tempfile)
 		{
 			DragQueryFile(hDrop, i, szFileName, sizeof(szFileName));
 			stdstring filename = szFileName;
-			::WriteFile (file, filename.c_str(), filename.size()*sizeof(TCHAR), &written, 0);
+			::WriteFile (file, filename.c_str(), (DWORD)filename.size()*sizeof(TCHAR), &written, 0);
 			::WriteFile (file, _T("\n"), 2, &written, 0);
 		}
 		GlobalUnlock(hDrop);
@@ -748,13 +748,13 @@ stdstring CShellExt::WriteFileListToTempFile()
 	DWORD written = 0;
 	if (files_.empty())
 	{
-		::WriteFile (file, folder_.c_str(), folder_.size()*sizeof(TCHAR), &written, 0);
+		::WriteFile (file, folder_.c_str(), (DWORD)folder_.size()*sizeof(TCHAR), &written, 0);
 		::WriteFile (file, _T("\n"), 2, &written, 0);
 	}
 
 	for (std::vector<stdstring>::iterator I = files_.begin(); I != files_.end(); ++I)
 	{
-		::WriteFile (file, I->c_str(), I->size()*sizeof(TCHAR), &written, 0);
+		::WriteFile (file, I->c_str(), (DWORD)I->size()*sizeof(TCHAR), &written, 0);
 		::WriteFile (file, _T("\n"), 2, &written, 0);
 	}
 	return retFilePath;
@@ -766,16 +766,16 @@ STDMETHODIMP CShellExt::QueryDropContext(UINT uFlags, UINT idCmdFirst, HMENU hMe
 	LoadLangDll();
 
 	if ((uFlags & CMF_DEFAULTONLY)!=0)
-		return NOERROR;					//we don't change the default action
+		return S_OK;					//we don't change the default action
 
 	if ((files_.size() == 0)||(folder_.size() == 0))
-		return NOERROR;
+		return S_OK;
 
 	if (((uFlags & 0x000f)!=CMF_NORMAL)&&(!(uFlags & CMF_EXPLORE))&&(!(uFlags & CMF_VERBSONLY)))
-		return NOERROR;
+		return S_OK;
 
 	if (itemStatesFolder & ITEMIS_FOLDER) // we do not support folders atm, see issue #963
-		return NOERROR;
+		return S_OK;
 
 	bool bSourceAndTargetFromSameRepository = (uuidSource.compare(uuidTarget) == 0) || uuidSource.empty() || uuidTarget.empty();
 
@@ -853,13 +853,13 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 	}
 
 	if ((uFlags & CMF_DEFAULTONLY)!=0)
-		return NOERROR;					//we don't change the default action
+		return S_OK;					//we don't change the default action
 
 	if ((files_.size() == 0)&&(folder_.size() == 0))
-		return NOERROR;
+		return S_OK;
 
 	if (((uFlags & 0x000f)!=CMF_NORMAL)&&(!(uFlags & CMF_EXPLORE))&&(!(uFlags & CMF_VERBSONLY)))
-		return NOERROR;
+		return S_OK;
 
 	int csidlarray[] =
 	{
@@ -886,19 +886,19 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 		0
 	};
 	if (IsIllegalFolder(folder_, csidlarray))
-		return NOERROR;
+		return S_OK;
 
 	if (folder_.empty())
 	{
 		// folder is empty, but maybe files are selected
 		if (files_.size() == 0)
-			return NOERROR;	// nothing selected - we don't have a menu to show
+			return S_OK;	// nothing selected - we don't have a menu to show
 		// check whether a selected entry is an UID - those are namespace extensions
 		// which we can't handle
 		for (std::vector<stdstring>::const_iterator it = files_.begin(); it != files_.end(); ++it)
 		{
 			if (_tcsncmp(it->c_str(), _T("::{"), 3)==0)
-				return NOERROR;
+				return S_OK;
 		}
 	}
 
@@ -910,7 +910,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 
 	//check if our menu is requested for a subversion admin directory
 	if (g_GitAdminDir.IsAdminDirPath(folder_.c_str()))
-		return NOERROR;
+		return S_OK;
 
 	if (uFlags & CMF_EXTENDEDVERBS)
 		itemStates |= ITEMIS_EXTENDED;
@@ -925,7 +925,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 		CString path = files_.front().c_str();
 		if ( !g_GitAdminDir.HasAdminDir(path) )
 		{
-			return NOERROR;
+			return S_OK;
 		}
 	}
 
@@ -945,7 +945,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 		miif.cch = _countof(menubuf);
 		GetMenuItemInfo(hMenu, i, TRUE, &miif);
 		if (miif.dwItemData == (ULONG_PTR)g_MenuIDString)
-			return NOERROR;
+			return S_OK;
 	}
 
 	LoadLangDll();
@@ -1229,7 +1229,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 
 	if ((files_.size() > 0)||(folder_.size() > 0))
 	{
-		UINT idCmd = LOWORD(lpcmi->lpVerb);
+		UINT_PTR idCmd = LOWORD(lpcmi->lpVerb);
 
 		if (HIWORD(lpcmi->lpVerb))
 		{
@@ -1826,7 +1826,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 				myVerbsIDMap.clear();
 				myVerbsMap.clear();
 				RunCommand(tortoiseMergePath, gitCmd, _T("TortoiseMerge launch failed"));
-				return NOERROR;
+				return S_OK;
 				break;
 			case ShellMenuProperties:
 				tempfile = WriteFileListToTempFile();
@@ -1867,7 +1867,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 					gitCmd += folder_;
 					gitCmd += _T("\"");
 				}
-				else return NOERROR;
+				else return S_OK;
 				break;
 			case ShellMenuClone:
 				gitCmd += _T("clone /path:\"");
@@ -1957,7 +1957,7 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 			myVerbsIDMap.clear();
 			myVerbsMap.clear();
 			RunCommand(tortoiseProcPath, gitCmd, _T("TortoiseProc launch failed"));
-			hr = NOERROR;
+			hr = S_OK;
 		} // if (id_it != myIDMap.end() && id_it->first == idCmd)
 	} // if ((files_.size() > 0)||(folder_.size() > 0))
 	return hr;
@@ -2059,7 +2059,7 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 	case WM_MEASUREITEM:
 		{
 			MEASUREITEMSTRUCT* lpmis = (MEASUREITEMSTRUCT*)lParam;
-			if (lpmis==NULL||lpmis->CtlType!=ODT_MENU)
+			if (lpmis==NULL)
 				break;
 			lpmis->itemWidth = 16;
 			lpmis->itemHeight = 16;
@@ -2072,7 +2072,7 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 			DRAWITEMSTRUCT* lpdis = (DRAWITEMSTRUCT*)lParam;
 			if ((lpdis==NULL)||(lpdis->CtlType != ODT_MENU))
 				return S_OK;		//not for a menu
-			resource = GetMenuTextFromResource(myIDMap[lpdis->itemID]);
+			resource = GetMenuTextFromResource((int)myIDMap[lpdis->itemID]);
 			if (resource == NULL)
 				return S_OK;
 			HICON hIcon = (HICON)LoadImage(g_hResInst, resource, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
@@ -2092,16 +2092,16 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 			LPCTSTR resource;
 			TCHAR *szItem;
 			if (HIWORD(wParam) != MF_POPUP)
-				return NOERROR;
+				return S_OK;
 			int nChar = LOWORD(wParam);
 			if (_istascii((wint_t)nChar) && _istupper((wint_t)nChar))
 				nChar = tolower(nChar);
 			// we have the char the user pressed, now search that char in all our
 			// menu items
-			std::vector<int> accmenus;
+			std::vector<UINT_PTR> accmenus;
 			for (std::map<UINT_PTR, UINT_PTR>::iterator It = mySubMenuMap.begin(); It != mySubMenuMap.end(); ++It)
 			{
-				resource = GetMenuTextFromResource(mySubMenuMap[It->first]);
+				resource = GetMenuTextFromResource((int)mySubMenuMap[It->first]);
 				if (resource == NULL)
 					continue;
 				szItem = stringtablebuffer;
@@ -2124,14 +2124,14 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 			{
 				// no menu with that accelerator key.
 				*pResult = MAKELONG(0, MNC_IGNORE);
-				return NOERROR;
+				return S_OK;
 			}
 			if (accmenus.size() == 1)
 			{
 				// Only one menu with that accelerator key. We're lucky!
 				// So just execute that menu entry.
 				*pResult = MAKELONG(accmenus[0], MNC_EXECUTE);
-				return NOERROR;
+				return S_OK;
 			}
 			if (accmenus.size() > 1)
 			{
@@ -2139,9 +2139,9 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 				MENUITEMINFO mif;
 				mif.cbSize = sizeof(MENUITEMINFO);
 				mif.fMask = MIIM_STATE;
-				for (std::vector<int>::iterator it = accmenus.begin(); it != accmenus.end(); ++it)
+				for (std::vector<UINT_PTR>::iterator it = accmenus.begin(); it != accmenus.end(); ++it)
 				{
-					GetMenuItemInfo((HMENU)lParam, *it, TRUE, &mif);
+					GetMenuItemInfo((HMENU)lParam, (UINT)*it, TRUE, &mif);
 					if (mif.fState == MFS_HILITE)
 					{
 						// this is the selected item, so select the next one
@@ -2150,7 +2150,7 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 							*pResult = MAKELONG(accmenus[0], MNC_SELECT);
 						else
 							*pResult = MAKELONG(*it, MNC_SELECT);
-						return NOERROR;
+						return S_OK;
 					}
 				}
 				*pResult = MAKELONG(accmenus[0], MNC_SELECT);
@@ -2158,10 +2158,10 @@ STDMETHODIMP CShellExt::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 		}
 		break;
 	default:
-		return NOERROR;
+		return S_OK;
 	}
 
-	return NOERROR;
+	return S_OK;
 }
 
 LPCTSTR CShellExt::GetMenuTextFromResource(int id)

@@ -663,6 +663,7 @@
 #define IDC_BUTTON_REMOVE               1385
 #define IDC_BUTTON_DOWN2                1385
 #define IDC_CONFIG                      1385
+#define IDC_BUTTON_UNIFIEDDIFF          1385
 #define IDC_MSGGROUP                    1386
 #define IDC_FILTER                      1387
 #define IDC_REVISIONGROUP               1393
@@ -987,6 +988,7 @@
 #define IDC_TOHASH                      1679
 #define IDC_TOSUBJECT                   1680
 #define IDC_CHECK_NEWBRANCH             1681
+#define IDC_CHECK_CHERRYPICKED_FROM     1682
 #define IDS_ABOUTVERSION                1700
 #define IDS_ABOUTVERSIONBOX             1701
 #define IDS_DLGTITLE_ADD_DIFF_TOOL      1750
@@ -1003,7 +1005,7 @@
 #define IDS_LOG_LOGINFOSTRING           1835
 #define IDS_LOG_SHOWNEXT                1836
 #define IDS_LOG_SHOW_WHOLE              1838
-#define IDS_LOG_FILTER_ALL              1850
+#define IDS_LOG_FILTER_BY               1850
 #define IDS_LOG_FILTER_PATHS            1851
 #define IDS_LOG_FILTER_AUTHORS          1852
 #define IDS_LOG_FILTER_MESSAGES         1853
@@ -1544,7 +1546,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        343
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1682
+#define _APS_NEXT_CONTROL_VALUE         1683
 #define _APS_NEXT_SYMED_VALUE           201
 #endif
 #endif

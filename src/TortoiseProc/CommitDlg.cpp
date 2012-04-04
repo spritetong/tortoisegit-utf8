@@ -539,7 +539,8 @@ void CCommitDlg::OnOK()
 		{
 			sysProgressDlg.SetLine(2, entry->GetGitPathString(), true);
 			sysProgressDlg.SetProgress(j, nListItems);
-			AfxGetThread()->PumpMessage(); // process messages, in order to avoid freezing
+			if (j % 25 == 0 || j == nListItems - 1)
+				AfxGetThread()->PumpMessage(); // process messages, in order to avoid freezing; do not call this too: this takes time!
 		}
 		//const CGitStatusListCtrl::FileEntry * entry = m_ListCtrl.GetListEntry(j);
 		if (entry->m_Checked)
@@ -668,7 +669,7 @@ void CCommitDlg::OnOK()
 	if (sysProgressDlg.IsValid())
 		sysProgressDlg.Stop();
 
-	if (m_bCreateNewBranch)
+	if (bAddSuccess && m_bCreateNewBranch)
 	{
 		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_GIT_XUTF8))
 		{
@@ -681,6 +682,9 @@ void CCommitDlg::OnOK()
 			bAddSuccess = false;
 		}
 	}
+
+	if (bAddSuccess && CheckHeadDetach())
+		bAddSuccess = false;
 
 	//if(uncheckedfiles.GetLength()>0)
 	//{
@@ -733,8 +737,6 @@ void CCommitDlg::OnOK()
 			dateTime.Format(_T("--date=%sT%s"), date.Format(_T("%Y-%m-%d")), time.Format(_T("%H:%M:%S")));
 		}
 		cmd.Format(_T("git.exe commit %s %s -F \"%s\""), dateTime, amend, tempfile);
-
-		CheckHeadDetach();
 
 		CCommitProgressDlg progress;
 		progress.m_bBufferAll=true; // improve show speed when there are many file added.
@@ -1055,7 +1057,9 @@ UINT CCommitDlg::StatusThread()
 	if ((m_ListCtrl.GetItemCount()==0)&&(m_ListCtrl.HasUnversionedItems())
 		 && !PathFileExists(g_Git.m_CurrentDir+_T("\\.git\\MERGE_HEAD")))
 	{
-		if (CMessageBox::Show(m_hWnd, IDS_COMMITDLG_NOTHINGTOCOMMITUNVERSIONED, IDS_APPNAME, MB_ICONINFORMATION | MB_YESNO)==IDYES)
+		CString temp;
+		temp.LoadString(IDS_COMMITDLG_NOTHINGTOCOMMITUNVERSIONED);
+		if (CMessageBox::ShowCheck(m_hWnd, temp, _T("TortoiseGit"), MB_ICONINFORMATION | MB_YESNO, _T("NothingToCommitShowUnversioned"), NULL)==IDYES)
 		{
 			m_bShowUnversioned = TRUE;
 			GetDlgItem(IDC_SHOWUNVERSIONED)->SendMessage(BM_SETCHECK, BST_CHECKED);
@@ -1845,6 +1849,9 @@ void CCommitDlg::FillPatchView()
 		m_patchViewdlg.m_ctrlPatchView.SetText(out);
 		m_patchViewdlg.m_ctrlPatchView.Call(SCI_SETREADONLY, TRUE);
 		m_patchViewdlg.m_ctrlPatchView.Call(SCI_GOTOPOS, 0);
+		CRect rect;
+		m_patchViewdlg.m_ctrlPatchView.GetClientRect(rect);
+		m_patchViewdlg.m_ctrlPatchView.Call(SCI_SETSCROLLWIDTH, rect.Width() - 4);
 	}
 }
 LRESULT CCommitDlg::OnGitStatusListCtrlItemChanged(WPARAM /*wparam*/, LPARAM /*lparam*/)
@@ -2068,8 +2075,9 @@ void CCommitDlg::OnStnClickedViewPatch()
 		BOOL viewPatchEnabled = FALSE;
 		m_ProjectProperties.GetBOOLProps(viewPatchEnabled, _T("tgit.commitshowpatch"));
 		if (viewPatchEnabled == FALSE)
-			g_Git.SetConfigValue(_T("tgit.showpatch"), _T("true"));
+			g_Git.SetConfigValue(_T("tgit.commitshowpatch"), _T("true"));
 		m_patchViewdlg.Create(IDD_PATCH_VIEW,this);
+		m_patchViewdlg.m_ctrlPatchView.Call(SCI_SETSCROLLWIDTHTRACKING, TRUE);
 		CRect rect;
 		this->GetWindowRect(&rect);
 
@@ -2152,11 +2160,15 @@ int CCommitDlg::CheckHeadDetach()
 	CString output;
 	if(g_Git.GetCurrentBranchFromFile(g_Git.m_CurrentDir,output))
 	{
-		if(CMessageBox::Show(NULL,_T("<ct=0x0000FF>Current HEAD Detached</ct>, you are working on (no branch)\nDo you want create branch now?"),
-						_T("TortoiseGit"),MB_YESNO|MB_ICONWARNING) == IDYES)
+		int retval = CMessageBox::Show(NULL,_T("<ct=0x0000FF>Current HEAD Detached</ct>, you are working on (no branch)\nDo you want create branch now?"),
+						_T("TortoiseGit"),MB_YESNOCANCEL | MB_ICONWARNING);
+		if(retval == IDYES)
 		{
-			CAppUtils::CreateBranchTag(FALSE,NULL,true);
+			if (CAppUtils::CreateBranchTag(FALSE, NULL, true) == FALSE)
+				return 1;
 		}
+		else if (retval == IDCANCEL)
+			return 1;
 	}
 	return 0;
 }

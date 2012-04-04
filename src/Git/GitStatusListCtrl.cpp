@@ -1891,17 +1891,17 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 					if (index >= 0)
 					{
 						CTGitPath * entry2 = NULL;
-						bool bothItemsAreFiles = true;
+						bool bothItemsAreExistingFiles = true;
 						entry2 = (CTGitPath * )GetItemData(index);
 						if (entry2)
-							bothItemsAreFiles = !entry2->IsDirectory();
+							bothItemsAreExistingFiles = !entry2->IsDirectory() && entry2->Exists();
 						index = GetNextSelectedItem(pos);
 						if (index >= 0)
 						{
 							entry2 = (CTGitPath * )GetItemData(index);
 							if (entry2)
-								bothItemsAreFiles = bothItemsAreFiles && !entry2->IsDirectory();
-							if (bothItemsAreFiles)
+								bothItemsAreExistingFiles = bothItemsAreExistingFiles && !entry2->IsDirectory() && entry2->Exists();
+							if (bothItemsAreExistingFiles)
 								popup.AppendMenuIcon(IDGITLC_COMPARETWOFILES, IDS_STATUSLIST_CONTEXT_COMPARETWOFILES, IDI_DIFF);
 						}
 					}
@@ -2310,8 +2310,8 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 						CString fromwhere;
 						if(m_amend)
 							fromwhere = _T("~1");
-						CAppUtils::StartShowUnifiedDiff(m_hWnd,*filepath,GitRev::GetWorkingCopy(),
-															*filepath,GitRev::GetHead()+fromwhere);
+						CAppUtils::StartShowUnifiedDiff(m_hWnd,*filepath,GitRev::GetHead()+fromwhere,
+															*filepath,GitRev::GetWorkingCopy());
 					}
 					else
 					{
@@ -2357,7 +2357,7 @@ void CGitStatusListCtrl::OnContextMenuList(CWnd * pWnd, CPoint point)
 
 					POSITION pos = GetFirstSelectedItemPosition();
 					int index;
-					MassiveGitTask mgt(L"add -f");
+					CMassiveGitTask mgt(L"add -f");
 					while ((index = GetNextSelectedItem(pos)) >= 0)
 					{
 						CTGitPath * path = (CTGitPath *)GetItemData(index);
@@ -5071,6 +5071,14 @@ int CGitStatusListCtrl::UpdateFileList(git_revnum_t hash,CTGitPathList *list)
 				CTGitPath *p = m_StatusFileList.LookForGitPath(deletelist[i].GetGitPathString());
 				if(!p)
 					m_StatusFileList.AddPath(deletelist[i]);
+				else if ((p->m_Action == CTGitPath::LOGACTIONS_ADDED || p->m_Action == CTGitPath::LOGACTIONS_REPLACED) && !p->Exists())
+				{
+					if (CMessageBox::Show(m_hWnd, _T("TortoiseGit detected that the file \"") + p->GetWinPathString() +_T("\" does not exist, but is staged as \"Added\".\nThe commit dialog cannot handle this.\n\nDo you want to remove it from the index?"), _T("TortoiseGit"), 1, IDI_EXCLAMATION, _T("&Remove file from index"), _T("&Ignore")) == 1)
+					{
+						g_Git.Run(_T("git.exe rm -f --cache -- \"") + p->GetWinPathString() + _T("\""), &cmdout);
+						m_StatusFileList.RemoveItem(*p);
+					}
+				}
 			}
 		}
 	}

@@ -840,9 +840,9 @@ bool CAppUtils::StartShowUnifiedDiff(HWND /*hWnd*/, const CTGitPath& url1, const
 
 	CString tempfile=GetTempFile();
 	CString cmd;
-	if(rev1 == GitRev::GetWorkingCopy())
+	if(rev2 == GitRev::GetWorkingCopy())
 	{
-		cmd.Format(_T("git.exe diff --stat -p %s "),rev2);
+		cmd.Format(_T("git.exe diff --stat -p %s "), rev1);
 	}
 	else
 	{
@@ -860,7 +860,7 @@ bool CAppUtils::StartShowUnifiedDiff(HWND /*hWnd*/, const CTGitPath& url1, const
 		cmd += _T("\" ");
 	}
 	g_Git.RunLogFile(cmd,tempfile);
-	CAppUtils::StartUnifiedDiffViewer(tempfile,rev1.Left(6)+_T(":")+rev2.Left(6));
+	CAppUtils::StartUnifiedDiffViewer(tempfile, rev1 + _T(":") + rev2);
 
 
 #if 0
@@ -935,8 +935,10 @@ bool CAppUtils::CreateBranchTag(bool IsTag,CString *CommitHash, bool switch_new_
 		CString cmd;
 		CString force;
 		CString track;
-		if(dlg.m_bTrack)
+		if(dlg.m_bTrack == TRUE)
 			track=_T(" --track ");
+		else if(dlg.m_bTrack == FALSE)
+			track=_T(" --no-track");
 
 		if(dlg.m_bForce)
 			force=_T(" -f ");
@@ -947,8 +949,7 @@ bool CAppUtils::CreateBranchTag(bool IsTag,CString *CommitHash, bool switch_new_
 			if(dlg.m_bSign)
 				sign=_T("-s");
 
-			cmd.Format(_T("git.exe tag %s %s %s %s %s"),
-				track,
+			cmd.Format(_T("git.exe tag %s %s %s %s"),
 				force,
 				sign,
 				dlg.m_BranchTagName,

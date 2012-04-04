@@ -1,6 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2007-2008 - TortoiseSVN
+// Copyright (C) 2007-2008,2011 - TortoiseSVN
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
 //
 #include "StdAfx.h"
 #include "LogCommand.h"
-
+#include "StringUtils.h"
 #include "LogDlg.h"
 
 bool LogCommand::Execute()
@@ -70,14 +71,28 @@ bool LogCommand::Execute()
 		limit = (int)(LONG)reg;
 	}
 
+	CString findStr = parser.GetVal(_T("findstring"));
+	LONG findType = parser.GetLongVal(_T("findtype"));
+	bool findRegex = !!CRegDWORD(_T("Software\\TortoiseGit\\UseRegexFilter"), FALSE);
+	if (parser.HasKey(_T("findtext")))
+		findRegex = false;
+	if (parser.HasKey(_T("findregex")))
+		findRegex = true;
+
 	CLogDlg dlg;
 	theApp.m_pMainWnd = &dlg;
 	//dlg.SetParams(cmdLinePath);
 	dlg.SetParams(orgCmdLinePath, cmdLinePath, rev, revstart, revend, limit);
+	dlg.SetFilter(findStr, findType, findRegex);
 //	dlg.SetIncludeMerge(!!parser.HasKey(_T("merge")));
 //	val = parser.GetVal(_T("propspath"));
 //	if (!val.IsEmpty())
 //		dlg.SetProjectPropertiesPath(CTSVNPath(val));
 	dlg.DoModal();
+	if (parser.HasVal(_T("outfile")))
+	{
+		CString sText = dlg.GetSelectedHash();
+		CStringUtils::WriteStringToTextFile(parser.GetVal(L"outfile"), (LPCTSTR)sText, true);
+	}
 	return true;
 }
