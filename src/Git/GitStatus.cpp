@@ -37,6 +37,7 @@
 #include "gitindex.h"
 #include "shellcache.h"
 
+extern CGitAdminDirMap g_AdminDirMap;
 CGitIndexFileMap g_IndexFileMap;
 CGitHeadFileMap g_HeadFileMap;
 CGitIgnoreList  g_IgnoreList;
@@ -1476,7 +1477,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 									int hstart,hend;
 									GetRangeInSortVector(*treeptr,lowcasepath.GetBuffer(),lowcasepath.GetLength(),&hstart,&hend,pos);
 									CGitHeadFileList::iterator hit;
-									hit = treeptr->begin()+start;
+									hit = treeptr->begin() + hstart;
 									CGitHeadFileList::iterator lastElement = treeptr->end();
 									for(int i=hstart; i <= hend && hit != lastElement; i++)
 									{
@@ -1555,7 +1556,7 @@ bool GitStatus::IsExistIndexLockFile(const CString &gitdir)
 	{
 		if(PathFileExists(sDirName + _T("\\.git")))
 		{
-			if(PathFileExists(sDirName + _T("\\.git\\index.lock")))
+			if(PathFileExists(g_AdminDirMap.GetAdminDir(gitdir) + _T("index.lock")))
 				return true;
 			else
 				return false;

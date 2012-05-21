@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2007-2008 - TortoiseGit
+// Copyright (C) 2009-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ bool SVNRebaseCommand::Execute()
 		{
 			CString cmd,out;
 			cmd=_T("git.exe stash");
-			if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+			if (g_Git.Run(cmd, &out, CP_UTF8))
 			{
 				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK);
 				return false;
@@ -57,7 +57,7 @@ bool SVNRebaseCommand::Execute()
 	CString cmd, out, err;
 	cmd = _T("git.exe config svn-remote.svn.fetch");
 
-	if (!g_Git.Run(cmd, &out, &err, CP_GIT_XUTF8))
+	if (!g_Git.Run(cmd, &out, &err, CP_UTF8))
 	{
 		int start = out.Find(_T(':'));
 		if( start >=0 )
@@ -95,7 +95,7 @@ bool SVNRebaseCommand::Execute()
 	//everything updated
 	if(UpStreamNewHash==HeadHash)
 	{
-		CMessageBox::Show(NULL,_T("Everything Updated"),_T("TortoiseGit"),MB_OK);
+		CMessageBox::Show(NULL, IDS_PROC_EVERYTHINGUPDATED, IDS_APPNAME, MB_OK);
 		if(isStash)
 			askIfUserWantsToStashPop();
 
@@ -103,18 +103,18 @@ bool SVNRebaseCommand::Execute()
 	}
 
 	//fast forward;
-	CString ff;
 	if(g_Git.IsFastForward(CString(_T("HEAD")),out))
 	{
-		cmd.Format(_T("git.exe reset --hard %s"),out);
-		if(g_Git.Run(cmd,&ff,CP_GIT_XUTF8))
-		{
-			CMessageBox::Show(NULL,ff,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+		CProgressDlg progressReset;
+		cmd.Format(_T("git.exe reset --hard %s"), out);
+		progressReset.m_GitCmd = cmd;
+		progressReset.m_bAutoCloseOnSuccess = true;
+
+		if (progressReset.DoModal() != IDOK)
 			return false;
-		}
 		else
 		{
-			CMessageBox::Show(NULL,CString(_T("Fast Forward: "))+ff,_T("TortoiseGit"),MB_OK);
+			MessageBox(NULL, CString(MAKEINTRESOURCE(IDS_PROC_FASTFORWARD)) + _T(":\n") + progressReset.m_LogText, _T("TortoiseGit"), MB_OK);
 			if(isStash)
 				askIfUserWantsToStashPop();
 
@@ -125,6 +125,8 @@ bool SVNRebaseCommand::Execute()
 	//need rebase
 	if(dlg.DoModal() == IDOK)
 	{
+		if(isStash)
+			askIfUserWantsToStashPop();
 		return true;
 	}
 	return false;
@@ -136,7 +138,7 @@ void SVNRebaseCommand::askIfUserWantsToStashPop()
 	{
 		CString cmd,out;
 		cmd=_T("git.exe stash pop");
-		if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+		if (g_Git.Run(cmd, &out, CP_UTF8))
 		{
 			CMessageBox::Show(NULL,out,_T("TortoiseGit"), MB_OK);
 		}

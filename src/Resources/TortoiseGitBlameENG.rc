@@ -39,7 +39,7 @@ END
 2 TEXTINCLUDE 
 BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
+    "#include ""..\\targetver.h""\r\n"
     "#endif\r\n"
     "#include ""afxres.h""\r\n"
     "#include ""..\\TortoiseGitBlame\\MenuEncode.h""\r\n"
@@ -155,6 +155,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
+        MENUITEM "&Settings...",                ID_FILE_SETTINGS
+        MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
     POPUP "&Edit"
@@ -232,8 +234,8 @@ BEGIN
             END
             POPUP "North European"
             BEGIN
-                MENUITEM "OEM 861 : Icelandic",         IDM_FORMAT_DOS_861
-                MENUITEM "OEM 865 : Nordic",            IDM_FORMAT_DOS_865
+                MENUITEM "OEM 861: Icelandic",          IDM_FORMAT_DOS_861
+                MENUITEM "OEM 865: Nordic",             IDM_FORMAT_DOS_865
             END
             POPUP "Thai"
             BEGIN
@@ -254,8 +256,8 @@ BEGIN
                 MENUITEM "ISO 8859-15",                 IDM_FORMAT_ISO_8859_15
                 MENUITEM "OEM 850",                     IDM_FORMAT_DOS_850
                 MENUITEM "OEM 858",                     IDM_FORMAT_DOS_858
-                MENUITEM "OEM 860 : Portuguese",        IDM_FORMAT_DOS_860
-                MENUITEM "OEM 863 : French",            IDM_FORMAT_DOS_863
+                MENUITEM "OEM 860: Portuguese",         IDM_FORMAT_DOS_860
+                MENUITEM "OEM 863: French",             IDM_FORMAT_DOS_863
                 MENUITEM "OEM-US",                      IDM_FORMAT_DOS_437
                 MENUITEM "Windows-1252",                IDM_FORMAT_WIN_1252
             END
@@ -327,7 +329,7 @@ BEGIN
         MENUITEM "Diff previous revision",      ID_BLAMEPOPUP_DIFFPREVIOUS
         MENUITEM "Show Log",                    ID_BLAMEPOPUP_SHOWLOG
         MENUITEM SEPARATOR
-        MENUITEM "Copy hash to clipboard",      ID_BLAMEPOPUP_COPYHASHTOCLIPBOARD
+        MENUITEM "Copy SHA-1 to clipboard",     ID_BLAMEPOPUP_COPYHASHTOCLIPBOARD
         MENUITEM "Copy log to clipboard",       ID_BLAMEPOPUP_COPYLOGTOCLIPBOARD
     END
 END
@@ -421,6 +423,9 @@ BEGIN
                             "TortoiseGitBlame\n\nTortoiseGitBlam\n\n\nTortoiseGitBlame.Document\nTortoiseGitBlame.Document"
     IDS_VERSION             "TortoiseGitBlame, Version %d.%d.%d.%d"
     IDS_APPNAME             "TortoiseGitBlame"
+    IDS_CANNOTBLAMENOGIT    "Cannot show blame. ""%s"" is not under version control by git."
+    IDS_BLAMEERROR          "Blame error"
+    IDS_CHECKOUTFAILED      "Failed to checkout file ""%s"""
 END
 
 STRINGTABLE 
@@ -577,6 +582,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
+#define _AFX_NO_SPLITTER_RESOURCES
 #define _AFX_NO_OLE_RESOURCES
 #define _AFX_NO_TRACKER_RESOURCES
 #define _AFX_NO_PROPERTY_RESOURCES

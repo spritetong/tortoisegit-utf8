@@ -114,14 +114,14 @@ void CSyncDlg::OnBnClickedButtonPull()
 	{
 		if( g_Git.GetHash(this->m_strLocalBranch) != m_oldHash)
 		{
-			CMessageBox::Show(NULL,_T("Pull require local branch must be current branch"),_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+			CMessageBox::Show(NULL, IDS_PROC_SYNC_PULLWRONGBRANCH, IDS_APPNAME, MB_OK | MB_ICONERROR);
 			return;
 		}
 	}
 
 	if(this->m_strURL.IsEmpty())
 	{
-		CMessageBox::Show(NULL,_T("URL can't Empty"),_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+		CMessageBox::Show(NULL, IDS_PROC_GITCONFIG_URLEMPTY, IDS_APPNAME, MB_OK | MB_ICONERROR);
 		return;
 	}
 
@@ -255,6 +255,28 @@ void CSyncDlg::OnBnClickedButtonPull()
 			m_pThread->ResumeThread();
 		}
 	}
+
+	///Cleanup stale remote banches
+	if(CurrentEntry == 4)
+	{
+		m_CurrentCmd = GIT_COMMAND_REMOTE;
+		cmd.Format(_T("git.exe remote prune \"%s\""), m_strURL);
+		m_GitCmdList.push_back(cmd);
+
+		InterlockedExchange(&m_bBlock, TRUE);
+
+		m_pThread = AfxBeginThread(ProgressThreadEntry, this, THREAD_PRIORITY_NORMAL,0,CREATE_SUSPENDED);
+		if (m_pThread==NULL)
+		{
+		//		ReportError(CString(MAKEINTRESOURCE(IDS_ERR_THREADSTARTFAILED)));
+			InterlockedExchange(&m_bBlock, FALSE);
+		}
+		else
+		{
+			m_pThread->m_bAutoDelete = TRUE;
+			m_pThread->ResumeThread();
+		}
+	}
 }
 
 void CSyncDlg::PullComplete()
@@ -302,7 +324,7 @@ void CSyncDlg::PullComplete()
 		if(newhash == this->m_oldHash)
 		{
 			this->m_ctrlTabCtrl.ShowTab(IDC_IN_CHANGELIST-1,false);
-			this->m_InLogList.ShowText(_T("No commits get after pull"));
+			this->m_InLogList.ShowText(CString(MAKEINTRESOURCE(IDS_UPTODATE)));
 			this->m_ctrlTabCtrl.ShowTab(IDC_IN_LOGLIST-1,true);
 		}
 		else
@@ -344,7 +366,7 @@ void CSyncDlg::FetchComplete()
 					g_Git.m_CurrentDir,
 					g_Git.FixBranchName(dlg.m_Upstream),
 					g_Git.FixBranchName(dlg.m_Branch));
-			if(g_Git.Run(cmd, &out, &err, CP_GIT_XUTF8))
+			if (g_Git.Run(cmd, &out, &err, CP_UTF8))
 			{
 				CMessageBox::Show(NULL, out + L"\n" + err, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 				return ;
@@ -362,7 +384,7 @@ void CSyncDlg::OnBnClickedButtonPush()
 
 	if(this->m_strURL.IsEmpty())
 	{
-		CMessageBox::Show(NULL,_T("URL can't Empty"),_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+		CMessageBox::Show(NULL, IDS_PROC_GITCONFIG_URLEMPTY, IDS_APPNAME, MB_OK | MB_ICONERROR);
 		return;
 	}
 
@@ -478,7 +500,7 @@ void CSyncDlg::OnBnClickedButtonApply()
 		{
 			cmd.Format(_T("git.exe am \"%s\""),dlg.m_PathList[i].GetGitPathString());
 
-			if(g_Git.Run(cmd,&output,CP_GIT_XUTF8))
+			if (g_Git.Run(cmd, &output, CP_UTF8))
 			{
 				CMessageBox::Show(NULL,output,_T("TortoiseGit"),MB_OK);
 
@@ -542,7 +564,7 @@ void CSyncDlg::OnBnClickedButtonEmail()
 					g_Git.m_CurrentDir,
 					m_strURL+_T('/')+m_strRemoteBranch,g_Git.FixBranchName(m_strLocalBranch));
 
-	if (g_Git.Run(cmd, &out, &err, CP_GIT_XUTF8))
+	if (g_Git.Run(cmd, &out, &err, CP_UTF8))
 	{
 		CMessageBox::Show(NULL, out + L"\n" + err, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
 		return ;
@@ -631,14 +653,12 @@ BOOL CSyncDlg::OnInitDialog()
 		return FALSE;      // fail to create
 	}
 
-	CHARFORMAT m_Format;
-	memset(&m_Format, 0, sizeof(CHARFORMAT));
-	m_Format.cbSize = sizeof(CHARFORMAT);
-	m_Format.dwMask = CFM_FACE | CFM_BOLD;
-	wcsncpy(m_Format.szFaceName, L"Courier New", LF_FACESIZE - 1);
-	m_ctrlCmdOut.SetDefaultCharFormat(m_Format);
-
-	m_ctrlTabCtrl.InsertTab(&m_ctrlCmdOut,_T("Log"),-1);
+	// set the font to use in the log message view, configured in the settings dialog
+	CFont m_logFont;
+	CAppUtils::CreateFontForLogs(m_logFont);
+	//GetDlgItem(IDC_CMD_LOG)->SetFont(&m_logFont);
+	m_ctrlCmdOut.SetFont(&m_logFont);
+	m_ctrlTabCtrl.InsertTab(&m_ctrlCmdOut, CString(MAKEINTRESOURCE(IDS_LOG)), -1);
 
 	//m_ctrlCmdOut.ReplaceSel(_T("Hello"));
 
@@ -651,7 +671,7 @@ BOOL CSyncDlg::OnInitDialog()
 		return FALSE;      // fail to create
 	}
 
-	m_ctrlTabCtrl.InsertTab(&m_InLogList,_T("In Commits"),-1);
+	m_ctrlTabCtrl.InsertTab(&m_InLogList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_INCOMMITS)), -1);
 
 	m_InLogList.m_ColumnRegKey=_T("SyncIn");
 	m_InLogList.InsertGitColumn();
@@ -664,7 +684,7 @@ BOOL CSyncDlg::OnInitDialog()
 		TRACE0("Failed to create output change files window\n");
 		return FALSE;      // fail to create
 	}
-	m_ctrlTabCtrl.InsertTab(&m_InChangeFileList,_T("In ChangeList"),-1);
+	m_ctrlTabCtrl.InsertTab(&m_InChangeFileList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_INCHANGELIST)), -1);
 
 	m_InChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("OutSyncDlg"),
 							(CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)|
@@ -698,7 +718,7 @@ BOOL CSyncDlg::OnInitDialog()
 
 	}
 
-	m_ctrlTabCtrl.InsertTab(&m_OutLogList,_T("Out Commits"),-1);
+	m_ctrlTabCtrl.InsertTab(&m_OutLogList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_OUTCOMMITS)), -1);
 
 	m_OutLogList.m_ColumnRegKey = _T("SyncOut");
 	m_OutLogList.InsertGitColumn();
@@ -712,7 +732,7 @@ BOOL CSyncDlg::OnInitDialog()
 		TRACE0("Failed to create output change files window\n");
 		return FALSE;      // fail to create
 	}
-	m_ctrlTabCtrl.InsertTab(&m_OutChangeFileList,_T("Out ChangeList"),-1);
+	m_ctrlTabCtrl.InsertTab(&m_OutChangeFileList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_OUTCHANGELIST)), -1);
 
 	m_OutChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("OutSyncDlg"),
 							(CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)|
@@ -737,7 +757,12 @@ BOOL CSyncDlg::OnInitDialog()
 	AddAnchor(IDC_ANIMATE_SYNC,TOP_LEFT);
 	AddAnchor(IDC_BUTTON_COMMIT,BOTTOM_LEFT);
 
-	BRANCH_COMBOX_ADD_ANCHOR();
+	// do not use BRANCH_COMBOX_ADD_ANCHOR here, we want to have different stylings
+	AddAnchor(IDC_COMBOBOXEX_LOCAL_BRANCH, TOP_LEFT,TOP_CENTER);
+	AddAnchor(IDC_COMBOBOXEX_REMOTE_BRANCH, TOP_CENTER, TOP_RIGHT);
+	AddAnchor(IDC_BUTTON_LOCAL_BRANCH, TOP_CENTER);
+	AddAnchor(IDC_BUTTON_REMOTE_BRANCH, TOP_RIGHT);
+	AddAnchor(IDC_STATIC_REMOTE_BRANCH, TOP_CENTER);
 
 	this->GetDlgItem(IDC_BUTTON_COMMIT)->ShowWindow(SW_HIDE);
 
@@ -748,18 +773,19 @@ BOOL CSyncDlg::OnInitDialog()
 
 	this->AddOthersToAnchor();
 
-	this->m_ctrlPush.AddEntry(CString(_T("Pus&h")));
-	this->m_ctrlPush.AddEntry(CString(_T("Push ta&gs")));
+	this->m_ctrlPush.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_PUSH)));
+	this->m_ctrlPush.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_PUSHTAGS)));
 	///this->m_ctrlPush.AddEntry(CString(_T("Push All")));
 
-	this->m_ctrlPull.AddEntry(CString(_T("&Pull")));
-	this->m_ctrlPull.AddEntry(CString(_T("Fetc&h")));
-	this->m_ctrlPull.AddEntry(CString(_T("Fetch&&Re&base")));
-	this->m_ctrlPull.AddEntry(CString(_T("Remote Update")));
+	this->m_ctrlPull.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_PULL)));
+	this->m_ctrlPull.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_FETCH)));
+	this->m_ctrlPull.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_FETCHREBASE)));
+	this->m_ctrlPull.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_REMOTEUPDATE)));
+	this->m_ctrlPull.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_CLEANUPSTALEBRANCHES)));
 
-	this->m_ctrlSubmodule.AddEntry(CString(_T("Submodule Update")));
-	this->m_ctrlSubmodule.AddEntry(CString(_T("Submodule Init")));
-	this->m_ctrlSubmodule.AddEntry(CString(_T("Submodule Sync")));
+	this->m_ctrlSubmodule.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_SUBKODULEUPDATE)));
+	this->m_ctrlSubmodule.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_SUBKODULEINIT)));
+	this->m_ctrlSubmodule.AddEntry(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_SUBKODULESYNC)));
 
 	WorkingDir.Replace(_T(':'),_T('_'));
 
@@ -845,7 +871,7 @@ void CSyncDlg::Refresh()
 	this->m_ctrlRemoteBranch.AddString(remote);
 	this->m_ctrlURL.AddString(url);
 
-	m_OutLogList.ShowText(_T("Refresh ..."));
+	m_OutLogList.ShowText(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_REFRESHING)));
 	this->FetchOutList(true);
 	theApp.DoWaitCursor(-1);
 }
@@ -899,7 +925,7 @@ void CSyncDlg::FetchOutList(bool force)
 	if(IsURL())
 	{
 		CString str;
-		str=_T("Don't know what will push because you enter URL");
+		str.LoadString(IDS_PROC_SYNC_PUSH_UNKNOWN);
 		m_OutLogList.ShowText(str);
 		this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID()-1,FALSE);
 		m_OutLocalBranch.Empty();
@@ -912,7 +938,7 @@ void CSyncDlg::FetchOutList(bool force)
 	else if(g_Git.GetHash(remotebranch).IsEmpty())
 	{
 		CString str;
-		str.Format(_T("Don't know what will push because unknown \"%s\""),remotebranch);
+		str.Format(IDS_PROC_SYNC_PUSH_UNKNOWNBRANCH, remotebranch);
 		m_OutLogList.ShowText(str);
 		this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID()-1,FALSE);
 		m_OutLocalBranch.Empty();
@@ -935,7 +961,7 @@ void CSyncDlg::FetchOutList(bool force)
 			CString str;
 			if(m_OutLogList.GetItemCount() == 0)
 			{
-				str.Format(_T("No commits ahead \"%s\""),remotebranch);
+				str.Format(IDS_PROC_SYNC_COMMITSAHEAD, 0, remotebranch);
 				m_OutLogList.ShowText(str);
 				this->m_ctrlStatus.SetWindowText(str);
 				this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID()-1,FALSE);
@@ -943,7 +969,7 @@ void CSyncDlg::FetchOutList(bool force)
 			}
 			else
 			{
-				str.Format(_T("%d commits ahead \"%s\""),m_OutLogList.GetItemCount(),remotebranch);
+				str.Format(IDS_PROC_SYNC_COMMITSAHEAD, m_OutLogList.GetItemCount(), remotebranch);
 				this->m_ctrlStatus.SetWindowText(str);
 
 				AddDiffFileList(&m_OutChangeFileList,&m_arOutChangeList,localbranch,remotebranch);
@@ -970,7 +996,7 @@ bool CSyncDlg::IsURL()
 void CSyncDlg::OnCbnEditchangeComboboxex()
 {
 	SetTimer(IDT_INPUT, 1000, NULL);
-	this->m_OutLogList.ShowText(_T("Wait for input"));
+	this->m_OutLogList.ShowText(CString(MAKEINTRESOURCE(IDS_PROC_SYNC_WAINTINPUT)));
 
 	//this->FetchOutList();
 }

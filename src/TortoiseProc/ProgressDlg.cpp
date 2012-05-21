@@ -104,6 +104,11 @@ BOOL CProgressDlg::OnInitDialog()
 	this->GetDlgItem(IDC_PROGRESS_BUTTON1)->ShowWindow(SW_HIDE);
 	m_Animate.Open(IDR_DOWNLOAD);
 
+	CFont m_logFont;
+	CAppUtils::CreateFontForLogs(m_logFont);
+	//GetDlgItem(IDC_CMD_LOG)->SetFont(&m_logFont);
+	m_Log.SetFont(&m_logFont);
+
 	CString InitialText;
 	if ( !m_PreText.IsEmpty() )
 	{
@@ -173,7 +178,7 @@ UINT CProgressDlg::RunCmdList(CWnd *pWnd,std::vector<CString> &cmdlist,bool bSho
 
 		if (bShowCommand)
 		{
-			CStringA str(cmdlist[i].Trim()+_T("\n\n"));
+			CStringA str = CUnicodeUtils::GetMulti(cmdlist[i].Trim() + _T("\n\n"), CP_UTF8);
 			for(int j=0;j<str.GetLength();j++)
 			{
 				if(pdata)
@@ -293,8 +298,15 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 
 		m_GitStatus = lParam;
 
-		CString err;
-		err.Format(_T("\r\n\r\ngit did not exit cleanly (exit code %d)\r\n"), m_GitStatus);
+		// detect crashes of perl when performing git svn actions
+		if (m_GitStatus == 0 && m_GitCmd.Find(_T(" svn ")) > 1)
+		{
+			CString log;
+			m_Log.GetWindowText(log);
+			if (log.GetLength() > 18 && log.Mid(log.GetLength() - 18) == _T("perl.exe.stackdump"))
+				m_GitStatus = -1;
+		}
+
 		if(this->m_GitStatus)
 		{
 			if (m_pTaskbarList)
@@ -302,19 +314,30 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 				m_pTaskbarList->SetProgressState(m_hWnd, TBPF_ERROR);
 				m_pTaskbarList->SetProgressValue(m_hWnd, 100, 100);
 			}
-			InsertColorText(this->m_Log,err,RGB(255,0,0));
+			CString log;
+			log.Format(IDS_PROC_PROGRESS_GITUNCLEANEXIT, m_GitStatus);
+			CString err;
+			err.Format(_T("\r\n\r\n%s\r\n"), log);
+			InsertColorText(this->m_Log, err, RGB(255,0,0));
 		}
 		else {
 			if (m_pTaskbarList)
 				m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NOPROGRESS);
-			InsertColorText(this->m_Log,_T("\r\nSuccess\r\n"),RGB(0,0,255));
+			CString temp;
+			temp.LoadString(IDS_SUCCESS);
+			CString log;
+			log.Format(_T("\r\n%s\r\n"), temp);
+			InsertColorText(this->m_Log, log, RGB(0,0,255));
 			this->DialogEnableWindow(IDCANCEL,FALSE);
 		}
 
 		if(wParam == MSG_PROGRESSDLG_END && m_GitStatus == 0)
 		{
 			if(m_bAutoCloseOnSuccess)
+			{
+				m_Log.GetWindowText(this->m_LogText);
 				EndDialog(IDOK);
+			}
 
 			if(m_PostCmdList.GetCount() > 0)
 			{
@@ -378,9 +401,44 @@ void CProgressDlg::ParserCmdOutput(char ch)
 {
 	ParserCmdOutput(this->m_Log,this->m_Progress,this->m_hWnd,this->m_pTaskbarList,this->m_LogTextA,ch,&this->m_CurrentWork);
 }
-int CProgressDlg::ClearESC(CStringA &str)
+void CProgressDlg::ClearESC(CString &str)
 {
-	return str.Replace("\033[K", "");
+	// see http://ascii-table.com/ansi-escape-sequences.php and http://tldp.org/HOWTO/Bash-Prompt-HOWTO/c327.html
+	str.Replace(_T("\033[K"), _T("")); // erase until end of line; no need to care for this, because we always clear the whole line
+
+	// drop colors
+	while (true)
+	{
+		int escapePosition = str.Find(_T('\033'));
+		if (escapePosition >= 0 && str.GetLength() >= escapePosition + 3)
+		{
+			if (str.Mid(escapePosition, 2) == _T("\033["))
+			{
+				int colorEnd = str.Find(_T('m'), escapePosition + 2);
+				if (colorEnd > 0)
+				{
+					bool found = true;
+					for (int i = escapePosition + 2; i < colorEnd; i++)
+					{
+						if (str[i] != _T(';') && (str[i] < _T('0') && str[i] > _T('9')))
+						{
+							found = false;
+							break;
+						}
+					}
+					if (found)
+					{
+						if (escapePosition > 0)
+							str = str.Left(escapePosition) + str.Mid(colorEnd + 1);
+						else
+							str = str.Mid(colorEnd);
+						continue;
+					}
+				}
+			}
+		}
+		break;
+	}
 }
 void CProgressDlg::ParserCmdOutput(CRichEditCtrl &log,CProgressCtrl &progressctrl,HWND m_hWnd,CComPtr<ITaskbarList3> m_pTaskbarList,CStringA &oneline, char ch, CWnd *CurrentWork)
 {
@@ -392,15 +450,12 @@ void CProgressDlg::ParserCmdOutput(CRichEditCtrl &log,CProgressCtrl &progressctr
 //		TRACE(_T("End Char %s \r\n"),ch==_T('\r')?_T("lf"):_T(""));
 //		TRACE(_T("End Char %s \r\n"),ch==_T('\n')?_T("cr"):_T(""));
 
-		if(ClearESC(oneline))
-		{
-			ch = ('\r');
-		}
-
 		int lines = log.GetLineCount();
-		g_Git.StringAppend(&str,(BYTE*)oneline.GetBuffer(),CP_GIT_XUTF8);
+		g_Git.StringAppend(&str, (BYTE*)oneline.GetBuffer(), CP_UTF8);
 		str.Trim();
 //		TRACE(_T("%s"), str);
+
+		ClearESC(str);
 
 		if(ch == ('\r'))
 		{
@@ -579,7 +634,7 @@ CString CCommitProgressDlg::Convert2UnionCode(char *buff, int size)
 	int cp=CP_UTF8;
 
 	cmd=_T("git.exe config i18n.logOutputEncoding");
-	if(g_Git.Run(cmd, &output, NULL, CP_GIT_XUTF8))
+	if (g_Git.Run(cmd, &output, NULL, CP_UTF8))
 		cp=CP_UTF8;
 
 	int start=0;
@@ -603,7 +658,9 @@ CString CCommitProgressDlg::Convert2UnionCode(char *buff, int size)
 
 	str.Empty();
 	g_Git.StringAppend(&str, (BYTE*)buff, cp, start);
-	g_Git.StringAppend(&str, (BYTE*)buff+start, CP_GIT_XUTF8,size - start);
+	g_Git.StringAppend(&str, (BYTE*)buff + start, CP_UTF8, size - start);
+
+	ClearESC(str);
 
 	return str;
 }

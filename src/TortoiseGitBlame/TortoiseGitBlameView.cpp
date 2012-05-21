@@ -1,7 +1,7 @@
 // TortoiseGitBlame - a Viewer for Git Blames
 
-// Copyright (C) 2008-2011 - TortoiseGit
-// Copyright (C) 2010-2011 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2008-2012 - TortoiseGit
+// Copyright (C) 2010-2012 Sven Strickroth <email@cs-ware.de>
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // Copyright (C)2003 Don HO <donho@altern.org>
@@ -819,7 +819,7 @@ bool CTortoiseGitBlameView::DoSearch(CString what, DWORD flags)
 	}
 	else
 	{
-		::MessageBox(wMain, what+_T(" not found"), _T("CTortoiseGitBlameView"), MB_ICONINFORMATION);
+		::MessageBox(wMain, _T("\"") + what + _T("\" ") + CString(MAKEINTRESOURCE(IDS_NOTFOUND)), _T("TortoiseGitBlame"), MB_ICONINFORMATION);
 	}
 
 	return true;
@@ -1134,7 +1134,7 @@ void CTortoiseGitBlameView::DrawBlame(HDC hDC)
 			//}
 
 			CString str;
-			str = m_CommitHash[i].ToString().Left(6);
+			str = m_CommitHash[i].ToString().Left(g_Git.GetShortHASHLength());
 
 			//_stprintf_s(buf, MAX_PATH, _T("%8ld       "), revs[i]);
 			rc.top=Y;

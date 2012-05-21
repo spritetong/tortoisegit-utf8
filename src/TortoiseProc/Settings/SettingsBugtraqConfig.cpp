@@ -85,7 +85,7 @@ BOOL CSettingsBugtraqConfig::OnApply()
 	CString cmd,out;
 	if(m_ChangeMask & BUG_URL)
 	{
-		if(g_Git.SetConfigValue(_T("bugtraq.url"),m_URL,CONFIG_LOCAL,CP_GIT_XUTF8))
+		if (g_Git.SetConfigValue(_T("bugtraq.url"), m_URL,CONFIG_LOCAL, CP_UTF8))
 		{
 			CMessageBox::Show(NULL,_T("Fail to set config"),_T("TortoiseGit"),MB_OK);
 		}

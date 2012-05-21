@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "Tooltip.h"
 #include "registry.h"
 #include "afxwin.h"
+#include "Git.h"
 
 // CSettingGitConfig dialog
 
@@ -40,6 +41,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	BOOL OnInitDialog();
 	BOOL OnApply();
+
+	bool Save(CString key, CString value, CONFIG_TYPE type);
 
 	int m_ChangeMask;
 	enum
@@ -60,6 +63,7 @@ protected:
 	afx_msg void OnBnClickedCheckAutocrlf();
 	afx_msg void OnCbnSelchangeSafeCrLf();
 	afx_msg void OnBnClickedCheckWarnNoSignedOffBy();
+	afx_msg void OnBnClickedEditsystemgitconfig();
 	afx_msg void OnBnClickedEditglobalgitconfig();
 	afx_msg void OnBnClickedEditlocalgitconfig();
 

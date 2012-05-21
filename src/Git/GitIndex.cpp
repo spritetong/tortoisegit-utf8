@@ -32,9 +32,11 @@
 #include "git2.h"
 #include "SmartHandle.h"
 
+CGitAdminDirMap g_AdminDirMap;
+
 #define FILL_DATA() \
 	m_FileName.Empty();\
-	g_Git.StringAppend(&m_FileName, (BYTE*)entry->name, CP_GIT_XUTF8, Big2lit(entry->flags)&CE_NAMEMASK);\
+	g_Git.StringAppend(&m_FileName, (BYTE*)entry->name, CP_UTF8, Big2lit(entry->flags)&CE_NAMEMASK);\
 	m_FileName.MakeLower(); \
 	this->m_Flags=Big2lit(entry->flags);\
 	this->m_ModifyTime=Big2lit(entry->mtime.sec);\
@@ -322,13 +324,13 @@ int CGitIndexFileMap::Check(const CString &gitdir, bool *isChanged)
 	__int64 time;
 	int result;
 
-		CString IndexFile;
-		IndexFile = gitdir + _T("\\.git\\index");
-		/* Get data associated with "crt_stat.c": */
-		result = g_Git.GetFileModifyTime(IndexFile, &time);
+	CString IndexFile = g_AdminDirMap.GetAdminDir(gitdir) + _T("index");
 
-		if (result)
-			return result;
+	/* Get data associated with "crt_stat.c": */
+	result = g_Git.GetFileModifyTime(IndexFile, &time);
+
+	if (result)
+		return result;
 
 	SHARED_INDEX_PTR pIndex;
 	pIndex = this->SafeGet(gitdir);
@@ -359,7 +361,9 @@ int CGitIndexFileMap::LoadIndex(const CString &gitdir)
 	{
 		SHARED_INDEX_PTR pIndex(new CGitIndexList);
 
-		if(pIndex->ReadIndex(gitdir + _T("\\.git\\index")))
+		CString IndexFile = g_AdminDirMap.GetAdminDir(gitdir) + _T("index");
+
+		if(pIndex->ReadIndex(IndexFile))
 			return -1;
 
 		this->SafeSet(gitdir, pIndex);
@@ -432,8 +436,7 @@ int CGitIndexFileMap::IsUnderVersionControl(const CString &gitdir, const CString
 
 int CGitHeadFileList::GetPackRef(const CString &gitdir)
 {
-	CString PackRef = gitdir;
-	PackRef += _T("\\.git\\packed-refs");
+	CString PackRef = g_AdminDirMap.GetAdminDir(gitdir) + _T("packed-refs");
 
 	__int64 mtime;
 	if (g_Git.GetFileModifyTime(PackRef, &mtime))
@@ -548,13 +551,10 @@ int CGitHeadFileList::GetPackRef(const CString &gitdir)
 }
 int CGitHeadFileList::ReadHeadHash(CString gitdir)
 {
-	CString HeadFile = gitdir;
-	HeadFile += _T("\\.git\\HEAD");
-
 	int ret = 0;
-	m_Gitdir = gitdir;
+	m_Gitdir = g_AdminDirMap.GetAdminDir(gitdir);
 
-	m_HeadFile = HeadFile;
+	m_HeadFile = m_Gitdir + _T("HEAD");
 
 	if( g_Git.GetFileModifyTime(m_HeadFile, &m_LastModifyTimeHead))
 		return -1;
@@ -563,7 +563,7 @@ int CGitHeadFileList::ReadHeadHash(CString gitdir)
 	{
 		do
 		{
-			CAutoFile hfile = CreateFile(HeadFile,
+			CAutoFile hfile = CreateFile(m_HeadFile,
 				GENERIC_READ,
 				FILE_SHARE_READ|FILE_SHARE_DELETE|FILE_SHARE_WRITE,
 				NULL,
@@ -595,13 +595,13 @@ int CGitHeadFileList::ReadHeadHash(CString gitdir)
 				ReadFile(hfile, p, filesize - 4, &size, NULL);
 
 				m_HeadRefFile.Empty();
-				g_Git.StringAppend(&this->m_HeadRefFile, p, CP_GIT_XUTF8, filesize - 4);
+				g_Git.StringAppend(&this->m_HeadRefFile, p, CP_UTF8, filesize - 4);
 				CString ref = this->m_HeadRefFile;
 				ref = ref.Trim();
 				int start = 0;
 				ref = ref.Tokenize(_T("\n"), start);
 				free(p);
-				m_HeadRefFile=gitdir+_T("\\.git\\") + m_HeadRefFile.Trim();
+				m_HeadRefFile = m_Gitdir + m_HeadRefFile.Trim();
 				m_HeadRefFile.Replace(_T('/'),_T('\\'));
 
 				__int64 time;
@@ -773,9 +773,9 @@ int CGitHeadFileList::CallBack(const unsigned char *sha1, const char *base, int 
 	p->at(cur).m_FileName.Empty();
 
 	if(base)
-		g_Git.StringAppend(&p->at(cur).m_FileName, (BYTE*)base, CP_GIT_XUTF8, baselen);
+		g_Git.StringAppend(&p->at(cur).m_FileName, (BYTE*)base, CP_UTF8, baselen);
 
-	g_Git.StringAppend(&p->at(cur).m_FileName,(BYTE*)pathname, CP_GIT_XUTF8);
+	g_Git.StringAppend(&p->at(cur).m_FileName,(BYTE*)pathname, CP_UTF8);
 
 	p->at(cur).m_FileName.MakeLower();
 
@@ -828,8 +828,7 @@ int ReadTreeRecursive(git_repository &repo, git_tree * tree, CStringA base, int 
 
 int CGitHeadFileList::ReadTree()
 {
-	CStringA gitdir = CUnicodeUtils::GetMulti(m_Gitdir,CP_GIT_XUTF8) ;
-	gitdir += "\\.git";
+	CStringA gitdir = CUnicodeUtils::GetMulti(m_Gitdir, CP_UTF8);
 	git_repository *repository = NULL;
 	git_commit *commit = NULL;
 	git_tree * tree = NULL;
@@ -880,17 +879,18 @@ int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &f
 	}
 
 	this->m_BaseDir.Empty();
-	if (projectroot.GetLength() < file.GetLength())
+	CString gitDir = g_AdminDirMap.GetAdminDir(projectroot);
+	if (gitDir.GetLength() < file.GetLength())
 	{
-		CString base = file.Mid(projectroot.GetLength() + 1);
+		CString base = file.Mid(gitDir.GetLength());
 		base.Replace(_T('\\'), _T('/'));
-		if (base != _T(".git/info/exclude"))
+		if (base != _T("info/exclude"))
 		{
 			int start = base.ReverseFind(_T('/'));
 			if(start >= 0)
 			{
 				base = base.Left(start);
-				this->m_BaseDir = CUnicodeUtils::GetMulti(base,CP_GIT_XUTF8) ;
+				this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8);
 			}
 		}
 	}
@@ -1006,6 +1006,7 @@ bool CGitIgnoreList::CheckIgnoreChanged(const CString &gitdir,const CString &pat
 
 	while(!temp.IsEmpty())
 	{
+		CString tempOrig = temp;
 		temp += _T("\\.git");
 
 		if (CGit::GitPathFileExists(temp))
@@ -1015,9 +1016,8 @@ bool CGitIgnoreList::CheckIgnoreChanged(const CString &gitdir,const CString &pat
 			if (CheckFileChanged(gitignore))
 				return true;
 
-			temp += _T("\\info\\exclude");
-
-			if (CheckFileChanged(temp))
+			CString wcglobalgitignore = g_AdminDirMap.GetAdminDir(tempOrig) + _T("info\\exclude");
+			if (CheckFileChanged(wcglobalgitignore))
 				return true;
 			else
 				return false;
@@ -1078,6 +1078,7 @@ int CGitIgnoreList::LoadAllIgnoreFile(const CString &gitdir,const CString &path)
 
 	while (!temp.IsEmpty())
 	{
+		CString tempOrig = temp;
 		temp += _T("\\.git");
 
 		if (CGit::GitPathFileExists(temp))
@@ -1089,11 +1090,10 @@ int CGitIgnoreList::LoadAllIgnoreFile(const CString &gitdir,const CString &path)
 				FetchIgnoreFile(gitdir, gitignore);
 			}
 
-			temp += _T("\\info\\exclude");
-
-			if (CheckFileChanged(temp))
+			CString wcglobalgitignore = g_AdminDirMap.GetAdminDir(tempOrig) + _T("info\\exclude");
+			if (CheckFileChanged(wcglobalgitignore))
 			{
-				return FetchIgnoreFile(gitdir, temp);
+				return FetchIgnoreFile(gitdir, wcglobalgitignore);
 			}
 
 			return 0;
@@ -1144,9 +1144,7 @@ int CGitIgnoreList::GetIgnoreFileChangeTimeList(const CString &path, std::vector
 			timelist.push_back(itMap->second.m_LastModifyTime);
 		}
 
-		ignore = temp;
-		ignore += _T("\\.git\\info\\exclude");
-
+		ignore = g_AdminDirMap.GetAdminDir(temp) + _T("info\\exclude");
 		itMap = m_Map.find(ignore);
 		if (itMap == m_Map.end())
 		{
@@ -1206,7 +1204,7 @@ int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 
 	CStringA patha;
 
-	patha = CUnicodeUtils::GetMulti(path, CP_GIT_XUTF8) ;
+	patha = CUnicodeUtils::GetMulti(path, CP_UTF8);
 	patha.Replace('\\', '/');
 
 	if(g_Git.GetFileModifyTime(temp, &time, &dir))
@@ -1249,8 +1247,7 @@ int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 				return 0;
 		}
 
-		temp = temp.Left(temp.GetLength()-11);
-		temp +=_T("\\.git\\info\\exclude");
+		temp = g_AdminDirMap.GetAdminDir(temp.Left(temp.GetLength() - 11)) + _T("info\\exclude");
 
 		if(this->m_Map.find(temp) != m_Map.end())
 		{

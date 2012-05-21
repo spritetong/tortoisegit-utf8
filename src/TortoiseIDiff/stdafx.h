@@ -23,4 +23,10 @@
 
 #include "MyMemDC.h"
 
+#ifdef _WIN64
+#   define APP_X64_STRING   "x64"
+#else
+#   define APP_X64_STRING ""
+#endif
+
 #include "tgit_xutf8.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */

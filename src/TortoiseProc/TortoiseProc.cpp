@@ -43,6 +43,8 @@
 #include "Commands\Command.h"
 #include "..\version.h"
 #include "JumpListHelpers.h"
+#include "SinglePropSheetDlg.h"
+#include "Settings\setmainpage.h"
 #include "..\Settings\Settings.h"
 #include "gitindex.h"
 #include "Libraries.h"
@@ -108,7 +110,7 @@ HWND hWndExplorer;
 
 BOOL CTortoiseProcApp::CheckMsysGitDir()
 {
-	CGitIndexFileMap map;
+	//CGitIndexFileMap map;
 	//int status;
 	//CTGitPath path;
 	//path.SetFromGit(_T("src/gpl.txt"));
@@ -128,27 +130,6 @@ BOOL CTortoiseProcApp::InitInstance()
 
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	Gdiplus::GdiplusStartup(&m_gdiplusToken,&gdiplusStartupInput,NULL);
-
-	if(!CheckMsysGitDir())
-	{
-		UINT ret = CMessageBox::Show(NULL,_T("MSysGit (http://code.google.com/p/msysgit/) not found."),
-									_T("TortoiseGit"), 3, IDI_HAND, _T("&Set MSysGit path"), _T("&Goto WebSite"), _T("&Abort"));
-		if(ret == 2)
-		{
-			ShellExecute(NULL, NULL, _T("http://code.google.com/p/msysgit/"), NULL, NULL, SW_SHOW);
-		}
-		else if(ret == 1)
-		{
-			// open settings dialog
-			CSettings dlg(IDS_PROC_SETTINGS_TITLE);
-			dlg.SetTreeViewMode(TRUE, TRUE, TRUE);
-			dlg.SetTreeWidth(220);
-
-			dlg.DoModal();
-			dlg.HandleRestart();
-		}
-		return FALSE;
-	}
 
 	//set the resource dll for the required language
 	CRegDWORD loc = CRegDWORD(_T("Software\\TortoiseGit\\LanguageID"), 1033);
@@ -239,6 +220,36 @@ BOOL CTortoiseProcApp::InitInstance()
 			langId = 0;
 	} while (langId);
 	setlocale(LC_ALL, "");
+
+	if(!CheckMsysGitDir())
+	{
+		UINT ret = CMessageBox::Show(NULL, IDS_PROC_NOMSYSGIT, IDS_APPNAME, 3, IDI_HAND, IDS_PROC_SETMSYSGITPATH, IDS_PROC_GOTOMSYSGITWEBSITE, IDS_ABORTBUTTON);
+		if(ret == 2)
+		{
+			ShellExecute(NULL, NULL, _T("http://code.google.com/p/msysgit/"), NULL, NULL, SW_SHOW);
+		}
+		else if(ret == 1)
+		{
+			// open settings dialog
+			CSinglePropSheetDlg(CString(MAKEINTRESOURCE(IDS_PROC_SETTINGS_TITLE)), new CSetMainPage(), this->GetMainWnd()).DoModal();
+		}
+		return FALSE;
+	}
+	if (CAppUtils::GetMsysgitVersion() < 0x01070a00)
+	{
+		int ret = CMessageBox::ShowCheck(NULL, IDS_PROC_OLDMSYSGIT, IDS_APPNAME, 1, IDI_EXCLAMATION, IDS_PROC_GOTOMSYSGITWEBSITE, IDS_ABORTBUTTON, IDS_IGNOREBUTTON, _T("OldMsysgitVersionWarning"), IDS_PROC_NOTSHOWAGAINIGNORE);
+		if (ret == 1)
+		{
+			CRegStdDWORD(_T("Software\\TortoiseGit\\TortoiseProc\\OldMsysgitVersionWarning")).removeValue(); // only store answer if it is "Ignore"
+			ShellExecute(NULL, NULL, _T("http://code.google.com/p/msysgit/"), NULL, NULL, SW_SHOW);
+			return FALSE;
+		}
+		else if (ret == 2)
+		{
+			CRegStdDWORD(_T("Software\\TortoiseGit\\TortoiseProc\\OldMsysgitVersionWarning")).removeValue(); // only store answer if it is "Ignore"
+			return FALSE;
+		}
+	}
 
 	// InitCommonControls() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
@@ -423,7 +434,7 @@ BOOL CTortoiseProcApp::InitInstance()
 
 		if (!err.IsEmpty())
 		{
-			UINT choice = CMessageBox::Show(hWndExplorer, err, _T("TortoiseGit Error"), 1, IDI_ERROR, _T("&Edit .git/config"), _T("Edit &global .gitconfig"), _T("&Abort"));
+			UINT choice = CMessageBox::Show(hWndExplorer, err, _T("TortoiseGit"), 1, IDI_ERROR, CString(MAKEINTRESOURCE(IDS_PROC_EDITLOCALGITCONFIG)), CString(MAKEINTRESOURCE(IDS_PROC_EDITGLOBALGITCONFIG)), CString(MAKEINTRESOURCE(IDS_ABORTBUTTON)));
 			if (choice == 1)
 			{
 				// open the config file with alternative editor

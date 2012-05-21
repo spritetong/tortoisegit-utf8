@@ -25,8 +25,8 @@ BEGIN
     IDS_LOG_DATE            "Date"
 	IDS_LOG_BUGIDS          "Bug-ID"
 	IDS_LOG_ID				"ID"
-	IDS_LOG_HASH			"HASH"
-    IDS_LOG_POPUP_COMPARE   "Compare with &working copy"
+	IDS_LOG_HASH			"SHA-1"
+    IDS_LOG_POPUP_COMPARE   "Compare with &working tree"
     IDS_LOG_POPUP_SAVE      "Save revision &to..."
     IDS_LOG_POPUP_COMPARETWO "&Compare revisions"
     IDS_LOG_POPUP_UPDATE    "&Update item to revision"
@@ -42,7 +42,6 @@ BEGIN
     IDS_LOG_POPUP_REVERTREVS "&Revert changes by these commits"
     IDS_LOG_POPUP_COPYTOCLIPBOARD "Copy to clipboard"
     IDS_LOG_POPUP_REVERTTOREV "R&evert to this revision"
-    IDS_LOG_POPUP_BLAMECOMPARE "Compare and &blame with working BASE"
     IDS_LOG_POPUP_BLAMEREVS "&Blame revisions"
     IDS_LOG_POPUP_BLAMEDIFF "&Blame changes"
     IDS_LOG_POPUP_VIEWREV   "View revision in alternative editor"
@@ -68,7 +67,11 @@ BEGIN
     IDS_LOG_POPUP_EDITLOG   "Edit log message"
     IDS_LOG_POPUP_OPENWITH  "Open with..."
 	IDS_REPOBROWSE_SHOWREVPROP "Show revision properties"
-	
+	IDS_LOG_WORKINGDIRCHANGES "Working dir changes"
+	IDS_FILESCHANGES		"%d files changed"
+	IDS_ONLYMERGEDFILES		"Only Merged Files"
+	IDS_ALLPARENTS			"All Parents"
+	IDS_PARENT				"%d Parent"
 	IDS_REBASE_SKIP			"Skip"
 	IDS_REBASE_EDIT			"Edit"
 	IDS_REBASE_PICK			"Pick"
@@ -83,18 +86,37 @@ BEGIN
 	IDS_COMBINE_TO_ONE			"*Combine to one commit"
 	IDS_CHERRY_PICK_VERSION		"Cherry Pick this commit..."
 	IDS_CHERRY_PICK_VERSIONS	"Cherry Pick selected commits..."
-	IDS_COPY_COMMIT_HASH		"Copy Commit Hash"
+	IDS_COPY_COMMIT_HASH		"Copy SHA-1 to clipboard"
 	IDS_CREATE_PATCH			"Format Patch..."
 	IDS_DELETE_BRANCHTAG		"Delete branch/tag"
 	IDS_DELETE_BRANCHTAG_SHORT	"Delete"
 	IDS_LOG_POPUP_COMMIT		"Commit..."
 	IDS_SWITCH_BRANCH		"Switch/Checkout to"
+	IDS_NOTFOUND				"not found"
 END 
 
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_THREADSTARTFAILED "Could not start thread!"
+    IDS_LOG_FETCHINGSTATUS    "Fetching Status..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PATHACTIONS_ADD      "Added"
+    IDS_PATHACTIONS_MODIFIED "Modified"
+    IDS_PATHACTIONS_DELETE   "Deleted"
+    IDS_PATHACTIONS_CONFLICT "Conflict"
+    IDS_PATHACTIONS_MERGED   "Merged"
+    IDS_PATHACTIONS_RENAME   "Rename"
+    IDS_PATHACTIONS_COPY     "Copy"
+    IDS_PATHACTIONS_FORWARD  "Forward"
+    IDS_PATHACTIONS_EDIT     "Edit"
+    IDS_PATHACTIONS_SQUASH   "Squash"
+    IDS_PATHACTIONS_PICK     "Pick"
+    IDS_PATHACTIONS_SKIP     "Skip"
+    IDS_PATHACTIONS_UNKNOWN  "Unknown"
 END
 
 STRINGTABLE 
@@ -160,7 +182,7 @@ BEGIN
     CONTROL         "Match &case",IDC_MATCHCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,35,176,10
     CONTROL         "&Whole word",IDC_WHOLEWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,48,200,10
     GROUPBOX        "Full text search",IDC_STATIC_FIND,7,7,273,59
-    GROUPBOX        "Ref(Click it then go to)",IDC_STATIC_GROUP_REF,7,73,273,129
+    GROUPBOX        "Ref (Click it then go to)",IDC_STATIC_GROUP_REF,7,73,273,129
     CONTROL         "",IDC_LIST_REF,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,12,85,261,91
     LTEXT           "Filter: ",IDC_STATIC_FILTER,13,184,22,8
     EDITTEXT        IDC_EDIT_FILTER,39,182,189,12,ES_AUTOHSCROLL

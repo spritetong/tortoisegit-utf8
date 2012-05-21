@@ -588,20 +588,6 @@
 						<File Id="F__touch" ShortName="touch.exe" Name="touch.exe" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\touch.exe" KeyPath="yes" />
 					</Component>
 
-					<Component Id="C__gettext" Guid="$(var.GuidGettext)" Win64="$(var.Win64YesNo)">
-						<?if $(var.Platform) = "x86" ?>
-						<File Id="F__intl32" Name="intl3_tsvn32.dll" DiskId="1" Source="..\..\ext\libintl\libintl3-$(var.PlatformPath32Extension)\bin\intl3_tsvn32.dll" KeyPath="yes" />
-						<?endif ?>
-						<?if $(var.Platform) = "x64" ?>
-						<File Id="F__intl" Name="intl3_tsvn.dll" DiskId="1" Source="..\..\ext\libintl\libintl3-$(var.PlatformPathExtension)\bin\intl3_tsvn.dll" />
-						<?endif ?>
-					</Component>
-					<?if $(var.Platform) = "x64" ?>
-					<Component Id="C__gettext32" Guid="$(var.GuidGettext32)" Win64="$(var.Win64YesNo)">
-						<File Id="F__intl32" Name="intl3_tsvn32.dll" DiskId="1" Source="..\..\ext\libintl\libintl3-$(var.PlatformPath32Extension)\bin\intl3_tsvn32.dll" KeyPath="yes" />
-					</Component>
-					<?endif ?>
-
 					<?if $(var.IncludeCrashReportDll) = 1 ?>
 					<Component Id="C__crash" Guid="$(var.GuidCrashRpt)" Win64="$(var.Win64YesNo)">
 						<File Id="F__crashrpt" ShortName="CRASHRPT.DLL" Name="CrashRpt.dll" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\CrashRpt.dll" KeyPath="yes" />
@@ -703,7 +689,7 @@
 
 					<Component Id="C__TortoiseBlame" Guid="$(var.GuidTortoiseBlame)" Win64="$(var.Win64YesNo)">
 						<File Id="F__TortoiseBlame" ShortName="TBLAME.EXE" Name="TortoiseGitBlame.exe" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\TortoiseGitBlame.exe" KeyPath="yes" />
-						<File Id="F__TortoiseBlame_help" ShortName="TBLAME_H.CHM" Name="TortoiseGitBlame.chm" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\TortoiseGitBlame.chm" />
+						<File Id="F__TortoiseBlame_help" ShortName="TBLAME_H.CHM" Name="TortoiseGitBlame_en.chm" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\TortoiseGitBlame_en.chm" />
 						<File Id="F__SciLexer" ShortName="SCILEX.DLL" Name="SciLexer.dll" DiskId="1" Source="..\..\bin\$(var.ReleasePath)\bin\SciLexer.dll" />
 					</Component>
 

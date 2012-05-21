@@ -179,6 +179,12 @@ void CLogDlg::SetParams(const CTGitPath& orgPath, const CTGitPath& path, CString
 	m_orgPath = orgPath;
 	m_path = path;
 	m_hightlightRevision = hightlightRevision;
+
+	if (startrev == GIT_REV_ZERO)
+		startrev.Empty();
+	if (endrev == GIT_REV_ZERO)
+		endrev.Empty();
+
 	this->m_LogList.m_startrev = startrev;
 	m_LogRevision = startrev;
 	this->m_LogList.m_endrev = endrev;
@@ -553,7 +559,7 @@ CString CLogDlg::GetTagInfo(GitRev* pLogEntry)
 
 	if(!output.IsEmpty())
 	{
-		output = _T("\n*Tag Info*\n\n") + output;
+		output = _T("\n*") + CString(MAKEINTRESOURCE(IDS_PROC_LOG_TAGINFO)) + _T("*\n\n") + output;
 	}
 
 	return output;
@@ -614,7 +620,7 @@ void CLogDlg::FillLogMessageCtrl(bool bShow /* = true*/)
 
 		{
 			// set the log message text
-			pMsgView->SetWindowText(_T("Commit:")+pLogEntry->m_CommitHash.ToString()+_T("\r\n\r\n"));
+			pMsgView->SetWindowText(CString(MAKEINTRESOURCE(IDS_HASH)) + _T(": ") + pLogEntry->m_CommitHash.ToString() + _T("\r\n\r\n"));
 			// turn bug ID's into links if the bugtraq: properties have been set
 			// and we can find a match of those in the log message
 
@@ -639,7 +645,7 @@ void CLogDlg::FillLogMessageCtrl(bool bShow /* = true*/)
 
 			if(!pLogEntry->m_Notes.IsEmpty())
 			{
-				msg+= _T("\n*Notes* ");
+				msg+= _T("\n*") + CString(MAKEINTRESOURCE(IDS_NOTES)) + _T("* ");
 				msg+= pLogEntry->m_Notes;
 				msg+= _T("\n\n");
 			}
@@ -681,7 +687,7 @@ void CLogDlg::FillLogMessageCtrl(bool bShow /* = true*/)
 			m_ChangedFileListCtrl.m_CurrentVersion=pLogEntry->m_CommitHash;
 			m_ChangedFileListCtrl.Show(GITSLC_SHOWVERSIONED);
 
-			m_ChangedFileListCtrl.SetBusyString(_T("Fetch Changed File..."));
+			m_ChangedFileListCtrl.SetBusyString(CString(MAKEINTRESOURCE(IDS_PROC_LOG_FETCHINGFILES)));
 
 			if(!pLogEntry->m_IsDiffFiles)
 				m_ChangedFileListCtrl.SetBusy(TRUE);
@@ -739,6 +745,7 @@ void CLogDlg::Refresh (bool clearfilter /*autoGoOnline*/)
 {
 	m_limit = 0;
 	m_LogList.Refresh(clearfilter);
+	ShowStartRef();
 	FillLogMessageCtrl(false);
 }
 
@@ -895,7 +902,7 @@ BOOL CLogDlg::Log(git_revnum_t /*rev*/, const CString& /*author*/, const CString
 	}
 	catch (CException * e)
 	{
-		::MessageBox(NULL, _T("not enough memory!"), _T("TortoiseGit"), MB_ICONERROR);
+		CMessageBox::Show(NULL, IDS_ERR_NOTENOUGHMEMORY, IDS_APPNAME, MB_ICONERROR);
 		e->Delete();
 		m_bCancelled = TRUE;
 	}
@@ -1326,14 +1333,14 @@ void CLogDlg::DoDiffFromLog(INT_PTR selIndex, GitRev* rev1, GitRev* rev2, bool /
 	file1.Format(_T("%s%s_%s%s"),
 				temppath,
 				(*m_currentChangedArray)[selIndex].GetBaseFilename(),
-				rev1->m_CommitHash.ToString().Left(6),
+				rev1->m_CommitHash.ToString().Left(g_Git.GetShortHASHLength()),
 				(*m_currentChangedArray)[selIndex].GetFileExtension());
 
 	CString file2;
 	file2.Format(_T("%s\\%s_%s%s"),
 				temppath,
 				(*m_currentChangedArray)[selIndex].GetBaseFilename(),
-				rev2->m_CommitHash.ToString().Left(6),
+				rev2->m_CommitHash.ToString().Left(g_Git.GetShortHASHLength()),
 				(*m_currentChangedArray)[selIndex].GetFileExtension());
 
 	CString cmd;
@@ -2562,15 +2569,15 @@ void CLogDlg::UpdateLogInfoLabel()
 		selectedrevs = m_LogList.GetSelectedCount();
 	}
 	CString sTemp;
-	sTemp.Format(_T("Showing %ld revision(s), from revision %s to revision %s - %ld revision(s) selected\r\n"),
+	sTemp.Format(IDS_PROC_LOG_STATS,
 		count - start,
-		rev2.ToString().Left(6), rev1.ToString().Left(6), selectedrevs);
+		rev2.ToString().Left(g_Git.GetShortHASHLength()), rev1.ToString().Left(g_Git.GetShortHASHLength()), selectedrevs);
 
 	if(selectedrevs == 1)
 	{
 		CString str=m_ChangedFileListCtrl.GetStatisticsString(true);
 		str.Replace(_T('\n'), _T(' '));
-		sTemp += str;
+		sTemp += _T("\r\n") + str;
 	}
 	m_sLogInfo = sTemp;
 
@@ -3143,7 +3150,6 @@ void CLogDlg::OnSize(UINT nType, int cx, int cy)
 void CLogDlg::OnRefresh()
 {
 	//if (GetDlgItem(IDC_GETALL)->IsWindowEnabled())
-	ShowStartRef();
 	{
 		m_limit = 0;
 		this->m_LogProgress.SetPos(0);
@@ -3277,7 +3283,7 @@ void CLogDlg::ShowStartRef()
 		return;
 	if(m_bAllBranch)
 	{
-		m_staticRef.SetWindowText(L"<All Branches>");
+		m_staticRef.SetWindowText(CString(MAKEINTRESOURCE(IDS_PROC_LOG_ALLBRANCHES)));
 		m_staticRef.Invalidate(TRUE);
 		return;
 	}
@@ -3287,7 +3293,7 @@ void CLogDlg::ShowStartRef()
 	{
 		//Ref name is HEAD
 		if (g_Git.Run(L"git symbolic-ref HEAD", &showStartRef, NULL, CP_UTF8))
-			showStartRef = _T("<No branch>");
+			showStartRef = CString(MAKEINTRESOURCE(IDS_PROC_LOG_NOBRANCH));
 		showStartRef.Trim(L"\r\n\t ");
 	}
 

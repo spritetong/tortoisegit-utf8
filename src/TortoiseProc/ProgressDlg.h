@@ -96,7 +96,7 @@ private:
 	virtual CString Convert2UnionCode(char *buff, int size=-1)
 	{
 		CString str;
-		g_Git.StringAppend(&str,(BYTE*)buff, CP_GIT_XUTF8,size);
+		g_Git.StringAppend(&str, (BYTE*)buff, CP_UTF8, size);
 		return str;
 	}
 
@@ -107,7 +107,7 @@ private:
 	//Share with Sync Dailog
 	static int	FindPercentage(CString &log);
 
-	static int	ClearESC(CStringA &str);
+	static void	ClearESC(CString &str);
 
 public:
 	static void	ParserCmdOutput(CRichEditCtrl &log,CProgressCtrl &progressctrl,HWND m_hWnd,CComPtr<ITaskbarList3> m_pTaskbarList,
