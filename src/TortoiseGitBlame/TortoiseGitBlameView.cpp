@@ -504,7 +504,7 @@ BOOL CTortoiseGitBlameView::OpenLogFile(const char *fileName)
 		}
 		int len2 = ::MultiByteToWideChar(CP_UTF8, NULL, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH+5), wbuf, MAX_LOG_LENGTH+5);
 		wbuf[len2] = 0;
-		len2 = ::WideCharToMultiByte(CP_GIT_XUTF8, NULL, wbuf, len2, logmsgbuf, MAX_LOG_LENGTH+5, NULL, NULL);
+		len2 = ::WideCharToMultiByte(CP_ACP, NULL, wbuf, len2, logmsgbuf, MAX_LOG_LENGTH+5, NULL, NULL);
 		logmsgbuf[len2] = 0;
 		msg = CString(logmsgbuf);
 		logmessages[rev] = msg;
@@ -1860,7 +1860,7 @@ LRESULT CALLBACK WndBlameProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 					else
 					{
 						pTTTW->lpszText = app.m_wszTip;
-						::MultiByteToWideChar( CP_GIT_XUTF8 , 0, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH*2), app.m_wszTip, MAX_LOG_LENGTH*2);
+						::MultiByteToWideChar( CP_ACP , 0, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH*2), app.m_wszTip, MAX_LOG_LENGTH*2);
 						app.StringExpand(app.m_wszTip);
 					}
 				}

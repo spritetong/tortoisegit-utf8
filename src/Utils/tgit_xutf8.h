@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /******************************************************************************/
-/* Fix compilation bug. */
+/* Fix compilation bugs. */
 #define git_lasterror get_git_last_error
 #define git_tree_entry_2object git_tree_entry_to_object
 
@@ -39,7 +39,7 @@ extern "C++"
 #include <io.h>
 #include <fcntl.h>
 
-#ifdef __AFX_H__
+#if defined(__AFX_H__)
 class CStdioFileUtf8: public CStdioFile
 {
 public:

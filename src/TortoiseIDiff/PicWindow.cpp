@@ -462,7 +462,7 @@ LRESULT CALLBACK CPicWindow::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, 
                     {
                         NMTTDISPINFOA* pTTTA = (NMTTDISPINFOA*)pNMHDR;
                         pTTTA->lpszText = m_szTip;
-                        ::WideCharToMultiByte(CP_GIT_XUTF8, 0, m_wszTip, -1, m_szTip, 8192, NULL, NULL);
+                        ::WideCharToMultiByte(CP_ACP, 0, m_wszTip, -1, m_szTip, 8192, NULL, NULL);
                     }
                 }
                 else
@@ -477,7 +477,7 @@ LRESULT CALLBACK CPicWindow::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, 
                     {
                         NMTTDISPINFOA* pTTTA = (NMTTDISPINFOA*)pNMHDR;
                         pTTTA->lpszText = m_szTip;
-                        ::WideCharToMultiByte(CP_GIT_XUTF8, 0, m_wszTip, -1, m_szTip, 8192, NULL, NULL);
+                        ::WideCharToMultiByte(CP_ACP, 0, m_wszTip, -1, m_szTip, 8192, NULL, NULL);
                     }
                 }
             }

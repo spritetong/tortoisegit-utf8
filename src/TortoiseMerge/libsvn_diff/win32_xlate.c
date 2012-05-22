@@ -57,7 +57,7 @@ get_page_id_from_name(UINT *page_id_p, const char *page_name, apr_pool_t *pool)
 
   if (page_name == SVN_APR_DEFAULT_CHARSET)
     {
-        *page_id_p = CP_GIT_XUTF8;
+        *page_id_p = CP_ACP;
         return APR_SUCCESS;
     }
   else if (page_name == SVN_APR_LOCALE_CHARSET)
