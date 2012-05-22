@@ -26,6 +26,11 @@ extern "C" {
 #endif
 
 /******************************************************************************/
+/* Fix compilation bug. */
+#define git_lasterror get_git_last_error
+#define git_tree_entry_2object git_tree_entry_to_object
+
+/******************************************************************************/
 
 #ifdef __cplusplus
 extern "C++"
