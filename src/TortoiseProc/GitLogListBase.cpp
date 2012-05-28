@@ -95,7 +95,7 @@ CGitLogListBase::CGitLogListBase():CHintListCtrl()
 
 	this->m_critSec.Init();
 	m_wcRev.m_CommitHash.Empty();
-	m_wcRev.GetSubject()=_T("Working dir changes");
+	m_wcRev.GetSubject() = CString(MAKEINTRESOURCE(IDS_LOG_WORKINGDIRCHANGES));
 	m_wcRev.m_ParentHash.clear();
 	m_wcRev.m_Mark=_T('-');
 	m_wcRev.m_IsUpdateing=FALSE;
@@ -205,7 +205,7 @@ int CGitLogListBase::AsyncDiffThread()
 				InterlockedExchange(&pRev->m_IsDiffFiles, TRUE);
 				InterlockedExchange(&pRev->m_IsFull, TRUE);
 
-				pRev->GetBody().Format(_T("%d files changed"),pRev->GetFiles(this).GetCount());
+				pRev->GetBody().Format(IDS_FILESCHANGES, pRev->GetFiles(this).GetCount());
 				::PostMessage(m_hWnd,MSG_LOADED,(WPARAM)0,0);
 				this->GetParent()->PostMessage(WM_COMMAND, MSG_FETCHED_DIFF, 0);
 			}
@@ -1312,7 +1312,7 @@ void CGitLogListBase::OnLvnGetdispinfoLoglist(NMHDR *pNMHDR, LRESULT *pResult)
 		break;
 
 	case this->LOGLIST_COMMIT_DATE: //Commit Date
-		if (pLogEntry)
+		if (pLogEntry && (!pLogEntry->m_CommitHash.IsEmpty()))
 			lstrcpyn(pItem->pszText,
 				CLoglistUtils::FormatDateAndTime(pLogEntry->GetCommitterDate(), m_DateFormat, true, m_bRelativeTimes),
 				pItem->cchTextMax);
@@ -1450,13 +1450,6 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 				{
 					if(m_ContextMenuMask&GetContextMenuBit(ID_COMPARE) && m_hasWC) // compare revision with WC
 						popup.AppendMenuIcon(ID_COMPARE, IDS_LOG_POPUP_COMPARE, IDI_DIFF);
-					// TODO:
-					// TortoiseMerge could be improved to take a /blame switch
-					// and then not 'cat' the files from a unified diff but
-					// blame then.
-					// But until that's implemented, the context menu entry for
-					// this feature is commented out.
-					//popup.AppendMenu(ID_BLAMECOMPARE, IDS_LOG_POPUP_BLAMECOMPARE, IDI_BLAME);
 				}
 				else
 				{
@@ -1480,13 +1473,13 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 						gnudiffmenu.CreatePopupMenu();
 						popup.AppendMenuIcon(ID_GNUDIFF1,IDS_LOG_POPUP_GNUDIFF_PARENT, IDI_DIFF, gnudiffmenu.m_hMenu);
 
-						gnudiffmenu.AppendMenuIcon(ID_GNUDIFF1+(0xFFFF<<16),_T("All Parents"));
-						gnudiffmenu.AppendMenuIcon(ID_GNUDIFF1+(0xFFFE<<16),_T("Only Merged Files"));
+						gnudiffmenu.AppendMenuIcon(ID_GNUDIFF1 + (0xFFFF << 16), CString(MAKEINTRESOURCE(IDS_ALLPARENTS)));
+						gnudiffmenu.AppendMenuIcon(ID_GNUDIFF1 + (0xFFFE << 16), CString(MAKEINTRESOURCE(IDS_ONLYMERGEDFILES)));
 
 						for(int i=0;i<pRev->m_ParentHash.size();i++)
 						{
 							CString str;
-							str.Format(_T("Parent %d"), i+1);
+							str.Format(IDS_PARENT, i + 1);
 							gnudiffmenu.AppendMenuIcon(ID_GNUDIFF1+((i+1)<<16),str);
 						}
 					}
@@ -1513,7 +1506,7 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 						for(int i=0;i<pRev->m_ParentHash.size();i++)
 						{
 							CString str;
-							str.Format(_T("Parent %d"), i+1);
+							str.Format(IDS_PARENT, i + 1);
 							diffmenu.AppendMenuIcon(ID_COMPAREWITHPREVIOUS +((i+1)<<16),str);
 							if (i == 0 && CRegDWORD(_T("Software\\TortoiseGit\\DiffByDoubleClickInLog"), FALSE))
 							{
@@ -1543,6 +1536,11 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 						if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_LIST))
 							popup.AppendMenuIcon(ID_STASH_LIST, IDS_MENUSTASHLIST, IDI_LOG);
 					}
+
+					popup.AppendMenu(MF_SEPARATOR, NULL);
+
+					if(m_ContextMenuMask&GetContextMenuBit(ID_FETCH))
+						popup.AppendMenuIcon(ID_FETCH, IDS_MENUFETCH, IDI_PULL);
 
 					popup.AppendMenu(MF_SEPARATOR, NULL);
 				}
@@ -2162,7 +2160,7 @@ int CGitLogListBase::BeginFetchLog()
 	if(g_Git.IsInitRepos())
 		return 0;
 
-	if(git_open_log(&m_DllGitLog,CUnicodeUtils::GetMulti(cmd,CP_GIT_XUTF8).GetBuffer()))
+	if (git_open_log(&m_DllGitLog, CUnicodeUtils::GetMulti(cmd, CP_UTF8).GetBuffer()))
 	{
 		return -1;
 	}

@@ -21,6 +21,12 @@
 #include <tchar.h>
 #include <comdef.h>
 
+#include "tgit_xutf8.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
+
 #include "MyMemDC.h"
 
-#include "tgit_xutf8.h" /* For UTF-8. Added by Sprite Tong, 12/1/2011. */
+#ifdef _WIN64
+#   define APP_X64_STRING   "x64"
+#else
+#   define APP_X64_STRING ""
+#endif

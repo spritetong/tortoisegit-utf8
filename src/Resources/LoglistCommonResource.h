@@ -18,11 +18,11 @@
 #define IDS_LOG_MESSAGE                 20002
 #define IDS_LOG_AUTHOR                  20003
 #define IDS_LOG_DATE                    20004
+#define IDS_LOG_FETCHINGSTATUS          20005
 #define IDS_LOG_BUGIDS                  20006
 #define IDS_LOG_ID						20007
 #define IDS_LOG_HASH					20008
 #define IDS_LOG_POPUP_COMPARE			20009
-#define IDS_LOG_POPUP_BLAMECOMPARE		20010
 #define IDS_LOG_POPUP_GNUDIFF_CH        20011
 #define IDS_LOG_POPUP_COMPAREWITHPREVIOUS 20012
 #define IDS_LOG_POPUP_OPEN				20014
@@ -53,7 +53,7 @@
 #define IDS_SCIEDIT_SPLITLINES			20041
 #define IDS_SPELLEDIT_THESAURUS			20042
 #define IDS_SPELLEDIT_NOTHESAURUS		20043
-
+#define IDS_LOG_WORKINGDIRCHANGES		20044
 #define IDS_LOG_REVISION				20045
 
 #define IDS_LOG_POPUP_SAVE				20046
@@ -96,14 +96,33 @@
 #define IDS_LOG_POPUP_GNUDIFF_PARENT    20081
 #define IDS_LOG_POPUP_LOG				20082
 
+#define IDS_FILESCHANGES				20083
 #define IDC_FINDCOMBO                   20083
+#define IDS_ALLPARENTS					20084
 #define IDC_MATCHCASE                   20084
 #define IDC_WHOLEWORD                   20085
+#define IDS_ONLYMERGEDFILES				20085
 #define IDC_STATIC_FIND                 20086
+#define IDS_PARENT						20086
 #define IDC_STATIC_GROUP_REF			20087
+#define IDS_NOTFOUND					20087
 #define IDC_LIST_REF                    20089
 #define IDC_STATIC_FILTER               20090
 #define IDC_EDIT_FILTER                 20091
 #define IDS_DELETE_BRANCHTAG_SHORT      20092
 #define IDD_FIND                        20100
 #define IDS_CHERRY_PICK_VERSIONS        20101
+
+#define IDS_PATHACTIONS_ADD             20102
+#define IDS_PATHACTIONS_MODIFIED        20103
+#define IDS_PATHACTIONS_DELETE          20104
+#define IDS_PATHACTIONS_CONFLICT        20105
+#define IDS_PATHACTIONS_MERGED          20106
+#define IDS_PATHACTIONS_RENAME          20107
+#define IDS_PATHACTIONS_COPY            20108
+#define IDS_PATHACTIONS_FORWARD         20109
+#define IDS_PATHACTIONS_EDIT            20110
+#define IDS_PATHACTIONS_SQUASH          20111
+#define IDS_PATHACTIONS_PICK            20112
+#define IDS_PATHACTIONS_SKIP            20113
+#define IDS_PATHACTIONS_UNKNOWN         20114

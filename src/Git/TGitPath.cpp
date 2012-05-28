@@ -26,6 +26,7 @@
 #include <regex>
 #include "git.h"
 #include "Globals.h"
+#include "../Resources/LoglistCommonResource.h"
 
 #if defined(_MFC_VER)
 //#include "MessageBox.h"
@@ -1037,7 +1038,7 @@ int CTGitPathList::ParserFromLsFile(BYTE_VECTOR &out,bool /*staged*/)
 		one.Empty();
 		path.Reset();
 
-		g_Git.StringAppend(&one,&out[pos],CP_GIT_XUTF8);
+		g_Git.StringAppend(&one, &out[pos], CP_UTF8);
 		int tabstart=0;
 		path.m_Action=path.ParserAction(out[pos]);
 		one.Tokenize(_T("\t"),tabstart);
@@ -1104,7 +1105,7 @@ int CTGitPathList::FillUnRev(unsigned int action,CTGitPathList *list)
 		while( pos>=0 && pos<out.size())
 		{
 			one.Empty();
-			g_Git.StringAppend(&one,&out[pos],CP_GIT_XUTF8);
+			g_Git.StringAppend(&one, &out[pos], CP_UTF8);
 			if(!one.IsEmpty())
 			{
 				//SetFromGit will clear all status
@@ -1177,9 +1178,9 @@ int CTGitPathList::ParserFromLog(BYTE_VECTOR &log, bool parseDeletes /*false*/)
 			CString pathname2;
 
 			if( file1>=0 )
-				g_Git.StringAppend(&pathname1,&log[file1],CP_GIT_XUTF8);
+				g_Git.StringAppend(&pathname1, &log[file1], CP_UTF8);
 			if( file2>=0 )
-				g_Git.StringAppend(&pathname2,&log[file2],CP_GIT_XUTF8);
+				g_Git.StringAppend(&pathname2, &log[file2], CP_UTF8);
 
 			CTGitPath *GitPath=LookForGitPath(pathname1);
 
@@ -1239,19 +1240,19 @@ int CTGitPathList::ParserFromLog(BYTE_VECTOR &log, bool parseDeletes /*false*/)
 			if(log[pos] == 0) //rename
 			{
 				pos++;
-				g_Git.StringAppend(&file2,&log[pos],CP_GIT_XUTF8);
+				g_Git.StringAppend(&file2, &log[pos], CP_UTF8);
 				int sec=log.find(0,pos);
 				if(sec>=0)
 				{
 					sec++;
-					g_Git.StringAppend(&file1,&log[sec],CP_GIT_XUTF8);
+					g_Git.StringAppend(&file1, &log[sec], CP_UTF8);
 				}
 				pos=sec;
 
 			}
 			else
 			{
-				g_Git.StringAppend(&file1,&log[pos],CP_GIT_XUTF8);
+				g_Git.StringAppend(&file1, &log[pos], CP_UTF8);
 			}
 			path.SetFromGit(file1,&file2);
 
@@ -2075,34 +2076,34 @@ CTGitPath * CTGitPathList::LookForGitPath(CString path)
 CString CTGitPath::GetActionName(int action)
 {
 	if(action  & CTGitPath::LOGACTIONS_UNMERGED)
-		return _T("Conflict");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_CONFLICT);
 	if(action  & CTGitPath::LOGACTIONS_ADDED)
-		return _T("Added");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_ADD);
 	if(action  & CTGitPath::LOGACTIONS_DELETED)
-		return _T("Deleted");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_DELETE);
 	if(action  & CTGitPath::LOGACTIONS_MERGED )
-		return _T("Merged");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_MERGED);
 
 	if(action  & CTGitPath::LOGACTIONS_MODIFIED)
-		return _T("Modified");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_MODIFIED);
 	if(action  & CTGitPath::LOGACTIONS_REPLACED)
-		return _T("Rename");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_RENAME);
 	if(action  & CTGitPath::LOGACTIONS_COPY)
-		return _T("Copy");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_COPY);
 
 	if(action  & CTGitPath::LOGACTIONS_FORWORD )
-		return _T("Forward");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_FORWARD);
 
 	if(action & CTGitPath::LOGACTIONS_REBASE_EDIT)
-		return _T("Edit");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_EDIT);
 	if(action & CTGitPath::LOGACTIONS_REBASE_SQUASH)
-		return _T("Squash");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_SQUASH);
 	if(action & CTGitPath::LOGACTIONS_REBASE_PICK)
-		return _T("Pick");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_PICK);
 	if(action & CTGitPath::LOGACTIONS_REBASE_SKIP)
-		return _T("Skip");
+		return MAKEINTRESOURCE(IDS_PATHACTIONS_SKIP);
 
-	return _T("Unknown");
+	return MAKEINTRESOURCE(IDS_PATHACTIONS_UNKNOWN);
 }
 CString CTGitPath::GetActionName()
 {

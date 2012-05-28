@@ -151,7 +151,7 @@ public:
 
 	void ResetWcRev()
 	{
-		m_wcRev.GetBody()=_T("Fetching Status...");
+		m_wcRev.GetBody() = CString(MAKEINTRESOURCE(IDS_LOG_FETCHINGSTATUS));
 		m_wcRev.m_CallDiffAsync = DiffAsync;
 		InterlockedExchange(&m_wcRev.m_IsDiffFiles, FALSE);
 	}
@@ -270,6 +270,7 @@ public:
 	ID_DELETE,
 	ID_COMMIT,
 	ID_PUSH,
+	ID_FETCH,
 	};
 	inline unsigned __int64 GetContextMenuBit(int i){ return ((unsigned __int64 )0x1)<<i ;}
 	void InsertGitColumn();

@@ -1,11 +1,14 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by d:\TortoiseGit\src\Resources\TortoiseGitBlame.rc
+// Used by d:\TortoiseGit\src\Resources\TortoiseGitBlameENG.rc
 //
 #define IDR_TORTOISE_GIT_BLAME_MAINFRAME 1
 #define IDR_TORTOISE_GIT_BLAME_MAINFRAME_256 2
 #define IDS_VERSION                     2
 #define IDS_APPNAME                     3
+#define IDS_CANNOTBLAMENOGIT            4
+#define IDS_BLAMEERROR                  5
+#define IDS_CHECKOUTFAILED              6
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define ID_STATUSBAR_PANE1              120
@@ -69,13 +72,14 @@
 #define ID_BLAMEPOPUP_DIFFPREVIOUS      32780
 #define ID_BLAMEPOPUP_SHOWLOG           32781
 #define ID_VIEW_FOLLOWRENAMES           32782
+#define ID_FILE_SETTINGS                32783
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32783
+#define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

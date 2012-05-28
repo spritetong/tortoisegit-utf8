@@ -149,7 +149,7 @@ bool RemoveCommand::Execute()
 	for(nPath = 0; nPath < pathList.GetCount(); nPath++)
 	{
 		cmd.Format(format,pathList[nPath].GetGitPathString());
-		if(g_Git.Run(cmd,&output,CP_GIT_XUTF8))
+		if (g_Git.Run(cmd, &output, CP_UTF8))
 		{
 			key=CMessageBox::Show(hwndExplorer, output, _T("TortoiseGit"), MB_ICONERROR|MB_OKCANCEL);
 			if(key == IDCANCEL)
@@ -157,7 +157,7 @@ bool RemoveCommand::Execute()
 		}
 	}
 
-	output.Format(_T("%d files removed"),nPath);
+	output.Format(IDS_PROC_FILESREMOVED, nPath);
 
 	CShellUpdater::Instance().AddPathsForUpdate(pathList);
 

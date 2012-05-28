@@ -502,8 +502,8 @@
     <CustomBuild Include="hlp\TortoiseGitBlame.hhp">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Making help file...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
-if not exist "hlp\TortoiseGitBlame.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame.chm" "$(OutDir)TortoiseGitBlame.chm" &gt;nul
+if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -515,8 +515,8 @@ echo.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)$(ProjectName).chm</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Making help file...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
-if not exist "hlp\TortoiseGitBlame.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame.chm" "$(OutDir)TortoiseGitBlame.chm" &gt;nul
+if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -528,8 +528,8 @@ echo.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)$(ProjectName).chm</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Making help file...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
-if not exist "hlp\TortoiseGitBlame.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame.chm" "$(OutDir)TortoiseGitBlame.chm" &gt;nul
+if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -541,8 +541,8 @@ echo.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)$(ProjectName).chm</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Making help file...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
-if not exist "hlp\TortoiseGitBlame.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame.chm" "$(OutDir)TortoiseGitBlame.chm" &gt;nul
+if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -555,7 +555,7 @@ echo.
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\Resources\TortoiseGitBlame.rc">
+    <ResourceCompile Include="..\Resources\TortoiseGitBlameENG.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -597,7 +597,7 @@ echo.
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="\build\x64\TortoiseGit\src\Resources\TortoiseGitBlame.rc" />
+      <UserProperties RESOURCE_FILE="\build\x64\TortoiseGit\src\Resources\TortoiseGitBlameENG.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

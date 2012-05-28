@@ -1,4 +1,4 @@
-// TortoiseSVN - a Windows shell extension for easy version control
+// TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2007 - TortoiseSVN
 
@@ -31,7 +31,7 @@ public:
 	CFindBar();
 	~CFindBar(void);
 
-    void                    SetParent(HWND hParent) {m_hParent = hParent;}
+	void					SetParent(HWND hParent) {m_hParent = hParent;}
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT					DoCommand(int id, int msg);

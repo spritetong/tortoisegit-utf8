@@ -1,5 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
+// Copyright (C) 2010-2012 - TortoiseGit
 // Copyright (C) 2003-2007 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -73,7 +74,35 @@ BEGIN_MESSAGE_MAP(CSetProxyPage, ISettingsPropPage)
 	ON_BN_CLICKED(IDC_SSHBROWSE, OnBnClickedSshbrowse)
 END_MESSAGE_MAP()
 
+HRESULT StringEscape(const CString& str_in, CString* escaped_string) {
+	// http://tools.ietf.org/html/rfc3986#section-3.2.1
+	if (!escaped_string)
+		return E_INVALIDARG;
 
+	DWORD buf_len = INTERNET_MAX_URL_LENGTH + 1;
+	HRESULT hr = ::UrlEscape(str_in, escaped_string->GetBufferSetLength(buf_len), &buf_len, URL_ESCAPE_PERCENT | URL_ESCAPE_SEGMENT_ONLY);
+	if (SUCCEEDED(hr)) {
+		escaped_string->ReleaseBuffer();
+	}
+
+	escaped_string->Replace(_T("@"), _T("%40"));
+	escaped_string->Replace(_T(":"), _T("%3a"));
+
+	return hr;
+}
+
+HRESULT StringUnescape(const CString& str_in, CString* unescaped_string) {
+	if (!unescaped_string)
+		return E_INVALIDARG;
+
+	DWORD buf_len = INTERNET_MAX_URL_LENGTH + 1;
+	HRESULT hr = ::UrlUnescape(str_in.AllocSysString(), unescaped_string->GetBufferSetLength(buf_len), &buf_len, 0);
+	if (SUCCEEDED(hr)) {
+		unescaped_string->ReleaseBuffer();
+	}
+
+	return hr;
+}
 
 BOOL CSetProxyPage::OnInitDialog()
 {
@@ -82,7 +111,7 @@ BOOL CSetProxyPage::OnInitDialog()
 	m_tooltips.Create(this);
 	m_tooltips.AddTool(IDC_SERVERADDRESS, IDS_SETTINGS_PROXYSERVER_TT);
 
-	CString proxy=g_Git.GetConfigValue(_T("http.proxy"),CP_GIT_XUTF8);
+	CString proxy = g_Git.GetConfigValue(_T("http.proxy"), CP_UTF8);
 
 	m_SSHClient = m_regSSHClient;
 	m_serveraddress = m_regServeraddress;
@@ -124,13 +153,13 @@ BOOL CSetProxyPage::OnInitDialog()
 			username = proxy.Find(_T(":"),start);
 			if(username<=0 || username >at)
 			{
-				m_username=proxy.Mid(start, at-start);
+				StringUnescape(proxy.Mid(start, at - start), &m_username);
 				m_password=_T("");
 			}
 			else if(username < at)
 			{
-				m_username=proxy.Mid(start, username-start);
-				m_password=proxy.Mid(username+1,at - username-1);
+				StringUnescape(proxy.Mid(start, username - start), &m_username);
+				StringUnescape(proxy.Mid(username + 1, at - username - 1), &m_password);
 			}
 
 			port=proxy.Find(_T(":"),at);
@@ -213,18 +242,31 @@ BOOL CSetProxyPage::OnApply()
 		if(m_serveraddress.Left(5) != _T("http:"))
 			http_proxy=_T("http://");
 
-
 		if(!m_username.IsEmpty())
 		{
-			http_proxy += m_username;
+			CString escapedUsername;
+
+			if (StringEscape(m_username, &escapedUsername))
+			{
+				::MessageBox(NULL, _T("Could not encode username."), _T("TortoiseGit"), MB_ICONERROR);
+				return FALSE;
+			}
+
+			http_proxy += escapedUsername;
 
 			if(!m_password.IsEmpty())
-				http_proxy += _T(":")+m_password;
+			{
+				CString escapedPassword;
+				if (StringEscape(m_password, &escapedPassword))
+				{
+					::MessageBox(NULL, _T("Could not encode password."), _T("TortoiseGit"), MB_ICONERROR);
+					return FALSE;
+				}
+				http_proxy += _T(":") + escapedPassword;
+			}
 
 			http_proxy += _T("@");
-
 		}
-
 		http_proxy+=m_serveraddress;
 
 		if(m_serverport)
@@ -240,13 +282,12 @@ BOOL CSetProxyPage::OnApply()
 	}
 	else
 	{
-		g_Git.SetConfigValue(_T("http.proxy"),_T(""),CONFIG_GLOBAL);
+		g_Git.UnsetConfigValue(_T("http.proxy"), CONFIG_GLOBAL);
 	}
 	m_regSSHClient = m_SSHClient;
 	SetModified(FALSE);
 	return ISettingsPropPage::OnApply();
 }
-
 
 void CSetProxyPage::OnBnClickedSshbrowse()
 {

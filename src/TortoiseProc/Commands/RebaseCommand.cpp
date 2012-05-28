@@ -38,7 +38,7 @@ bool RebaseCommand::Execute()
 		{
 			CString cmd,out;
 			cmd=_T("git.exe stash");
-			if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+			if (g_Git.Run(cmd, &out, CP_UTF8))
 			{
 				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK);
 				return false;
@@ -54,7 +54,7 @@ bool RebaseCommand::Execute()
 	while(1)
 	{
 		CRebaseDlg dlg;
-		dlg.m_PostButtonTexts.Add(_T("Restart Rebase"));
+		dlg.m_PostButtonTexts.Add(CString(MAKEINTRESOURCE(IDS_PROC_RESTARTREBASE)));
 		int ret = dlg.DoModal();
 		if( ret == IDOK)
 		{

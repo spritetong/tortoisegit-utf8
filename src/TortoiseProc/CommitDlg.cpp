@@ -67,6 +67,7 @@ CCommitDlg::CCommitDlg(CWnd* pParent /*=NULL*/)
 	, m_bAutoClose(false)
 	, m_bSetCommitDateTime(FALSE)
 	, m_bCreateNewBranch(FALSE)
+	, m_bCreateTagAfterCommit(FALSE)
 {
 	this->m_bCommitAmend=FALSE;
 	m_bPushAfterCommit = FALSE;
@@ -448,7 +449,7 @@ void CCommitDlg::OnOK()
 	ProjectProperties::GetBOOLProps(bWarnNoSignedOffBy, _T("tgit.warnnosignedoffby"));
 	if (bWarnNoSignedOffBy == TRUE && m_cLogMessage.GetText().Find(GetSignedOffByLine()) == -1)
 	{
-		UINT retval = CMessageBox::Show(this->m_hWnd, _T("You haven't entered your Signed-Off-By line!"), _T("TortoiseGit"), 1, IDI_WARNING, _T("&Add it"), _T("&Commit w/o"), _T("A&bort"));
+		UINT retval = CMessageBox::Show(this->m_hWnd, IDS_PROC_COMMIT_NOSIGNOFFLINE, IDS_APPNAME, 1, IDI_WARNING, IDS_PROC_COMMIT_ADDSIGNOFFBUTTON, IDS_PROC_COMMIT_NOADDSIGNOFFBUTTON, IDS_ABORTBUTTON);
 		if (retval == 1)
 		{
 			OnBnClickedSignOff();
@@ -521,26 +522,30 @@ void CCommitDlg::OnOK()
 	bool bCloseCommitDlg=false;
 
 	CSysProgressDlg sysProgressDlg;
-	if (nListItems >= 10  && sysProgressDlg.IsValid())
+	if (nListItems >= 25 && sysProgressDlg.IsValid())
 	{
-		sysProgressDlg.SetTitle(_T("Preparing commit..."));
-		sysProgressDlg.SetLine(1, _T("Updating index"));
+		sysProgressDlg.SetTitle(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_PREPARECOMMIT)));
+		sysProgressDlg.SetLine(1, CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_UPDATEINDEX)));
 		sysProgressDlg.SetTime(true);
 		sysProgressDlg.SetShowProgressBar(true);
 		sysProgressDlg.ShowModal(this, true);
 	}
 
 	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
+	DWORD currentTicks = GetTickCount();
 
 	for (int j=0; j<nListItems; j++)
 	{
 		CTGitPath *entry = (CTGitPath*)m_ListCtrl.GetItemData(j);
 		if (sysProgressDlg.IsValid())
 		{
-			sysProgressDlg.SetLine(2, entry->GetGitPathString(), true);
-			sysProgressDlg.SetProgress(j, nListItems);
-			if (j % 25 == 0 || j == nListItems - 1)
+			if (GetTickCount() - currentTicks > 1000 || j == nListItems - 1 || j == 0)
+			{
+				sysProgressDlg.SetLine(2, entry->GetGitPathString(), true);
+				sysProgressDlg.SetProgress(j, nListItems);
 				AfxGetThread()->PumpMessage(); // process messages, in order to avoid freezing; do not call this too: this takes time!
+				currentTicks = GetTickCount();
+			}
 		}
 		//const CGitStatusListCtrl::FileEntry * entry = m_ListCtrl.GetListEntry(j);
 		if (entry->m_Checked)
@@ -574,7 +579,7 @@ void CCommitDlg::OnOK()
 			else
 				cmd.Format(_T("git.exe update-index  -- \"%s\""),entry->GetGitPathString());
 
-			if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+			if (g_Git.Run(cmd, &out, CP_UTF8))
 			{
 				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 				bAddSuccess = false ;
@@ -584,7 +589,7 @@ void CCommitDlg::OnOK()
 			if( entry->m_Action & CTGitPath::LOGACTIONS_REPLACED)
 				cmd.Format(_T("git.exe rm -- \"%s\""), entry->GetGitOldPathString());
 
-			g_Git.Run(cmd,&out,CP_GIT_XUTF8);
+			g_Git.Run(cmd, &out, CP_UTF8);
 
 			nchecked++;
 
@@ -597,7 +602,7 @@ void CCommitDlg::OnOK()
 			if(entry->m_Action & CTGitPath::LOGACTIONS_ADDED)
 			{	//To init git repository, there are not HEAD, so we can use git reset command
 				cmd.Format(_T("git.exe rm -f --cache -- \"%s\""),entry->GetGitPathString());
-				if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+				if (g_Git.Run(cmd, &out, CP_UTF8))
 				{
 					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
 					bAddSuccess = false ;
@@ -616,7 +621,7 @@ void CCommitDlg::OnOK()
 				{
 					cmd.Format(_T("git.exe reset -- \"%s\""), entry->GetGitPathString());
 				}
-				if(g_Git.Run(cmd,&out,CP_GIT_XUTF8))
+				if (g_Git.Run(cmd, &out, CP_UTF8))
 				{
 					/* when reset a unstage file will report error.
 					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
@@ -671,14 +676,14 @@ void CCommitDlg::OnOK()
 
 	if (bAddSuccess && m_bCreateNewBranch)
 	{
-		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_GIT_XUTF8))
+		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_UTF8))
 		{
-			MessageBox(_T("Creating branch failed:\n") + out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+			MessageBox(_T("Creating new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
 			bAddSuccess = false;
 		}
-		if (g_Git.Run(_T("git checkout ") + m_sCreateNewBranch, &out, CP_GIT_XUTF8))
+		if (g_Git.Run(_T("git checkout ") + m_sCreateNewBranch, &out, CP_UTF8))
 		{
-			MessageBox(_T("Switching to new branch failed:\n") + out, _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+			MessageBox(_T("Switching to new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
 			bAddSuccess = false;
 		}
 	}
@@ -747,8 +752,9 @@ void CCommitDlg::OnOK()
 
 		if (!m_bNoPostActions && !m_bAutoClose)
 		{
-			progress.m_PostCmdList.Add( IsGitSVN? _T("&DCommit"): _T("&Push"));
-			progress.m_PostCmdList.Add(_T("&ReCommit"));
+			progress.m_PostCmdList.Add( IsGitSVN? CString(MAKEINTRESOURCE(IDS_MENUSVNDCOMMIT)): CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
+			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_RECOMMIT)));
+			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUTAG)));
 		}
 
 		m_PostCmd = IsGitSVN? GIT_POST_CMD_DCOMMIT:GIT_POST_CMD_PUSH;
@@ -765,6 +771,10 @@ void CCommitDlg::OnOK()
 			}
 
 			this->Refresh();
+		}
+		else if(userResponse == IDC_PROGRESS_BUTTON1 + 2)
+		{
+			m_bCreateTagAfterCommit=true;
 		}
 		else if(userResponse == IDC_PROGRESS_BUTTON1)
 		{
@@ -1126,9 +1136,6 @@ void CCommitDlg::OnCancel()
 	m_bCancelled = true;
 	m_pathwatcher.Stop();
 
-	if (m_bBlock)
-		return;
-
 	if (m_bThreadRunning)
 	{
 		InterlockedExchange(&m_bRunThread, FALSE);
@@ -1268,7 +1275,7 @@ void CCommitDlg::OnBnClickedShowunversioned()
 			else
 				m_ListCtrl.GetStatus(&this->m_pathList,false,false,true);
 		}
-		m_ListCtrl.Show(dwShow,0,true,0,true);
+		m_ListCtrl.Show(dwShow, 0, true, dwShow & ~(CTGitPath::LOGACTIONS_UNVER), true);
 	}
 }
 
@@ -1543,9 +1550,9 @@ void CCommitDlg::ScanFile(const CString& sFilePath, const CString& sRegex)
 		}
 		if ((opts & IS_TEXT_UNICODE_NOT_UNICODE_MASK)||(opts == 0))
 		{
-			int ret = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, NULL, 0);
+			int ret = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, NULL, 0);
 			wchar_t * pWideBuf = new wchar_t[ret];
-			int ret2 = MultiByteToWideChar(CP_GIT_XUTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, pWideBuf, ret);
+			int ret2 = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, (LPCSTR)buffer, readbytes, pWideBuf, ret);
 			if (ret2 == ret)
 				sFileContent = wstring(pWideBuf, ret);
 			delete [] pWideBuf;
@@ -1617,7 +1624,7 @@ bool CCommitDlg::HandleMenuItemClick(int cmd, CSciEdit * pSciEdit)
 				CString line;
 				CString status = entry->GetActionName();
 				if(entry->m_Action & CTGitPath::LOGACTIONS_UNVER)
-					status = _T("Add");
+					status = _T("Add"); // I18N TODO
 
 				//git_wc_status_kind status = entry->status;
 				WORD langID = (WORD)CRegStdDWORD(_T("Software\\TortoiseGit\\LanguageID"), GetUserDefaultLangID());
@@ -1842,7 +1849,7 @@ void CCommitDlg::FillPatchView()
 				if(m_bCommitAmend==TRUE && m_bAmendDiffToLastCommit==FALSE)
 					head = _T("HEAD~1");
 				cmd.Format(_T("git.exe diff %s -- \"%s\""), head, p->GetGitPathString());
-				g_Git.Run(cmd,&out,CP_GIT_XUTF8);
+				g_Git.Run(cmd, &out, CP_UTF8);
 			}
 		}
 
@@ -2040,8 +2047,13 @@ void CCommitDlg::OnBnClickedWholeProject()
 		else
 			m_ListCtrl.GetStatus(&this->m_pathList,true,false,true);
 
-		DWORD dwShow = (DWORD)(GITSLC_SHOWVERSIONEDBUTNORMALANDEXTERNALSFROMDIFFERENTREPOS | GITSLC_SHOWUNVERSIONED | GITSLC_SHOWLOCKS);
-		m_ListCtrl.Show(m_ListCtrl.GetShowFlags(), dwShow & (~CTGitPath::LOGACTIONS_UNVER|~CTGitPath::LOGACTIONS_IGNORE));
+		DWORD dwShow = m_ListCtrl.GetShowFlags();
+		if (DWORD(m_regAddBeforeCommit))
+			dwShow |= GITSLC_SHOWUNVERSIONED;
+		else
+			dwShow &= ~GITSLC_SHOWUNVERSIONED;
+
+		m_ListCtrl.Show(dwShow, dwShow & ~(CTGitPath::LOGACTIONS_UNVER), true);
 	}
 
 	SetDlgTitle();
@@ -2160,8 +2172,7 @@ int CCommitDlg::CheckHeadDetach()
 	CString output;
 	if(g_Git.GetCurrentBranchFromFile(g_Git.m_CurrentDir,output))
 	{
-		int retval = CMessageBox::Show(NULL,_T("<ct=0x0000FF>Current HEAD Detached</ct>, you are working on (no branch)\nDo you want create branch now?"),
-						_T("TortoiseGit"),MB_YESNOCANCEL | MB_ICONWARNING);
+		int retval = CMessageBox::Show(NULL, IDS_PROC_COMMIT_DETACHEDWARNING, IDS_APPNAME, MB_YESNOCANCEL | MB_ICONWARNING);
 		if(retval == IDYES)
 		{
 			if (CAppUtils::CreateBranchTag(FALSE, NULL, true) == FALSE)
@@ -2229,7 +2240,7 @@ void CCommitDlg::OnBnClickedCheckNewBranch()
 
 void CCommitDlg::RestoreFiles(bool doNotAsk)
 {
-	if (m_ListCtrl.m_restorepaths.size() && (doNotAsk || CMessageBox::Show(m_hWnd, _T("You marked some files as \"Restore after commit\".\nDo you want to restore them now? You might loose all changes to this file after marking it."), _T("TortoiseGit"), 2, IDI_QUESTION, _T("Restore old state"), _T("Keep current state")) == 1))
+	if (m_ListCtrl.m_restorepaths.size() && (doNotAsk || CMessageBox::Show(m_hWnd, IDS_PROC_COMMIT_RESTOREFILES, IDS_APPNAME, 2, IDI_QUESTION, IDS_PROC_COMMIT_RESTOREFILES_RESTORE, IDS_PROC_COMMIT_RESTOREFILES_KEEP) == 1))
 	{
 		for (std::map<CString, CString>::iterator it = m_ListCtrl.m_restorepaths.begin(); it != m_ListCtrl.m_restorepaths.end(); ++it)
 			CopyFile(it->second, g_Git.m_CurrentDir + _T("\\") + it->first, FALSE);

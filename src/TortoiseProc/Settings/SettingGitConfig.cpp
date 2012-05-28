@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CSettingGitConfig, CPropertyPage)
 	ON_BN_CLICKED(IDC_EDITGLOBALGITCONFIG, &CSettingGitConfig::OnBnClickedEditglobalgitconfig)
 	ON_BN_CLICKED(IDC_EDITLOCALGITCONFIG, &CSettingGitConfig::OnBnClickedEditlocalgitconfig)
 	ON_BN_CLICKED(IDC_CHECK_WARN_NO_SIGNED_OFF_BY, &CSettingGitConfig::OnBnClickedCheckWarnNoSignedOffBy)
+	ON_BN_CLICKED(IDC_EDITSYSTEMGITCONFIG, &CSettingGitConfig::OnBnClickedEditsystemgitconfig)
 END_MESSAGE_MAP()
 
 BOOL CSettingGitConfig::OnInitDialog()
@@ -107,7 +108,9 @@ BOOL CSettingGitConfig::OnInitDialog()
 	CString proj;
 	if (g_GitAdminDir.HasAdminDir(str, &proj) || isBareRepo)
 	{
-		this->SetWindowText(_T("Config - ") + proj);
+		CString title;
+		this->GetWindowText(title);
+		this->SetWindowText(title + _T(" - ") + proj);
 		this->GetDlgItem(IDC_CHECK_GLOBAL)->EnableWindow(TRUE);
 		this->GetDlgItem(IDC_EDITLOCALGITCONFIG)->EnableWindow(TRUE);
 	}
@@ -119,7 +122,7 @@ BOOL CSettingGitConfig::OnInitDialog()
 	}
 
 	if (isBareRepo)
-		this->GetDlgItem(IDC_EDITLOCALGITCONFIG)->SetWindowText(_T("Edit local git config"));
+		this->GetDlgItem(IDC_EDITLOCALGITCONFIG)->SetWindowText(CString(MAKEINTRESOURCE(IDS_PROC_GITCONFIG_EDITLOCALGONCFIG)));
 
 	this->UpdateData(FALSE);
 	return TRUE;
@@ -159,54 +162,48 @@ BOOL CSettingGitConfig::OnApply()
 		type = CONFIG_GLOBAL;
 
 	if(m_ChangeMask&GIT_NAME)
-		if(g_Git.SetConfigValue(_T("user.name"), this->m_UserName,type, g_Git.GetGitEncode(L"i18n.commitencoding")))
-		{
-			CMessageBox::Show(NULL, _T("Fail to save user name"), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+		if (!Save(_T("user.name"), this->m_UserName, type))
 			return FALSE;
-		}
 
 	if(m_ChangeMask&GIT_EMAIL)
-		if(g_Git.SetConfigValue(_T("user.email"), this->m_UserEmail,type, g_Git.GetGitEncode(L"i18n.commitencoding")))
-		{
-			CMessageBox::Show(NULL, _T("Fail to save user email"), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+		if (!Save(_T("user.email"), this->m_UserEmail,type))
 			return FALSE;
-		}
 
 	if(m_ChangeMask&GIT_SIGNINGKEY)
-		if(g_Git.SetConfigValue(_T("user.signingkey"), this->m_UserSigningKey, type, g_Git.GetGitEncode(L"i18n.commitencoding")))
-		{
-			CMessageBox::Show(NULL,_T("Fail to save user signingkey"),_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+		if (!Save(_T("user.signingkey"), this->m_UserSigningKey, type))
 			return FALSE;
-		}
 
 	if(m_ChangeMask&GIT_WARNNOSIGNEDOFFBY)
-		if(g_Git.SetConfigValue(_T("tgit.warnnosignedoffby"), this->m_bWarnNoSignedOffBy?_T("true"):_T("false"), type))
-		{
-			CMessageBox::Show(NULL, _T("Fail to save warnnosignedoffby"), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+		if (!Save(_T("tgit.warnnosignedoffby"), this->m_bWarnNoSignedOffBy ? _T("true") : _T("false"), type))
 			return FALSE;
-		}
 
 	if(m_ChangeMask&GIT_CRLF)
-		if(g_Git.SetConfigValue(_T("core.autocrlf"), this->m_bAutoCrlf?_T("true"):_T("false"), type))
-		{
-			CMessageBox::Show(NULL, _T("Fail to save autocrlf"), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+		if (!Save(_T("core.autocrlf"), this->m_bAutoCrlf ? _T("true") : _T("false"), type))
 			return FALSE;
-		}
 
 	if(m_ChangeMask&GIT_SAFECRLF)
 	{
 		CString safecrlf;
 		this->m_cSafeCrLf.GetWindowText(safecrlf);
-		if(g_Git.SetConfigValue(_T("core.safecrlf"), safecrlf, type))
-		{
-			CMessageBox::Show(NULL, _T("Fail to save safecrlf"), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+		if (!Save(_T("core.safecrlf"), safecrlf, type))
 			return FALSE;
-		}
 	}
 
 	m_ChangeMask = 0;
 	SetModified(FALSE);
 	return ISettingsPropPage::OnApply();
+}
+bool CSettingGitConfig::Save(CString key, CString value, CONFIG_TYPE type)
+{
+	CString out;
+	if (g_Git.SetConfigValue(key, value, type, g_Git.GetGitEncode(L"i18n.commitencoding"), &g_Git.m_CurrentDir))
+	{
+		CString msg;
+		msg.Format(IDS_PROC_SAVECONFIGFAILED, key, value);
+		CMessageBox::Show(NULL, msg, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
+		return false;
+	}
+	return true;
 }
 void CSettingGitConfig::OnBnClickedCheckWarnNoSignedOffBy()
 {
@@ -243,4 +240,18 @@ void CSettingGitConfig::OnBnClickedEditlocalgitconfig()
 	path += _T("config");
 	// use alternative editor because of LineEndings
 	CAppUtils::LaunchAlternativeEditor(path);
+}
+
+void CSettingGitConfig::OnBnClickedEditsystemgitconfig()
+{
+	TCHAR buf[MAX_PATH];
+	const char * systemdir = get_msysgit_etc();
+	if (!systemdir)
+	{
+		CMessageBox::Show(NULL, IDS_PROC_GITCONFIG_NOMSYSGIT, IDS_APPNAME, MB_ICONERROR);
+		return;
+	}
+	_tcscpy_s(buf, MAX_PATH, CA2CT(systemdir));
+	// use alternative editor because of LineEndings
+	CAppUtils::LaunchAlternativeEditor(buf);
 }

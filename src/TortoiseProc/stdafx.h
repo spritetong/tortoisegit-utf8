@@ -70,6 +70,11 @@
 #include "ProfilingInfo.h"
 #include <afxdhtml.h>
 
+/* For UTF-8. Added by Sprite Tong, 12/30/2011. */
+#include "../Utils/tgit_xutf8.h"
+#include "../../../tgit/compat/win32_xutf8.h"
+#include <iterator>
+
 #ifdef _WIN64
 #	define APP_X64_STRING	"x64"
 #else
@@ -79,7 +84,3 @@
 #pragma warning(disable: 4512)	// assignment operator could not be generated
 #pragma warning(disable: 4355)	// used in base member initializer list
 
-/* For UTF-8. Added by Sprite Tong, 12/30/2011. */
-#include "../Utils/tgit_xutf8.h"
-#include "../../../tgit/compat/win32_xutf8.h"
-#include <iterator>

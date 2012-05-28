@@ -1,7 +1,7 @@
 // TortoiseGitBlame - a Viewer for Git Blames
 
-// Copyright (C) 2008-2011 - TortoiseGit
-// Copyright (C) 2010-2011 Sven Strickroth <email@cs-ware.de>
+// Copyright (C) 2008-2012 - TortoiseGit
+// Copyright (C) 2010-2012 Sven Strickroth <email@cs-ware.de>
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // Copyright (C)2003 Don HO <donho@altern.org>
@@ -504,7 +504,7 @@ BOOL CTortoiseGitBlameView::OpenLogFile(const char *fileName)
 		}
 		int len2 = ::MultiByteToWideChar(CP_UTF8, NULL, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH+5), wbuf, MAX_LOG_LENGTH+5);
 		wbuf[len2] = 0;
-		len2 = ::WideCharToMultiByte(CP_GIT_XUTF8, NULL, wbuf, len2, logmsgbuf, MAX_LOG_LENGTH+5, NULL, NULL);
+		len2 = ::WideCharToMultiByte(CP_ACP, NULL, wbuf, len2, logmsgbuf, MAX_LOG_LENGTH+5, NULL, NULL);
 		logmsgbuf[len2] = 0;
 		msg = CString(logmsgbuf);
 		logmessages[rev] = msg;
@@ -819,7 +819,7 @@ bool CTortoiseGitBlameView::DoSearch(CString what, DWORD flags)
 	}
 	else
 	{
-		::MessageBox(wMain, what+_T(" not found"), _T("CTortoiseGitBlameView"), MB_ICONINFORMATION);
+		::MessageBox(wMain, _T("\"") + what + _T("\" ") + CString(MAKEINTRESOURCE(IDS_NOTFOUND)), _T("TortoiseGitBlame"), MB_ICONINFORMATION);
 	}
 
 	return true;
@@ -1134,7 +1134,7 @@ void CTortoiseGitBlameView::DrawBlame(HDC hDC)
 			//}
 
 			CString str;
-			str = m_CommitHash[i].ToString().Left(6);
+			str = m_CommitHash[i].ToString().Left(g_Git.GetShortHASHLength());
 
 			//_stprintf_s(buf, MAX_PATH, _T("%8ld       "), revs[i]);
 			rc.top=Y;
@@ -1860,7 +1860,7 @@ LRESULT CALLBACK WndBlameProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 					else
 					{
 						pTTTW->lpszText = app.m_wszTip;
-						::MultiByteToWideChar( CP_GIT_XUTF8 , 0, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH*2), app.m_wszTip, MAX_LOG_LENGTH*2);
+						::MultiByteToWideChar( CP_ACP , 0, msg.c_str(), min(msg.size(), MAX_LOG_LENGTH*2), app.m_wszTip, MAX_LOG_LENGTH*2);
 						app.StringExpand(app.m_wszTip);
 					}
 				}
