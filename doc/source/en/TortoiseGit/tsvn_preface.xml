@@ -70,7 +70,16 @@
 			on your PC.
 		</para>
 		<para>
-			In <xref linkend="git-book"/> we give a short introduction
+			If you need a general introduction to version control with <emphasis>Git</emphasis>,
+			then we recommend two videos on YouTube:
+<ulink url="http://www.youtube.com/watch?v=4XpnKHJAok8">
+<citetitle>Tech Talk: Linus Torvalds on git</citetitle>
+</ulink> (about design and differences to other VCS)
+and
+<ulink url="http://www.youtube.com/watch?v=8dhZ9BXQgc4">
+<citetitle>Tech Talk: Git</citetitle>
+</ulink> (more technical). You can also read <xref linkend="git-book"/>
+			which is a short introduction
 			to the <emphasis>Git</emphasis> revision control system. 
 			This is borrowed from the documentation for the
 			Git project and explains the different approaches to version
@@ -86,14 +95,14 @@
 		<para>
 			The <xref linkend="tsvn-dug"/> is the most important section as
 			it explains all the main features of TortoiseGit and how to use them.
-			It takes the form of a tutorial, starting with checking out a working copy,
+			It takes the form of a tutorial, starting with checking out a working tree,
 			modifying it, committing your changes, etc. It then progresses to more
 			advanced topics.
 		</para>
 		<!--
 		<para>
 			<xref linkend="tsvn-subwcrev"/> is a separate program included with TortoiseGit
-			which can extract the information from your working copy and write it into a
+			which can extract the information from your working tree and write it into a
 			file. This is useful for including build information in your projects.
 		</para>
 		-->

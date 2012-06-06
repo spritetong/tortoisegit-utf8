@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -840,7 +840,7 @@ int GitStatus::sort_compare_items_as_paths (const sort_item *a, const sort_item 
 }
 #endif
 
-git_error_t* GitStatus::cancel(void * /*baton*/)
+tgit_error_t* GitStatus::cancel(void * /*baton*/)
 {
 #if 0
 	volatile bool * canceled = (bool *)baton;
@@ -973,6 +973,7 @@ int GitStatus::GetFileStatus(const CString &gitdir,const CString &pathParam,git_
 						//add item
 
 						int start =SearchInSortVector(*treeptr,lowcasepath.GetBuffer(),-1);
+						lowcasepath.ReleaseBuffer();
 
 						if(start<0)
 						{
@@ -1055,10 +1056,6 @@ __int64 GitStatus::GetIndexFileTime(const CString &gitdir)
 	return ptr->m_LastModifyTime;
 }
 
-int GitStatus::GetIgnoreFileChangeTimeList(const CString &dir, std::vector<__int64> &timelist)
-{
-	return g_IgnoreList.GetIgnoreFileChangeTimeList(dir,timelist);
-}
 int GitStatus::IsIgnore(const CString &gitdir, const CString &path, bool *isIgnore)
 {
 	if(::g_IgnoreList.CheckIgnoreChanged(gitdir,path))
@@ -1159,8 +1156,10 @@ int GitStatus::EnumDirStatus(const CString &gitdir,const CString &subpath,git_wc
 				onepath += it->m_FileName;
 				casepath += it->m_CaseFileName;
 
-				int pos = SearchInSortVector(*indexptr, onepath.GetBuffer(), onepath.GetLength());
-				int posintree = SearchInSortVector(*treeptr, onepath.GetBuffer(), onepath.GetLength());
+				LPTSTR onepathBuffer = onepath.GetBuffer();
+				int pos = SearchInSortVector(*indexptr, onepathBuffer, onepath.GetLength());
+				int posintree = SearchInSortVector(*treeptr, onepathBuffer, onepath.GetLength());
+				onepath.ReleaseBuffer();
 
 				bool bIsDir =false;
 				if(onepath.GetLength()>0 && onepath[onepath.GetLength()-1] == _T('/'))
@@ -1236,10 +1235,11 @@ int GitStatus::EnumDirStatus(const CString &gitdir,const CString &subpath,git_wc
 			}/*End of For*/
 
 			/* Check deleted file in system */
+			LPTSTR lowcasepathBuffer = lowcasepath.GetBuffer();
 			int start=0, end=0;
-			int pos=SearchInSortVector(*indexptr, lowcasepath.GetBuffer(), lowcasepath.GetLength());
+			int pos=SearchInSortVector(*indexptr, lowcasepathBuffer, lowcasepath.GetLength());
 
-			if(pos>=0 && GetRangeInSortVector(*indexptr,lowcasepath.GetBuffer(),lowcasepath.GetLength(),&start,&end,pos))
+			if(pos>=0 && GetRangeInSortVector(*indexptr, lowcasepathBuffer, lowcasepath.GetLength(), &start, &end, pos))
 			{
 				CGitIndexList::iterator it;
 				CString oldstring;
@@ -1266,8 +1266,8 @@ int GitStatus::EnumDirStatus(const CString &gitdir,const CString &subpath,git_wc
 			}
 
 			start = end =0;
-			pos=SearchInSortVector(*treeptr, lowcasepath.GetBuffer(), lowcasepath.GetLength());
-			if(pos>=0 && GetRangeInSortVector(*treeptr,lowcasepath.GetBuffer(),lowcasepath.GetLength(),&start,&end,pos) == 0)
+			pos=SearchInSortVector(*treeptr, lowcasepathBuffer, lowcasepath.GetLength());
+			if(pos>=0 && GetRangeInSortVector(*treeptr, lowcasepathBuffer, lowcasepath.GetLength(), &start, &end, pos) == 0)
 			{
 				CGitHeadFileList::iterator it;
 				CString oldstring;
@@ -1292,6 +1292,7 @@ int GitStatus::EnumDirStatus(const CString &gitdir,const CString &subpath,git_wc
 					}
 				}
 			}
+			lowcasepath.ReleaseBuffer();
 
 		}/*End of if status*/
 	}catch(...)
@@ -1339,6 +1340,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 			}
 
 			int pos=SearchInSortVector(*indexptr,lowcasepath.GetBuffer(),lowcasepath.GetLength());
+			lowcasepath.ReleaseBuffer();
 
 			//Not In Version Contorl
 			if(pos<0)
@@ -1380,7 +1382,9 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 					start=0;
 					end=indexptr->size()-1;
 				}
-				GetRangeInSortVector(*indexptr,lowcasepath.GetBuffer(),lowcasepath.GetLength(),&start,&end,pos);
+				LPTSTR lowcasepathBuffer = lowcasepath.GetBuffer();
+				GetRangeInSortVector(*indexptr, lowcasepathBuffer, lowcasepath.GetLength(), &start, &end, pos);
+				lowcasepath.ReleaseBuffer();
 				CGitIndexList::iterator it;
 
 				it = indexptr->begin()+start;
@@ -1431,6 +1435,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 							for(int i=start;i<=end;i++)
 							{
 								pos =SearchInSortVector(*treeptr, (*it).m_FileName.GetBuffer(), -1);
+								(*it).m_FileName.ReleaseBuffer();
 
 								if(pos < 0)
 								{
@@ -1466,7 +1471,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 							//Check Delete
 							if( *status == git_wc_status_normal )
 							{
-								pos = SearchInSortVector(*treeptr, lowcasepath.GetBuffer(), lowcasepath.GetLength());
+								pos = SearchInSortVector(*treeptr, lowcasepathBuffer, lowcasepath.GetLength());
 								if(pos <0)
 								{
 									*status = max(git_wc_status_modified, *status); // added file found
@@ -1475,7 +1480,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 								else
 								{
 									int hstart,hend;
-									GetRangeInSortVector(*treeptr,lowcasepath.GetBuffer(),lowcasepath.GetLength(),&hstart,&hend,pos);
+									GetRangeInSortVector(*treeptr, lowcasepathBuffer, lowcasepath.GetLength(), &hstart, &hend, pos);
 									CGitHeadFileList::iterator hit;
 									hit = treeptr->begin() + hstart;
 									CGitHeadFileList::iterator lastElement = treeptr->end();
@@ -1483,9 +1488,11 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 									{
 										if( SearchInSortVector(*indexptr,(*hit).m_FileName.GetBuffer(),-1) < 0)
 										{
+											(*hit).m_FileName.ReleaseBuffer();
 											*status = max(git_wc_status_modified, *status); // deleted file found
 											break;
 										}
+										(*hit).m_FileName.ReleaseBuffer();
 										hit++;
 									}
 								}
@@ -1493,6 +1500,7 @@ int GitStatus::GetDirStatus(const CString &gitdir,const CString &subpath,git_wc_
 						}
 					}/* End lock*/
 				}
+				lowcasepath.ReleaseBuffer();
 				// If define callback, it need update each file status.
 				// If not define callback, status == git_wc_status_conflicted, needn't check each file status
 				// because git_wc_status_conflicted is highest.s

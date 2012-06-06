@@ -1,7 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2003-2011 - TortoiseSVN
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -904,7 +904,7 @@ STDMETHODIMP CShellExt::QueryContextMenu(HMENU hMenu,
 
 	if (((uFlags & CMF_EXTENDEDVERBS) == 0) && g_ShellCache.HideMenusForUnversionedItems())
 	{
-		if ((itemStates & (ITEMIS_INGIT|ITEMIS_INVERSIONEDFOLDER|ITEMIS_FOLDERINGIT|ITEMIS_BAREREPO))==0)
+		if ((itemStates & (ITEMIS_INGIT|ITEMIS_INVERSIONEDFOLDER|ITEMIS_FOLDERINGIT|ITEMIS_BAREREPO|ITEMIS_TWO))==0)
 			return S_OK;
 	}
 
@@ -1647,6 +1647,9 @@ STDMETHODIMP CShellExt::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 					    gitCmd += folder_;
     				gitCmd += _T("\"");
                 }
+				break;
+			case ShellMenuRepoBrowse:
+				gitCmd += _T("repobrowser /path:\"") + folder_ + _T("\"");
 				break;
 			case ShellMenuRefBrowse:
 				gitCmd += _T("refbrowse /path:\"");

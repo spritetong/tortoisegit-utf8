@@ -249,12 +249,7 @@
     <None Include="..\Resources\pandown.cur" />
     <None Include="..\Resources\proxy.ico" />
     <None Include="..\Resources\RenameBackground.ico" />
-    <None Include="..\Resources\repo_file.ico" />
-    <None Include="..\Resources\repo_http.ico" />
-    <None Include="..\Resources\repo_https.ico" />
-    <None Include="..\Resources\repo_svn+ssh.ico" />
-    <None Include="..\Resources\repo_svn.ico" />
-    <None Include="..\Resources\repo_unknown.ico" />
+    <None Include="..\Resources\RepoBrowserBackground.ico" />
     <None Include="..\Resources\ResolveBackground.ico" />
     <None Include="..\Resources\RevertBackground.ico" />
     <None Include="..\Resources\revgraph_added.ico" />

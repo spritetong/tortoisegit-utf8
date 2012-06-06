@@ -110,8 +110,11 @@ CGitLogListBase::CGitLogListBase():CHintListCtrl()
 	m_bFilterWithRegex = !!CRegDWORD(_T("Software\\TortoiseGit\\UseRegexFilter"), TRUE);
 
 	g_Git.GetMapHashToFriendName(m_HashMap);
-	m_CurrentBranch=g_Git.GetCurrentBranch();
-	this->m_HeadHash=g_Git.GetHash(_T("HEAD"));
+	if (CTGitPath(g_Git.m_CurrentDir).HasAdminDir())
+	{
+		m_CurrentBranch=g_Git.GetCurrentBranch();
+		m_HeadHash=g_Git.GetHash(_T("HEAD"));
+	}
 
 	m_From=-1;;
 	m_To=-1;
@@ -1570,6 +1573,9 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 					GetSelectedCount() == 1)
 						popup.AppendMenuIcon(ID_LOG, IDS_LOG_POPUP_LOG, IDI_LOG);
 
+				if (m_ContextMenuMask&GetContextMenuBit(ID_REPOBROWSE))
+					popup.AppendMenuIcon(ID_REPOBROWSE, IDS_LOG_BROWSEREPO, IDI_REPOBROWSE);
+
 				format.LoadString(IDS_LOG_POPUP_MERGEREV);
 				str.Format(format,g_Git.GetCurrentBranch());
 
@@ -1821,6 +1827,9 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 		if(m_ContextMenuMask&GetContextMenuBit(ID_FINDENTRY))
 			popup.AppendMenuIcon(ID_FINDENTRY, IDS_LOG_POPUP_FIND, IDI_FILTEREDIT);
 
+		if (GetSelectedCount() == 1 && m_ContextMenuMask & GetContextMenuBit(ID_SHOWBRANCHES) && !pSelLogEntry->m_CommitHash.IsEmpty())
+			popup.AppendMenuIcon(ID_SHOWBRANCHES, IDS_LOG_POPUP_SHOWBRANCHES, IDI_SHOWBRANCHES);
+
 		int cmd = popup.TrackPopupMenu(TPM_RETURNCMD | TPM_LEFTALIGN | TPM_NONOTIFY, point.x, point.y, this, 0);
 //		DialogEnableWindow(IDOK, FALSE);
 //		SetPromptApp(&theApp);
@@ -2055,11 +2064,11 @@ int CGitLogListBase::FillGitLog(CTGitPath *path,int info,CString *from,CString *
 {
 	ClearText();
 
-
 	this->m_arShownList.SafeRemoveAll();
 
 	this->m_logEntries.ClearAll();
-	this->m_logEntries.ParserFromLog(path,-1,info,from,to);
+	if (this->m_logEntries.ParserFromLog(path,-1,info,from,to))
+		return -1;
 
 	//this->m_logEntries.ParserFromLog();
 	SetItemCountEx(this->m_logEntries.size());
@@ -2078,6 +2087,9 @@ int CGitLogListBase::FillGitLog(CTGitPath *path,int info,CString *from,CString *
 			this->m_arShownList.SafeAdd(&m_logEntries.GetGitRevAt(i));
 		}
 	}
+
+	m_CurrentBranch = g_Git.GetCurrentBranch();
+	m_HeadHash = g_Git.GetHash(_T("HEAD"));
 
 	if(path)
 		m_Path=*path;
@@ -2142,6 +2154,13 @@ int CGitLogListBase::BeginFetchLog()
 
 	data.m_IsRegex = m_bFilterWithRegex;
 #endif
+
+	// follow does not work for directories
+	if (!path || path->IsDirectory())
+		mask &= ~CGit::LOG_INFO_FOLLOW;
+	// follow does not work with all branches 8at least in TGit)
+	if (mask & CGit::LOG_INFO_FOLLOW)
+		mask &= ~CGit::LOG_INFO_ALL_BRANCH;
 
 	CString cmd=g_Git.GetLogCmd(m_StartRef,path,-1,mask,pFrom,pTo,true,&data);
 
@@ -2318,11 +2337,17 @@ UINT CGitLogListBase::LogThread()
 		while( ret== 0)
 		{
 			g_Git.m_critGitDllSec.Lock();
-			ret = git_get_log_nextcommit(this->m_DllGitLog, &commit, 0);
+			ret = git_get_log_nextcommit(this->m_DllGitLog, &commit, m_ShowMask & CGit::LOG_INFO_FOLLOW);
 			g_Git.m_critGitDllSec.Unlock();
 
 			if(ret)
 				break;
+
+			if (commit.m_ignore == 1)
+			{
+				git_free_commit(&commit);
+				continue;
+			}
 
 			//printf("%s\r\n",commit.GetSubject());
 			if(m_bExitThread)
@@ -2422,6 +2447,12 @@ void CGitLogListBase::Refresh(BOOL IsCleanFilter)
 	this->Clear();
 
 	ResetWcRev();
+
+	// HACK to hide graph column
+	if (m_ShowMask & CGit::LOG_INFO_FOLLOW)
+		SetColumnWidth(0, 0);
+	else
+		SetColumnWidth(0, m_ColumnManager.GetWidth(0, false));
 
 	//Update branch and Tag info
 	ReloadHashMap();
@@ -2968,6 +2999,9 @@ LRESULT CGitLogListBase::OnLoad(WPARAM wParam,LPARAM lParam)
 void CGitLogListBase::SaveColumnWidths()
 {
 	int maxcol = m_ColumnManager.GetColumnCount();
+
+	// HACK that graph column is always shown
+	SetColumnWidth(0, m_ColumnManager.GetWidth(0, false));
 
 	for (int col = 0; col < maxcol; col++)
 		if (m_ColumnManager.IsVisible (col))

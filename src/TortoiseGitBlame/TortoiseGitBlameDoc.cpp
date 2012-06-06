@@ -60,10 +60,6 @@ CTortoiseGitBlameDoc::~CTortoiseGitBlameDoc()
 
 BOOL CTortoiseGitBlameDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
-		return FALSE;
-
-	// (SDI documents will reuse this document)
 	return TRUE;
 }
 BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName)
@@ -84,10 +80,23 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 {
-	if (!CDocument::OnOpenDocument(lpszPathName))
-		return FALSE;
+	if(Rev.IsEmpty())
+		Rev = _T("HEAD");
 
-	m_CurrentFileName=lpszPathName;
+	// enable blame for files which do not exist in current working tree
+	if (!PathFileExists(lpszPathName) && Rev != _T("HEAD"))
+	{
+		if (!CDocument::OnOpenDocument(GetTempFile()))
+			return FALSE;
+	}
+	else
+	{
+		if (!CDocument::OnOpenDocument(lpszPathName))
+			return FALSE;
+	}
+
+	m_CurrentFileName = lpszPathName;
+
 	m_Rev=Rev;
 
 	// (SDI documents will reuse this document)
@@ -96,21 +105,30 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 		CCommonAppUtils::RunTortoiseProc(_T(" /command:settings"));
 		return FALSE;
 	}
-
 	GitAdminDir admindir;
 	CString topdir;
-	if(!admindir.HasAdminDir(lpszPathName,&topdir))
+	if(!admindir.HasAdminDir(m_CurrentFileName, &topdir))
 	{
 		CString temp;
-		temp.Format(IDS_CANNOTBLAMENOGIT, CString(lpszPathName));
+		temp.Format(IDS_CANNOTBLAMENOGIT, CString(m_CurrentFileName));
 		CMessageBox::Show(NULL, temp, _T("TortoiseGitBlame"), MB_OK);
 	}
 	else
 	{
+		GitAdminDir lastAdminDir;
+		CString oldTopDir;
+		if (topdir != g_Git.m_CurrentDir && CTGitPath(g_Git.m_CurrentDir).HasAdminDir(&oldTopDir) && oldTopDir != topdir)
+		{
+			CString sMsg;
+			sMsg.Format(IDS_ERR_DIFFENERTPREPO, oldTopDir, topdir);
+			MessageBox(NULL, sMsg, _T("TortoiseGitBlame"), MB_OK | MB_ICONERROR);
+			return FALSE;
+		}
+
 		m_IsGitFile=TRUE;
 		sOrigCWD = g_Git.m_CurrentDir = topdir;
 
-		CString PathName=lpszPathName;
+		CString PathName = m_CurrentFileName;
 		if(topdir[topdir.GetLength()-1] == _T('\\') ||
 			topdir[topdir.GetLength()-1] == _T('/'))
 			PathName=PathName.Right(PathName.GetLength()-g_Git.m_CurrentDir.GetLength());
@@ -124,12 +142,10 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 			SetCurrentDirectory(g_Git.m_CurrentDir);
 
 		m_GitPath = path;
-		GetMainFrame()->m_wndOutput.LoadHistory(path.GetGitPathString(), (theApp.GetInt(_T("FollowRenames"), 0) == 1));
+		if (GetMainFrame()->m_wndOutput.LoadHistory(path.GetGitPathString(), m_Rev, (theApp.GetInt(_T("FollowRenames"), 0) == 1)))
+			return FALSE;
 
 		CString cmd;
-
-		if(Rev.IsEmpty())
-			Rev=_T("HEAD");
 
 		cmd.Format(_T("git.exe blame -s -l %s -- \"%s\""),Rev,path.GetGitPathString());
 		m_BlameData.clear();
@@ -143,6 +159,7 @@ BOOL CTortoiseGitBlameDoc::OnOpenDocument(LPCTSTR lpszPathName,CString Rev)
 				g_Git.StringAppend(&str, &err[0], CP_UTF8);
 			MessageBox(NULL, CString(MAKEINTRESOURCE(IDS_BLAMEERROR)) + _T("\n\n") + str, _T("TortoiseGitBlame"), MB_OK);
 
+			return FALSE;
 		}
 
 		if(!m_TempFileName.IsEmpty())

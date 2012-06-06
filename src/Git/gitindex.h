@@ -431,26 +431,38 @@ public:
 	__time64_t  m_LastModifyTime;
 	CStringA m_BaseDir;
 	EXCLUDE_LIST m_pExcludeList;
-	int FetchIgnoreList(const CString &projectroot, const CString &file);
+	int FetchIgnoreList(const CString &projectroot, const CString &file, bool isGlobal);
 };
 
 class CGitIgnoreList
 {
 private:
 	bool CheckFileChanged(const CString &path);
-	int	 FetchIgnoreFile(const CString &gitdir, const CString &gitignore);
+	int FetchIgnoreFile(const CString &gitdir, const CString &gitignore, bool isGlobal);
 
 	int  CheckIgnore(const CString &path,const CString &root);
+	int CheckFileAgainstIgnoreList(const CString &ignorefile, const CStringA &patha, const char * base, int &type);
+
+	// core.excludesfile stuff
+	std::map<CString, CString> m_CoreExcludesfiles;
+	CString m_sMsysGitBinPath;
+	DWORD m_dMsysGitBinPathLastChecked;
+	SharedMutex	m_coreExcludefilesSharedMutex;
+	// checks if the msysgit path has changed and return true/false
+	// if the path changed, the cache is update
+	// force is only ised in constructor
+	bool CheckAndUpdateMsysGitBinpath(bool force = true);
+	bool CheckAndUpdateCoreExcludefile(const CString &adminDir);
+	const CString GetWindowsHome();
 
 public:
 	SharedMutex		m_SharedMutex;
 
-	CGitIgnoreList(){ m_SharedMutex.Init(); }
-	~CGitIgnoreList() { m_SharedMutex.Release(); }
+	CGitIgnoreList(){ m_SharedMutex.Init(); m_coreExcludefilesSharedMutex.Init(); CheckAndUpdateMsysGitBinpath(true); }
+	~CGitIgnoreList() { m_SharedMutex.Release(); m_coreExcludefilesSharedMutex.Release(); }
 
 	std::map<CString, CGitIgnoreItem> m_Map;
 
-	int	 GetIgnoreFileChangeTimeList(const CString &dir, std::vector<__int64> &timelist);
 	bool CheckIgnoreChanged(const CString &gitdir,const CString &path);
 	int  LoadAllIgnoreFile(const CString &gitdir,const CString &path);
 	bool IsIgnore(const CString &path,const CString &root);
@@ -614,11 +626,20 @@ public:
 						CString str = CString(buffer);
 						if (str.Left(8) == _T("gitdir: "))
 						{
+							str = str.TrimRight().Mid(8);
 							str.Replace(_T("/"), _T("\\"));
-							str.TrimRight();
 							str.TrimRight(_T("\\"));
-							(*this)[thePath] = str.Mid(8) + _T("\\");
-							m_reverseLookup[str.Mid(8).MakeLower()] = path;
+							if (str.GetLength() > 0 && str[0] == _T('.'))
+							{
+								str = thePath + _T("\\") + str;
+								CString newPath;
+								PathCanonicalize(newPath.GetBuffer(MAX_PATH), str.GetBuffer());
+								newPath.ReleaseBuffer();
+								str.ReleaseBuffer();
+								str = newPath;
+							}
+							(*this)[thePath] = str + _T("\\");
+							m_reverseLookup[str.MakeLower()] = path;
 							return (*this)[thePath];
 						}
 					}

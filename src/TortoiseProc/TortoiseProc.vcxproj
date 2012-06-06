@@ -237,12 +237,14 @@
     <ClCompile Include="..\Utils\Libraries.cpp" />
     <ClCompile Include="AddRemoteDlg.cpp" />
     <ClCompile Include="..\TGitCache\CacheInterface.cpp" />
+    <ClCompile Include="Commands\RepositoryBrowserCommand.cpp" />
     <ClCompile Include="FindDlg.cpp" />
     <ClCompile Include="LogFile.cpp" />
     <ClCompile Include="LoglistUtils.cpp" />
     <ClCompile Include="MassiveGitTask.cpp" />
     <ClCompile Include="Patch.cpp" />
     <ClCompile Include="ProjectProperties.cpp" />
+    <ClCompile Include="RepositoryBrowser.cpp" />
     <ClCompile Include="Settings\SettingsAdvanced.cpp" />
     <ClCompile Include="SinglePropSheetDlg.cpp" />
     <ClCompile Include="AppUtils.cpp" />
@@ -391,6 +393,7 @@
     <ClInclude Include="..\Utils\Libraries.h" />
     <ClInclude Include="..\Utils\tgit_xutf8.h" />
     <ClInclude Include="AddRemoteDlg.h" />
+    <ClInclude Include="Commands\RepositoryBrowserCommand.h" />
     <ClInclude Include="FindDlg.h" />
     <ClInclude Include="LogFile.h" />
     <ClInclude Include="LoglistUtils.h" />
@@ -398,6 +401,7 @@
     <ClInclude Include="Patch.h" />
     <ClInclude Include="ProjectProperties.h" />
     <ClInclude Include="..\TortoiseShell\resource.h" />
+    <ClInclude Include="RepositoryBrowser.h" />
     <ClInclude Include="Settings\SettingsAdvanced.h" />
     <ClInclude Include="SinglePropSheetDlg.h" />
     <ClInclude Include="DeleteConflictDlg.h" />
@@ -630,12 +634,7 @@
     <None Include="..\Resources\refresh.ico" />
     <None Include="..\Resources\reftype.bmp" />
     <None Include="..\Resources\RenameBackground.ico" />
-    <None Include="..\Resources\repo_file.ico" />
-    <None Include="..\Resources\repo_http.ico" />
-    <None Include="..\Resources\repo_https.ico" />
-    <None Include="..\Resources\repo_svn+ssh.ico" />
-    <None Include="..\Resources\repo_svn.ico" />
-    <None Include="..\Resources\repo_unknown.ico" />
+    <None Include="..\Resources\RepoBrowserBackground.ico" />
     <None Include="..\Resources\ResolveBackground.ico" />
     <None Include="..\Resources\RevertBackground.ico" />
     <None Include="..\Resources\revgraph_added.ico" />
@@ -650,6 +649,7 @@
     <None Include="..\Resources\saveas.ico" />
     <None Include="..\Resources\saveddata.ico" />
     <None Include="..\Resources\search.avi" />
+    <None Include="..\Resources\showbranches.ico" />
     <None Include="..\TortoiseBlame\small.ico" />
     <None Include="..\Resources\ssh.ico" />
     <None Include="..\Resources\switch.ico" />
