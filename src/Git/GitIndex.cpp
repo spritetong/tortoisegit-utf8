@@ -425,6 +425,7 @@ int CGitIndexFileMap::IsUnderVersionControl(const CString &gitdir, const CString
 				*isVersion = (SearchInSortVector(*pIndex, subpath.GetBuffer(), subpath.GetLength()) >= 0);
 			else
 				*isVersion = (SearchInSortVector(*pIndex, subpath.GetBuffer(), -1) >= 0);
+			subpath.ReleaseBuffer();
 		}
 
 	}catch(...)
@@ -810,7 +811,7 @@ int ReadTreeRecursive(git_repository &repo, git_tree * tree, CStringA base, int 
 			if(mode&S_IFDIR)
 			{
 				git_object *object = NULL;
-				git_tree_entry_2object(&object, &repo, entry);
+				git_tree_entry_to_object(&object, &repo, entry);
 				if (object == NULL)
 					continue;
 				CStringA parent = base;
@@ -837,6 +838,7 @@ int CGitHeadFileList::ReadTree()
 	do
 	{
 		ret = git_repository_open(&repository, gitdir.GetBuffer());
+		gitdir.ReleaseBuffer();
 		if(ret)
 			break;
 		ret = git_commit_lookup(&commit, repository, (const git_oid*)m_Head.m_hash);
@@ -868,7 +870,7 @@ int CGitHeadFileList::ReadTree()
 	return ret;
 
 }
-int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &file)
+int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &file, bool isGlobal)
 {
 	CAutoWriteLock lock(&this->m_SharedMutex);
 
@@ -879,19 +881,16 @@ int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &f
 	}
 
 	this->m_BaseDir.Empty();
-	CString gitDir = g_AdminDirMap.GetAdminDir(projectroot);
-	if (gitDir.GetLength() < file.GetLength())
+	if (!isGlobal)
 	{
-		CString base = file.Mid(gitDir.GetLength());
+		CString base = file.Mid(projectroot.GetLength());
 		base.Replace(_T('\\'), _T('/'));
-		if (base != _T("info/exclude"))
+
+		int start = base.ReverseFind(_T('/'));
+		if(start > 0)
 		{
-			int start = base.ReverseFind(_T('/'));
-			if(start >= 0)
-			{
-				base = base.Left(start);
-				this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8);
-			}
+			base = base.Left(start);
+			this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8);
 		}
 	}
 	{
@@ -1016,11 +1015,15 @@ bool CGitIgnoreList::CheckIgnoreChanged(const CString &gitdir,const CString &pat
 			if (CheckFileChanged(gitignore))
 				return true;
 
-			CString wcglobalgitignore = g_AdminDirMap.GetAdminDir(tempOrig) + _T("info\\exclude");
+			CString adminDir = g_AdminDirMap.GetAdminDir(tempOrig);
+			CString wcglobalgitignore = adminDir + _T("info\\exclude");
 			if (CheckFileChanged(wcglobalgitignore))
 				return true;
-			else
-				return false;
+
+			if (CheckAndUpdateCoreExcludefile(adminDir))
+				return true;
+
+			return false;
 		}
 		else
 		{
@@ -1045,7 +1048,7 @@ bool CGitIgnoreList::CheckIgnoreChanged(const CString &gitdir,const CString &pat
 	return true;
 }
 
-int CGitIgnoreList::FetchIgnoreFile(const CString &gitdir, const CString &gitignore)
+int CGitIgnoreList::FetchIgnoreFile(const CString &gitdir, const CString &gitignore, bool isGlobal)
 {
 	if (CGit::GitPathFileExists(gitignore)) //if .gitignore remove, we need remote cache
 	{
@@ -1053,7 +1056,7 @@ int CGitIgnoreList::FetchIgnoreFile(const CString &gitdir, const CString &gitign
 		if (m_Map.find(gitignore) == m_Map.end())
 			m_Map[gitignore].m_SharedMutex.Init();
 
-		m_Map[gitignore].FetchIgnoreList(gitdir,gitignore);
+		m_Map[gitignore].FetchIgnoreList(gitdir, gitignore, isGlobal);
 	}
 	else
 	{
@@ -1087,13 +1090,23 @@ int CGitIgnoreList::LoadAllIgnoreFile(const CString &gitdir,const CString &path)
 			gitignore += _T("ignore");
 			if (CheckFileChanged(gitignore))
 			{
-				FetchIgnoreFile(gitdir, gitignore);
+				FetchIgnoreFile(gitdir, gitignore, false);
 			}
 
-			CString wcglobalgitignore = g_AdminDirMap.GetAdminDir(tempOrig) + _T("info\\exclude");
+			CString adminDir = g_AdminDirMap.GetAdminDir(tempOrig);
+			CString wcglobalgitignore = adminDir + _T("info\\exclude");
 			if (CheckFileChanged(wcglobalgitignore))
 			{
-				return FetchIgnoreFile(gitdir, wcglobalgitignore);
+				FetchIgnoreFile(gitdir, wcglobalgitignore, true);
+			}
+
+			if (CheckAndUpdateCoreExcludefile(adminDir))
+			{
+				m_SharedMutex.AcquireShared();
+				CString excludesFile = m_CoreExcludesfiles[adminDir];
+				m_SharedMutex.ReleaseShared();
+				if (!excludesFile.IsEmpty())
+					FetchIgnoreFile(gitdir, excludesFile, true);
 			}
 
 			return 0;
@@ -1103,7 +1116,7 @@ int CGitIgnoreList::LoadAllIgnoreFile(const CString &gitdir,const CString &path)
 			temp += _T("ignore");
 			if (CheckFileChanged(temp))
 			{
-				FetchIgnoreFile(gitdir, temp);
+				FetchIgnoreFile(gitdir, temp, false);
 			}
 		}
 
@@ -1122,54 +1135,93 @@ int CGitIgnoreList::LoadAllIgnoreFile(const CString &gitdir,const CString &path)
 	}
 	return 0;
 }
-int CGitIgnoreList::GetIgnoreFileChangeTimeList(const CString &path, std::vector<__int64> &timelist)
+bool CGitIgnoreList::CheckAndUpdateMsysGitBinpath(bool force)
 {
-	CString temp = path;
-	CString ignore = temp;
-	int start = 0;
-
-	do{
-		CAutoReadLock lock(&this->m_SharedMutex);
-
-		ignore=temp;
-		ignore += _T("\\.gitignore");
-		std::map<CString, CGitIgnoreItem>::iterator itMap;
-		itMap = m_Map.find(ignore);
-		if (itMap == m_Map.end())
+	// recheck every 30 seconds
+	if (GetTickCount() - m_dMsysGitBinPathLastChecked > 30000 || force)
+	{
+		m_dMsysGitBinPathLastChecked = GetTickCount();
+		CString msysGitBinPath(CRegString(REG_MSYSGIT_PATH, _T(""), FALSE));
+		if (msysGitBinPath != m_sMsysGitBinPath)
 		{
-			timelist.push_back(0);
+			m_sMsysGitBinPath = msysGitBinPath;
+			return true;
 		}
-		else
-		{
-			timelist.push_back(itMap->second.m_LastModifyTime);
-		}
+	}
+	return false;
+}
+bool CGitIgnoreList::CheckAndUpdateCoreExcludefile(const CString &adminDir)
+{
+	bool hasChanged = false;
 
-		ignore = g_AdminDirMap.GetAdminDir(temp) + _T("info\\exclude");
-		itMap = m_Map.find(ignore);
-		if (itMap == m_Map.end())
-		{
+	CString projectConfig = adminDir + _T("config");
+	CString globalConfig = GetWindowsHome() + _T("\\.gitconfig");
 
-		}
-		else
-		{
-			timelist.push_back(itMap->second.m_LastModifyTime);
-			return 0;
-		}
+	CAutoWriteLock lock(&m_coreExcludefilesSharedMutex);
+	hasChanged = CheckAndUpdateMsysGitBinpath();
+	CString systemConfig = m_sMsysGitBinPath + _T("\\..\\etc\\gitconfig");
 
-		ignore = temp;
-		ignore += _T("\\.git");
+	hasChanged = hasChanged || CheckFileChanged(projectConfig);
+	hasChanged = hasChanged || CheckFileChanged(globalConfig);
+	if (!m_sMsysGitBinPath.IsEmpty())
+		hasChanged = hasChanged || CheckFileChanged(systemConfig);
 
-		if (CGit::GitPathFileExists(ignore))
-			return 0;
+	m_SharedMutex.AcquireShared();
+	CString excludesFile = m_CoreExcludesfiles[adminDir];
+	m_SharedMutex.ReleaseShared();
+	if (!excludesFile.IsEmpty())
+		hasChanged = hasChanged || CheckFileChanged(excludesFile);
 
-		start = temp.ReverseFind(_T('\\'));
-		if (start > 0)
-			temp=temp.Left(start);
+	if (!hasChanged)
+		return false;
 
-	} while(start > 0);
+	git_config * config;
+	git_config_new(&config);
+	CStringA projectConfigA = CUnicodeUtils::GetMulti(projectConfig, CP_UTF8);
+	git_config_add_file_ondisk(config, projectConfigA.GetBuffer(), 3);
+	projectConfigA.ReleaseBuffer();
+	CStringA globalConfigA = CUnicodeUtils::GetMulti(globalConfig, CP_UTF8);
+	git_config_add_file_ondisk(config, globalConfigA.GetBuffer(), 2);
+	globalConfigA.ReleaseBuffer();
+	if (!m_sMsysGitBinPath.IsEmpty())
+	{
+		CStringA systemConfigA = CUnicodeUtils::GetMulti(systemConfig, CP_UTF8);
+		git_config_add_file_ondisk(config, systemConfigA.GetBuffer(), 1);
+		systemConfigA.ReleaseBuffer();
+	}
+	const char * out = NULL;
+	CStringA name(_T("core.excludesfile"));
+	git_config_get_string(&out, config, name.GetBuffer());
+	name.ReleaseBuffer();
+	CStringA excludesFileA(out);
+	excludesFile = CUnicodeUtils::GetUnicode(excludesFileA);
+	if (excludesFile.Find(_T("~/")) == 0)
+		excludesFile = GetWindowsHome() + excludesFile.Mid(1);
+	git_config_free(config);
 
-	return -1;
+	CAutoWriteLock lockMap(&m_SharedMutex);
+	g_Git.GetFileModifyTime(projectConfig, &m_Map[projectConfig].m_LastModifyTime);
+	g_Git.GetFileModifyTime(globalConfig, &m_Map[globalConfig].m_LastModifyTime);
+	if (m_Map[globalConfig].m_LastModifyTime == 0)
+	{
+		m_Map[globalConfig].m_SharedMutex.Release();
+		m_Map.erase(globalConfig);
+	}
+	if (!m_sMsysGitBinPath.IsEmpty())
+		g_Git.GetFileModifyTime(systemConfig, &m_Map[systemConfig].m_LastModifyTime);
+	if (m_Map[systemConfig].m_LastModifyTime == 0 || m_sMsysGitBinPath.IsEmpty())
+	{
+		m_Map[systemConfig].m_SharedMutex.Release();
+		m_Map.erase(systemConfig);
+	}
+	m_CoreExcludesfiles[adminDir] = excludesFile;
 
+	return true;
+}
+const CString CGitIgnoreList::GetWindowsHome()
+{
+	static CString sWindowsHome(get_windows_home_directory());
+	return sWindowsHome;
 }
 bool CGitIgnoreList::IsIgnore(const CString &path,const CString &projectroot)
 {
@@ -1195,6 +1247,18 @@ bool CGitIgnoreList::IsIgnore(const CString &path,const CString &projectroot)
 
 	return (ret == 1);
 }
+int CGitIgnoreList::CheckFileAgainstIgnoreList(const CString &ignorefile, const CStringA &patha, const char * base, int &type)
+{
+	if (m_Map.find(ignorefile) != m_Map.end())
+	{
+		int ret = -1;
+		if(m_Map[ignorefile].m_pExcludeList)
+			ret = git_check_excluded_1(patha, patha.GetLength(), base, &type, m_Map[ignorefile].m_pExcludeList);
+		if (ret == 0 || ret == 1)
+			return ret;
+	}
+	return -1;
+}
 int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 {
 	__int64 time = 0;
@@ -1202,9 +1266,7 @@ int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 	CString temp = projectroot + _T("\\") + path;
 	temp.Replace(_T('/'), _T('\\'));
 
-	CStringA patha;
-
-	patha = CUnicodeUtils::GetMulti(path, CP_UTF8);
+	CStringA patha = CUnicodeUtils::GetMulti(path, CP_UTF8);
 	patha.Replace('\\', '/');
 
 	if(g_Git.GetFileModifyTime(temp, &time, &dir))
@@ -1212,61 +1274,74 @@ int CGitIgnoreList::CheckIgnore(const CString &path,const CString &projectroot)
 
 	int type = 0;
 	if (dir)
+	{
 		type = DT_DIR;
+
+		// strip directory name
+		// we do not need to check for a .ignore file inside a directory we might ignore
+		int i = temp.ReverseFind(_T('\\'));
+		if (i >= 0)
+			temp = temp.Left(i);
+	}
 	else
 		type = DT_REG;
 
+	char * base = NULL;
+	int pos = patha.ReverseFind('/');
+	base = pos >= 0 ? patha.GetBuffer() + pos + 1 : patha.GetBuffer();
+
+	int ret = -1;
+
+	CAutoReadLock lock(&this->m_SharedMutex);
 	while (!temp.IsEmpty())
 	{
-		int x;
-		x = temp.ReverseFind(_T('\\'));
-		if(x < 0)
-			x=0;
-		temp=temp.Left(x);
+		CString tempOrig = temp;
+		temp += _T("\\.git");
 
-		temp += _T("\\.gitignore");
-
-		char *base;
-
-		patha.Replace('\\', '/');
-		int pos = patha.ReverseFind('/');
-		base = pos >= 0 ? patha.GetBuffer() + pos + 1 : patha.GetBuffer();
-
-		CAutoReadLock lock(&this->m_SharedMutex);
-
-		if(this->m_Map.find(temp) != m_Map.end())
+		if (CGit::GitPathFileExists(temp))
 		{
-			int ret=-1;
+			CString gitignore = temp;
+			gitignore += _T("ignore");
+			if ((ret = CheckFileAgainstIgnoreList(gitignore, patha, base, type)) != -1)
+				break;
 
-			if(m_Map[temp].m_pExcludeList)
-				ret = git_check_excluded_1( patha, patha.GetLength(), base, &type, m_Map[temp].m_pExcludeList);
+			CString adminDir = g_AdminDirMap.GetAdminDir(tempOrig);
+			CString wcglobalgitignore = adminDir + _T("info\\exclude");
+			if ((ret = CheckFileAgainstIgnoreList(wcglobalgitignore, patha, base, type)) != -1)
+				break;
+			
+			m_SharedMutex.AcquireShared();
+			CString excludesFile = m_CoreExcludesfiles[adminDir];
+			m_SharedMutex.ReleaseShared();
+			if (!excludesFile.IsEmpty())
+				ret = CheckFileAgainstIgnoreList(excludesFile, patha, base, type);
 
-			if(ret == 1)
-				return 1;
-			if(ret == 0)
-				return 0;
+			break;
+		}
+		else
+		{
+			temp += _T("ignore");
+			if ((ret = CheckFileAgainstIgnoreList(temp, patha, base, type)) != -1)
+				break;
 		}
 
-		temp = g_AdminDirMap.GetAdminDir(temp.Left(temp.GetLength() - 11)) + _T("info\\exclude");
-
-		if(this->m_Map.find(temp) != m_Map.end())
+		int found = 0;
+		int i;
+		for (i = temp.GetLength() - 1; i >= 0; i--)
 		{
-			int ret = -1;
+			if (temp[i] == _T('\\'))
+				found++;
 
-			if(m_Map[temp].m_pExcludeList)
-				ret = git_check_excluded_1(patha, patha.GetLength(), base, &type, m_Map[temp].m_pExcludeList);
-
-			if(ret == 1)
-				return 1;
-			if(ret == 0)
-				return 0;
-
-			return -1;
+			if (found == 2)
+				break;
 		}
-		temp = temp.Left(temp.GetLength() - 18);
+
+		temp = temp.Left(i);
 	}
 
-	return -1;
+	patha.ReleaseBuffer();
+
+	return ret;
 }
 
 bool CGitHeadFileMap::CheckHeadUpdate(const CString &gitdir)

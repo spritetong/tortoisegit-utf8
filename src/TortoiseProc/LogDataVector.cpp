@@ -1,5 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
+// Copyright (C) 2009-2012 - TortoiseGit
 // Copyright (C) 2007-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -94,8 +95,16 @@ int CLogDataVector::ParserFromLog(CTGitPath *path ,int count ,int infomask,CStri
 	git_init();
 
 	GIT_LOG handle;
-	if (git_open_log(&handle,CUnicodeUtils::GetMulti(cmd, CP_UTF8).GetBuffer()))
+	try
 	{
+		if (git_open_log(&handle,CUnicodeUtils::GetMulti(cmd, CP_UTF8).GetBuffer()))
+		{
+			return -1;
+		}
+	}
+	catch (char * g_last_error)
+	{
+		MessageBox(NULL, CString(g_last_error), _T("TortoiseGit"), MB_ICONERROR);
 		return -1;
 	}
 

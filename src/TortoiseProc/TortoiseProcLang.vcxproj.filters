@@ -140,24 +140,6 @@
     <None Include="..\Resources\RenameBackground.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\repo_file.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_http.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_https.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_svn+ssh.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_svn.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_unknown.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\ResolveBackground.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -228,6 +210,9 @@
     <None Include="..\Resources\cleananim.avi" />
     <None Include="..\Resources\download.avi" />
     <None Include="..\Resources\search.avi" />
+    <None Include="..\Resources\RepoBrowserBackground.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\Resources\TortoiseProcENG.rc">

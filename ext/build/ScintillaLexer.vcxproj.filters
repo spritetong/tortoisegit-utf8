@@ -379,6 +379,12 @@
     <ClCompile Include="..\scintilla\lexers\LexECL.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexOScript.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexVisualProlog.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\scintilla\src\AutoComplete.h">

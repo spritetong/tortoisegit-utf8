@@ -280,6 +280,16 @@ int CGitDiff::Diff(CTGitPath * pPath,CTGitPath * pPath2, git_revnum_t rev1, git_
 	{
 		file1=g_Git.m_CurrentDir+_T("\\")+pPath->GetWinPathString();
 		title1.Format( IDS_DIFF_WCNAME, pPath->GetFileOrDirectoryName() );
+		if (!PathFileExists(file1))
+		{
+			CString sMsg;
+			sMsg.Format(IDS_PROC_DIFFERROR_FILENOTINWORKINGTREE, file1);
+			if (MessageBox(NULL, sMsg, _T("TortoiseGit"), MB_ICONEXCLAMATION | MB_OKCANCEL) == IDCANCEL)
+				return 1;
+			if (!CCommonAppUtils::FileOpenSave(file1, NULL, IDS_DIFF_WCNAME, IDS_COMMONFILEFILTER, true))
+				return 1;
+			title1.Format(IDS_DIFF_WCNAME, CTGitPath(file1).GetUIFileOrDirectoryName());
+		}
 	}
 
 	CString file2;
@@ -332,42 +342,53 @@ int CGitDiff::Diff(CTGitPath * pPath,CTGitPath * pPath2, git_revnum_t rev1, git_
 
 int CGitDiff::DiffCommit(CTGitPath &path, GitRev *r1, GitRev *r2)
 {
-	if (path.GetWinPathString().IsEmpty())
+	return DiffCommit(path, path, r1, r2);
+}
+
+int CGitDiff::DiffCommit(CTGitPath &path1, CTGitPath &path2, GitRev *r1, GitRev *r2)
+{
+	if (path1.GetWinPathString().IsEmpty())
 	{
 		CFileDiffDlg dlg;
-		dlg.SetDiff(NULL,*r1,*r2);
+		dlg.SetDiff(NULL, *r1, *r2);
 		dlg.DoModal();
 	}
-	else if (path.IsDirectory())
+	else if (path1.IsDirectory())
 	{
 		CFileDiffDlg dlg;
-		dlg.SetDiff(&path,*r1,*r2);
+		dlg.SetDiff(&path1, *r1, *r2);
 		dlg.DoModal();
 	}
 	else
 	{
-		Diff(&path,&path,r1->m_CommitHash.ToString(),r2->m_CommitHash.ToString());
+		Diff(&path1, &path2, r1->m_CommitHash.ToString(), r2->m_CommitHash.ToString());
 	}
 	return 0;
 }
 
 int CGitDiff::DiffCommit(CTGitPath &path, CString r1, CString r2)
 {
-	if (path.GetWinPathString().IsEmpty())
+	return DiffCommit(path, path, r1, r2);
+}
+
+
+int CGitDiff::DiffCommit(CTGitPath &path1, CTGitPath &path2, CString r1, CString r2)
+{
+	if (path1.GetWinPathString().IsEmpty())
 	{
 		CFileDiffDlg dlg;
-		dlg.SetDiff(NULL,r1,r2);
+		dlg.SetDiff(NULL, r1, r2);
 		dlg.DoModal();
 	}
-	else if (path.IsDirectory())
+	else if (path1.IsDirectory())
 	{
 		CFileDiffDlg dlg;
-		dlg.SetDiff(&path,r1,r2);
+		dlg.SetDiff(&path1, r1, r2);
 		dlg.DoModal();
 	}
 	else
 	{
-		Diff(&path,&path,r1,r2);
+		Diff(&path1, &path2, r1, r2);
 	}
 	return 0;
 }

@@ -141,6 +141,9 @@
     <Filter Include="Git">
       <UniqueIdentifier>{c81b0090-eef7-44cd-9f1f-769de5da128e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands\RepositoryBrowser">
+      <UniqueIdentifier>{0a4994bc-1284-4bda-98d7-c0ad248fc5e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddRemoteDlg.cpp">
@@ -584,6 +587,12 @@
     <ClCompile Include="..\Utils\Libraries.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="RepositoryBrowser.cpp">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands\RepositoryBrowserCommand.cpp">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddRemoteDlg.h">
@@ -1018,6 +1027,12 @@
     <ClInclude Include="..\Utils\Libraries.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="RepositoryBrowser.h">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\RepositoryBrowserCommand.h">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\actionad.ico">
@@ -1308,24 +1323,6 @@
     <None Include="..\Resources\RenameBackground.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\repo_file.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_http.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_https.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_svn+ssh.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_svn.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\repo_unknown.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\ResolveBackground.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -1429,6 +1426,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\warning-general.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Resources\RepoBrowserBackground.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Resources\showbranches.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
