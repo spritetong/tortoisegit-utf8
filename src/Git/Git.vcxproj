@@ -160,7 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TGitPath.h" />
-    <ClInclude Include="CrashReport.h" />
     <ClInclude Include="Git.h" />
     <ClInclude Include="GitAdminDir.h" />
     <ClInclude Include="GitConfig.h" />

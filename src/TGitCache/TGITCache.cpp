@@ -1,7 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
 // External Cache Copyright (C) 2005 - 2006,2010 - Will Dean, Stefan Kueng
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #include "CacheInterface.h"
 #include "Resource.h"
 #include "registry.h"
-#include "..\crashrpt\CrashReport.h"
+#include "CrashReport.h"
 #include "GitAdminDir.h"
 #include "Dbt.h"
 #include <initguid.h>
@@ -46,7 +46,7 @@
 
 #pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-CCrashReport crasher("tortoisegit-bug@googlegroups.com", "Crash Report for TGitCache " APP_X64_STRING " : " STRPRODUCTVER, TRUE);// crash
+CCrashReportTGit crasher(L"TGitCache " _T(APP_X64_STRING));
 
 DWORD WINAPI 		InstanceThread(LPVOID); 
 DWORD WINAPI		PipeThread(LPVOID);
@@ -64,44 +64,6 @@ CComAutoCriticalSection critSec;
 volatile LONG		nThreadCount = 0;
 
 #define PACKVERSION(major,minor) MAKELONG(minor,major)
-DWORD GetDllVersion(LPCTSTR lpszDllName)
-{
-	DWORD dwVersion = 0;
-
-	/* For security purposes, LoadLibrary should be provided with a 
-	fully-qualified path to the DLL. The lpszDllName variable should be
-	tested to ensure that it is a fully qualified path before it is used. */
-	CAutoLibrary hinstDll = LoadLibrary(lpszDllName);
-
-	if(hinstDll)
-	{
-		DLLGETVERSIONPROC pDllGetVersion;
-		pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, 
-			"DllGetVersion");
-
-		/* Because some DLLs might not implement this function, you
-		must test for it explicitly. Depending on the particular 
-		DLL, the lack of a DllGetVersion function can be a useful
-		indicator of the version. */
-
-		if(pDllGetVersion)
-		{
-			DLLVERSIONINFO dvi;
-			HRESULT hr;
-
-			SecureZeroMemory(&dvi, sizeof(dvi));
-			dvi.cbSize = sizeof(dvi);
-
-			hr = (*pDllGetVersion)(&dvi);
-
-			if(SUCCEEDED(hr))
-			{
-				dwVersion = PACKVERSION(dvi.dwMajorVersion, dvi.dwMinorVersion);
-			}
-		}
-	}
-	return dwVersion;
-}
 
 void DebugOutputLastError()
 {
@@ -178,8 +140,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*
 	{
 		SecureZeroMemory(&niData,sizeof(NOTIFYICONDATA));
 
-		DWORD dwVersion = GetDllVersion(_T("Shell32.dll"));
-
+		DWORD dwMajor = 0;
+		DWORD dwMinor = 0;
+		AtlGetShellVersion(&dwMajor, &dwMinor);
+		DWORD dwVersion = PACKVERSION(dwMajor, dwMinor);
 		if (dwVersion >= PACKVERSION(6,0))
 			niData.cbSize = sizeof(NOTIFYICONDATA);
 		else if (dwVersion >= PACKVERSION(5,0))
@@ -764,7 +728,7 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 			case TGITCACHECOMMAND_CRAWL:
 				{
 					CTGitPath changedpath;
-					changedpath.SetFromWin(CString(command.path), true);
+					changedpath.SetFromWin(command.path, true);
 					// remove the path from our cache - that will 'invalidate' it.
 					CGitStatusCache::Instance().WaitToWrite();
 					CGitStatusCache::Instance().RemoveCacheForPath(changedpath);
@@ -780,7 +744,7 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 			case TGITCACHECOMMAND_RELEASE:
 				{
 					CTGitPath changedpath;
-					changedpath.SetFromWin(CString(command.path), true);
+					changedpath.SetFromWin(command.path, true);
 					ATLTRACE(_T("release handle for path %s\n"), changedpath.GetWinPath());
 					CGitStatusCache::Instance().WaitToWrite();
 					CGitStatusCache::Instance().CloseWatcherHandles(changedpath);
@@ -791,7 +755,7 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 			case TGITCACHECOMMAND_BLOCK:
 				{
 					CTGitPath changedpath;
-					changedpath.SetFromWin(CString(command.path));
+					changedpath.SetFromWin(command.path);
 					ATLTRACE(_T("block path %s\n"), changedpath.GetWinPath());
 					CGitStatusCache::Instance().BlockPath(changedpath);
 				}
@@ -799,7 +763,7 @@ DWORD WINAPI CommandThread(LPVOID lpvParam)
 			case TGITCACHECOMMAND_UNBLOCK:
 				{
 					CTGitPath changedpath;
-					changedpath.SetFromWin(CString(command.path));
+					changedpath.SetFromWin(command.path);
 					ATLTRACE(_T("block path %s\n"), changedpath.GetWinPath());
 					CGitStatusCache::Instance().UnBlockPath(changedpath);
 				}

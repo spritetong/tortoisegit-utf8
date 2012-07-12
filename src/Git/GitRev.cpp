@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -174,8 +174,15 @@ int GitRev::SafeGetSimpleList(CGit *git)
 
 		CAutoLocker lock(g_Git.m_critGitDllSec);
 
-		if(git_get_commit_from_hash(&commit, this->m_CommitHash.m_hash))
+		try
+		{
+			if(git_get_commit_from_hash(&commit, this->m_CommitHash.m_hash))
+				return -1;
+		}
+		catch (char * msg)
+		{
 			return -1;
+		}
 
 		int i=0;
 		bool isRoot = this->m_ParentHash.size()==0;
@@ -184,10 +191,17 @@ int GitRev::SafeGetSimpleList(CGit *git)
 		{
 			GIT_FILE file=0;
 			int count=0;
-			if(isRoot)
-				git_root_diff(git->GetGitSimpleListDiff(), commit.m_hash, &file, &count,0);
-			else
-				git_diff(git->GetGitSimpleListDiff(),parent,commit.m_hash,&file,&count,0);
+			try
+			{
+				if(isRoot)
+					git_root_diff(git->GetGitSimpleListDiff(), commit.m_hash, &file, &count, 0);
+				else
+					git_diff(git->GetGitSimpleListDiff(), parent, commit.m_hash, &file, &count, 0);
+			}
+			catch (char * msg)
+			{
+				return -1;
+			}
 
 			isRoot = false;
 
@@ -205,8 +219,14 @@ int GitRev::SafeGetSimpleList(CGit *git)
 				stroldname.Empty();
 
 				int mode,IsBin,inc,dec;
-				git_get_diff_file(git->GetGitSimpleListDiff(),file,j,&newname,&oldname,
-						&mode,&IsBin,&inc,&dec);
+				try
+				{
+					git_get_diff_file(git->GetGitSimpleListDiff(), file, j, &newname, &oldname, &mode, &IsBin, &inc, &dec);
+				}
+				catch (char * msg)
+				{
+					return -1;
+				}
 
 				git->StringAppend(&strnewname, (BYTE*)newname, CP_UTF8);
 
@@ -237,8 +257,15 @@ int GitRev::SafeFetchFullInfo(CGit *git)
 
 		CAutoLocker lock(g_Git.m_critGitDllSec);
 
-		if(git_get_commit_from_hash(&commit, this->m_CommitHash.m_hash))
+		try
+		{
+			if (git_get_commit_from_hash(&commit, this->m_CommitHash.m_hash))
+				return -1;
+		}
+		catch (char * msg)
+		{
 			return -1;
+		}
 
 		int i=0;
 
@@ -250,11 +277,18 @@ int GitRev::SafeFetchFullInfo(CGit *git)
 			GIT_FILE file=0;
 			int count=0;
 
-			if(isRoot)
-				git_root_diff(git->GetGitDiff(), this->m_CommitHash.m_hash, &file, &count,1);
-			else
-				git_diff(git->GetGitDiff(),parent,commit.m_hash,&file,&count,1);
-
+			try
+			{
+				if (isRoot)
+					git_root_diff(git->GetGitDiff(), this->m_CommitHash.m_hash, &file, &count, 1);
+				else
+					git_diff(git->GetGitDiff(), parent, commit.m_hash, &file, &count, 1);
+			}
+			catch (char * msg)
+			{
+				git_free_commit(&commit);
+				return -1;
+			}
 			isRoot = false;
 
 			CTGitPath path;
@@ -372,9 +406,9 @@ void GitRev::DbgPrint()
 
 int GitRev::GetParentFromHash(CGitHash &hash)
 {
-	g_Git.CheckAndInitDll();
-
 	CAutoLocker lock(g_Git.m_critGitDllSec);
+
+	g_Git.CheckAndInitDll();
 
 	GIT_COMMIT commit;
 	if(git_get_commit_from_hash( &commit, hash.m_hash))
@@ -389,8 +423,15 @@ int GitRev::GetParentFromHash(CGitHash &hash)
 }
 int GitRev::GetCommitFromHash(CGitHash &hash)
 {
+	CAutoLocker lock(g_Git.m_critGitDllSec);
+
 	g_Git.CheckAndInitDll();
 
+	return GetCommitFromHash_withoutLock(hash);
+}
+
+int GitRev::GetCommitFromHash_withoutLock(CGitHash &hash)
+{
 	GIT_COMMIT commit;
 	if(git_get_commit_from_hash( &commit, hash.m_hash))
 		return -1;
@@ -406,6 +447,8 @@ int GitRev::GetCommitFromHash(CGitHash &hash)
 
 int GitRev::GetCommit(CString refname)
 {
+	CAutoLocker lock(g_Git.m_critGitDllSec);
+
 	g_Git.CheckAndInitDll();
 
 	if(refname.GetLength() >= 8)
@@ -423,7 +466,7 @@ int GitRev::GetCommit(CString refname)
 		return -1;
 
 	CGitHash hash((char*)sha);
-	GetCommitFromHash(hash);
+	GetCommitFromHash_withoutLock(hash);
 	return 0;
 }
 

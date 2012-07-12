@@ -124,6 +124,9 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -160,6 +163,9 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -196,6 +202,9 @@
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>true</Profile>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -232,6 +241,9 @@
       <TargetMachine>MachineX64</TargetMachine>
       <Profile>true</Profile>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Utils\Libraries.cpp" />
@@ -239,6 +251,7 @@
     <ClCompile Include="..\TGitCache\CacheInterface.cpp" />
     <ClCompile Include="Commands\RepositoryBrowserCommand.cpp" />
     <ClCompile Include="FindDlg.cpp" />
+    <ClCompile Include="IgnoreDlg.cpp" />
     <ClCompile Include="LogFile.cpp" />
     <ClCompile Include="LoglistUtils.cpp" />
     <ClCompile Include="MassiveGitTask.cpp" />
@@ -354,6 +367,7 @@
     <ClCompile Include="BrowseRefsDlg.cpp" />
     <ClCompile Include="Commands\SVNDCommitCommand.cpp" />
     <ClCompile Include="SubmoduleDiffDlg.cpp" />
+    <ClCompile Include="SubmoduleUpdateDlg.cpp" />
     <ClCompile Include="SVNDCommitDlg.cpp" />
     <ClCompile Include="Commands\SVNFetchCommand.cpp" />
     <ClCompile Include="Commands\SVNIgnoreCommand.cpp" />
@@ -395,6 +409,7 @@
     <ClInclude Include="AddRemoteDlg.h" />
     <ClInclude Include="Commands\RepositoryBrowserCommand.h" />
     <ClInclude Include="FindDlg.h" />
+    <ClInclude Include="IgnoreDlg.h" />
     <ClInclude Include="LogFile.h" />
     <ClInclude Include="LoglistUtils.h" />
     <ClInclude Include="MassiveGitTask.h" />
@@ -507,6 +522,7 @@
     <ClInclude Include="Commands\RefBrowseCommand.h" />
     <ClInclude Include="Commands\SVNDCommitCommand.h" />
     <ClInclude Include="SubmoduleDiffDlg.h" />
+    <ClInclude Include="SubmoduleUpdateDlg.h" />
     <ClInclude Include="SVNDCommitDlg.h" />
     <ClInclude Include="Commands\SVNFetchCommand.h" />
     <ClInclude Include="Commands\SVNIgnoreCommand.h" />
@@ -694,10 +710,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ext\ResizableLib\ResizableLib.vcxproj">
       <Project>{4be529fb-c2f2-49f7-a897-054b955564cf}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\crashrpt\CrashRpt.vcxproj">
-      <Project>{13bc1836-2726-45c4-9249-5ba2bbbf8328}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Git\Git.vcxproj">

@@ -49,12 +49,13 @@ CTortoiseMergeApp::CTortoiseMergeApp()
 // The one and only CTortoiseMergeApp object
 CTortoiseMergeApp theApp;
 CString sOrigCWD;
-CCrashReport g_crasher("tortoisesvn@gmail.com", "Crash Report for TortoiseMerge " APP_X64_STRING " : " STRPRODUCTVER, TRUE);
+CCrashReportTGit g_crasher(L"TortoiseMerge " _T(APP_X64_STRING));
 
 // CTortoiseMergeApp initialization
 BOOL CTortoiseMergeApp::InitInstance()
 {
 	SetDllDirectory(L"");
+	CCrashReport::Instance().AddUserInfoToReport(L"CommandLine", GetCommandLine());
 
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 	CMFCButton::EnableWindowsTheming();
@@ -198,9 +199,8 @@ BOOL CTortoiseMergeApp::InitInstance()
 	m_pMainWnd = pFrame;
 
 	// create and load the frame with its resources
-	pFrame->LoadFrame(IDR_MAINFRAME,
-		WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL,
-		NULL);
+	if (!pFrame->LoadFrame(IDR_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL, NULL))
+		return FALSE;
 
 	// Fill in the command line options
 	pFrame->m_Data.m_baseFile.SetFileName(parser.GetVal(_T("base")));

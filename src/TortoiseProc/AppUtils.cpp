@@ -58,6 +58,7 @@
 #include "RebaseDlg.h"
 #include "PropKey.h"
 #include "StashSave.h"
+#include "IgnoreDlg.h"
 #include "FormatMessageWrapper.h"
 #include "SmartHandle.h"
 
@@ -996,6 +997,11 @@ bool CAppUtils::Switch(CString *CommitHash, CString initialRefName, bool autoclo
 		if (dlg.m_bBranch)
 			branch = dlg.m_NewBranch;
 
+		// if refs/heads/ is not stripped, checkout will detach HEAD
+		// checkout prefers branches on name clashes (with tags)
+		if (dlg.m_VersionName.Left(11) ==_T("refs/heads/") && dlg.m_bBranchOverride != TRUE)
+			dlg.m_VersionName = dlg.m_VersionName.Mid(11);
+
 		return PerformSwitch(dlg.m_VersionName, dlg.m_bForce == TRUE , branch, dlg.m_bBranchOverride == TRUE, dlg.m_bTrack == TRUE, autoclose);
 	}
 	return FALSE;
@@ -1052,58 +1058,96 @@ bool CAppUtils::PerformSwitch(CString ref, bool bForce /* false */, CString sNew
 	return FALSE;
 }
 
-bool CAppUtils::IgnoreFile(CTGitPathList &path,bool IsMask)
+bool CAppUtils::OpenIgnoreFile(CStdioFile &file, const CString& filename)
 {
-	CString ignorefile;
-	ignorefile=g_Git.m_CurrentDir+_T("\\");
-
-	if(IsMask)
+	if (!file.Open(filename, CFile::modeCreate | CFile::modeReadWrite | CFile::modeNoTruncate))
 	{
-		ignorefile+=path.GetCommonRoot().GetDirectory().GetWinPathString()+_T("\\.gitignore");
+		CMessageBox::Show(NULL, filename + _T(" Open Failure"), _T("TortoiseGit"), MB_OK | MB_ICONERROR);
+		return false;
+	}
 
+	if (file.GetLength() > 0)
+	{
+		file.Seek(file.GetLength() - 1, 0);
+		auto_buffer<TCHAR> buf(1);
+		file.Read(buf, 1);
+		file.SeekToEnd();
+		if (buf[0] != _T('\n'))
+			file.WriteString(_T("\n"));
 	}
 	else
-	{
-		ignorefile += _T("\\.gitignore");
-	}
-
-	CStdioFile file;
-	if(!file.Open(ignorefile,CFile::modeCreate|CFile::modeReadWrite|CFile::modeNoTruncate))
-	{
-		CMessageBox::Show(NULL,ignorefile+_T(" Open Failure"),_T("TortoiseGit"),MB_OK);
-		return FALSE;
-	}
-
-	CString ignorelist;
-	CString mask;
-	try
-	{
-		//file.ReadString(ignorelist);
 		file.SeekToEnd();
-		for(int i=0;i<path.GetCount();i++)
-		{
-			if(IsMask)
-			{
-				mask=_T("*")+path[i].GetFileExtension();
-				if(ignorelist.Find(mask)<0)
-					ignorelist += _T("\n")+mask;
-			}
-			else
-			{
-				ignorelist += _T("\n/")+path[i].GetGitPathString();
-			}
-		}
-		file.WriteString(ignorelist);
 
-		file.Close();
+	return true;
+}
 
-	}catch(...)
+bool CAppUtils::IgnoreFile(CTGitPathList &path,bool IsMask)
+{
+	CIgnoreDlg ignoreDlg;
+	if (ignoreDlg.DoModal() == IDOK)
 	{
-		file.Close();
-		return FALSE;
-	}
+		CString ignorefile;
+		ignorefile = g_Git.m_CurrentDir + _T("\\");
 
-	return TRUE;
+		switch (ignoreDlg.m_IgnoreFile)
+		{
+			case 0:
+				ignorefile += _T(".gitignore");
+				break;
+			case 2:
+				ignorefile += _T(".git/info/exclude");
+				break;
+		}
+
+		CStdioFile file;
+		try
+		{
+			if (ignoreDlg.m_IgnoreFile != 1 && !OpenIgnoreFile(file, ignorefile))
+				return false;
+
+			for (int i = 0; i < path.GetCount(); i++)
+			{
+				if (ignoreDlg.m_IgnoreFile == 1)
+				{
+					ignorefile = g_Git.m_CurrentDir + _T("\\") + path[i].GetContainingDirectory().GetWinPathString() + _T("\\.gitignore");
+					if (!OpenIgnoreFile(file, ignorefile))
+						return false;
+				}
+
+				CString ignorePattern;
+				if (ignoreDlg.m_IgnoreType == 0)
+				{
+					if (ignoreDlg.m_IgnoreFile != 1 && !path[i].GetContainingDirectory().GetGitPathString().IsEmpty())
+						ignorePattern += _T("/") + path[i].GetContainingDirectory().GetGitPathString();
+
+					ignorePattern += _T("/");
+				}
+				if (IsMask)
+				{
+					ignorePattern += _T("*") + path[i].GetFileExtension();
+				}
+				else
+				{
+					ignorePattern += path[i].GetFileOrDirectoryName();
+				}
+				file.WriteString(ignorePattern + _T("\n"));
+
+				if (ignoreDlg.m_IgnoreFile == 1)
+					file.Close();
+			}
+
+			if (ignoreDlg.m_IgnoreFile != 1)
+				file.Close();
+		}
+		catch(...)
+		{
+			file.Abort();
+			return false;
+		}
+
+		return true;
+	}
+	return false;
 }
 
 
@@ -1899,7 +1943,11 @@ bool CAppUtils::Fetch(CString remoteName, bool allowRebase, bool autoClose)
 			arg += _T("--no-tags ");
 		}
 
-		cmd.Format(_T("git.exe fetch -v %s \"%s\" %s"),arg, url,dlg.m_RemoteBranchName);
+		if (dlg.m_bAllRemotes)
+			cmd.Format(_T("git.exe fetch --all -v %s"), arg);
+		else
+			cmd.Format(_T("git.exe fetch -v %s \"%s\" %s"), arg, url, dlg.m_RemoteBranchName);
+
 		CProgressDlg progress;
 
 		progress.m_bAutoCloseOnSuccess = autoClose;
@@ -1986,7 +2034,6 @@ bool CAppUtils::Push(CString selectLocalBranch, bool autoClose)
 
 	if(dlg.DoModal()==IDOK)
 	{
-		CString cmd;
 		CString arg;
 
 		if(dlg.m_bAutoLoad)
@@ -2006,27 +2053,38 @@ bool CAppUtils::Push(CString selectLocalBranch, bool autoClose)
 		if(ver >= 0x01070203) //above 1.7.0.2
 			arg += _T("--progress ");
 
-		if (dlg.m_bPushAllBranches)
-		{
-			cmd.Format(_T("git.exe push --all %s \"%s\""),
-					arg,
-					dlg.m_URL);
-		}
-		else
-		{
-			cmd.Format(_T("git.exe push %s \"%s\" %s"),
-					arg,
-					dlg.m_URL,
-					dlg.m_BranchSourceName);
-			if (!dlg.m_BranchRemoteName.IsEmpty())
-			{
-				cmd += _T(":") + dlg.m_BranchRemoteName;
-			}
-		}
-
 		CProgressDlg progress;
 		progress.m_bAutoCloseOnSuccess=autoClose;
-		progress.m_GitCmd=cmd;
+
+		STRING_VECTOR remotesList;
+		if (dlg.m_bPushAllRemotes)
+			g_Git.GetRemoteList(remotesList);
+		else
+			remotesList.push_back(dlg.m_URL);
+
+		for (unsigned int i = 0; i < remotesList.size(); i++)
+		{
+			CString cmd;
+			if (dlg.m_bPushAllBranches)
+			{
+				cmd.Format(_T("git.exe push --all %s \"%s\""),
+						arg,
+						remotesList[i]);
+			}
+			else
+			{
+				cmd.Format(_T("git.exe push %s \"%s\" %s"),
+						arg,
+						remotesList[i],
+						dlg.m_BranchSourceName);
+				if (!dlg.m_BranchRemoteName.IsEmpty())
+				{
+					cmd += _T(":") + dlg.m_BranchRemoteName;
+				}
+			}
+			progress.m_GitCmdList.push_back(cmd);
+		}
+
 		progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_REQUESTPULL)));
 		progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
 		int ret = progress.DoModal();
@@ -2448,25 +2506,37 @@ int CAppUtils::GetMsysgitVersion(CString *versionstr)
 	}
 
 	int start=0;
-	int ver;
+	int ver = 0;
 
-	CString str=version.Tokenize(_T("."),start);
-	int space = str.ReverseFind(_T(' '));
-	str=str.Mid(space+1,start);
-	ver = _ttol(str);
-	ver <<=24;
+	try
+	{
+		CString str=version.Tokenize(_T("."), start);
+		int space = str.ReverseFind(_T(' '));
+		str = str.Mid(space+1,start);
+		ver = _ttol(str);
+		ver <<=24;
 
-	version = version.Mid(start);
-	start = 0;
-	str = version.Tokenize(_T("."),start);
+		version = version.Mid(start);
+		start = 0;
 
-	ver |= (_ttol(str)&0xFF)<<16;
+		str = version.Tokenize(_T("."), start);
 
-	str = version.Tokenize(_T("."),start);
-	ver |= (_ttol(str)&0xFF)<<8;
+		ver |= (_ttol(str) & 0xFF) << 16;
 
-	str = version.Tokenize(_T("."),start);
-	ver |= (_ttol(str)&0xFF);
+		str = version.Tokenize(_T("."), start);
+		ver |= (_ttol(str) & 0xFF) << 8;
+
+		str = version.Tokenize(_T("."), start);
+		ver |= (_ttol(str) & 0xFF);
+	}
+	catch(...)
+	{
+		if (!ver)
+		{
+			CMessageBox::Show(NULL, _T("Could not parse git.exe version number."), _T("TortoiseGit"), MB_OK|MB_ICONERROR);
+			return false;
+		}
+	}
 
 	regTime = time&0xFFFFFFFF;
 	regVersion = ver;

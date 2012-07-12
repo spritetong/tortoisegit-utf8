@@ -256,6 +256,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\TGitCache\CacheInterface.cpp" />
+    <ClCompile Include="..\Utils\StringUtils.cpp" />
     <ClCompile Include="ColumnProvider.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="..\Git\Git.cpp" />
@@ -347,6 +348,7 @@
     <None Include="..\Resources\update1.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Utils\StringUtils.h" />
     <ClInclude Include="GITPropertyPage.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Guids.h" />

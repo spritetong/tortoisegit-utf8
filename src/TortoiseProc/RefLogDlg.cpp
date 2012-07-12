@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2009-2011 - TortoiseGit
+// Copyright (C) 2009-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 #include "RefLogDlg.h"
 #include "git.h"
 #include "AppUtils.h"
+#include "MessageBox.h"
 
 // CRefLogDlg dialog
 
@@ -49,6 +50,7 @@ void CRefLogDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CRefLogDlg, CResizableStandAloneDialog)
 	ON_BN_CLICKED(IDOK, &CRefLogDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_REFLOG_BUTTONCLEARSTASH, &CRefLogDlg::OnBnClickedClearStash)
 	ON_CBN_SELCHANGE(IDC_COMBOBOXEX_REF,   &CRefLogDlg::OnCbnSelchangeRef)
 	ON_MESSAGE(MSG_REFLOG_CHANGED,OnRefLogChanged)
 END_MESSAGE_MAP()
@@ -69,7 +71,7 @@ BOOL CRefLogDlg::OnInitDialog()
 
 	AddAnchor(IDOK,BOTTOM_RIGHT);
 	AddAnchor(IDCANCEL,BOTTOM_RIGHT);
-
+	AddAnchor(IDC_REFLOG_BUTTONCLEARSTASH, BOTTOM_LEFT);
 	AddAnchor(IDC_REFLOG_LIST,TOP_LEFT,BOTTOM_RIGHT);
 	AddAnchor(IDHELP, BOTTOM_RIGHT);
 
@@ -80,36 +82,13 @@ BOOL CRefLogDlg::OnInitDialog()
 	GetWindowText(sWindowTitle);
 	CAppUtils::SetWindowTitle(m_hWnd, g_Git.m_CurrentDir, sWindowTitle);
 
-	STRING_VECTOR list;
-	list.push_back(_T("HEAD"));
-	g_Git.GetRefList(list);
+	m_ChooseRef.SetMaxHistoryItems(0x7FFFFFFF);
 
 	m_RefList.m_hasWC = !g_GitAdminDir.IsBareRepo(g_Git.m_CurrentDir);
 
-	m_ChooseRef.SetMaxHistoryItems(0x7FFFFFFF);
-	this->m_ChooseRef.AddString(list);
-
 	this->m_RefList.InsertRefLogColumn();
-	//m_RefList.m_logEntries.ParserFromRefLog(_T("master"));
-	if(this->m_CurrentBranch.IsEmpty())
-	{
-		m_CurrentBranch.Format(_T("refs/heads/%s"),g_Git.GetCurrentBranch());
-		m_ChooseRef.SetCurSel(0); /* Choose HEAD */
-	}
-	else
-	{
-		for(int i=0;i<list.size();i++)
-		{
-			if(list[i] == m_CurrentBranch)
-			{
-				m_ChooseRef.SetCurSel(i);
-				break;
-			}
-		}
-	}
 
-
-	OnCbnSelchangeRef();
+	Refresh();
 
 	return TRUE;
 }
@@ -132,6 +111,22 @@ void CRefLogDlg::OnBnClickedOk()
 	}
 
 	OnOK();
+}
+void CRefLogDlg::OnBnClickedClearStash()
+{
+	if (CMessageBox::Show(this->GetSafeHwnd(), IDS_PROC_DELETEALLSTASH, IDS_APPNAME, 2, IDI_QUESTION, IDS_DELETEBUTTON, IDS_ABORTBUTTON) == 1)
+	{
+		CString cmdOut;
+		if (g_Git.Run(_T("git.exe stash clear"), &cmdOut, CP_UTF8))
+		{
+			MessageBox(cmdOut, _T("TortoiseGit"), MB_ICONERROR);
+			return;
+		}
+
+		m_RefList.m_RefMap.clear();
+
+		OnCbnSelchangeRef();
+	}
 }
 
 void CRefLogDlg::OnCbnSelchangeRef()
@@ -165,4 +160,53 @@ void CRefLogDlg::OnCbnSelchangeRef()
 
 	m_RefList.Invalidate();
 
+	if (ref == _T("refs/stash"))
+	{
+		GetDlgItem(IDC_REFLOG_BUTTONCLEARSTASH)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_REFLOG_BUTTONCLEARSTASH)->EnableWindow((m_RefList.m_arShownList.GetSize() > 0));
+	}
+	else
+		GetDlgItem(IDC_REFLOG_BUTTONCLEARSTASH)->ShowWindow(SW_HIDE);
+}
+
+BOOL CRefLogDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_F5)
+		Refresh();
+
+	return CResizableStandAloneDialog::PreTranslateMessage(pMsg);
+}
+
+void CRefLogDlg::Refresh()
+{
+	STRING_VECTOR list;
+	list.push_back(_T("HEAD"));
+	g_Git.GetRefList(list);		
+
+	m_ChooseRef.AddString(list);
+
+	if (m_CurrentBranch.IsEmpty())
+	{
+		m_CurrentBranch.Format(_T("refs/heads/%s"), g_Git.GetCurrentBranch());
+		m_ChooseRef.SetCurSel(0); /* Choose HEAD */
+	}
+	else
+	{
+		bool found = false;
+		for (int i = 0; i < list.size(); i++)
+		{
+			if(list[i] == m_CurrentBranch)
+			{
+				m_ChooseRef.SetCurSel(i);
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+			m_ChooseRef.SetCurSel(0);
+	}
+
+	m_RefList.m_RefMap.clear();
+
+	OnCbnSelchangeRef();
 }

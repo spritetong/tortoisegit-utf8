@@ -27,7 +27,9 @@
 #include "Git.h"
 #include "registry.h"
 #include "AppUtils.h"
+#include "LogDlg.h"
 #include "BrowseRefsDlg.h"
+#include "RefLogDlg.h"
 #include "MessageBox.h"
 
 // CPushDlg dialog
@@ -41,6 +43,7 @@ CPushDlg::CPushDlg(CWnd* pParent /*=NULL*/)
 	, m_bPack(FALSE)
 	, m_bTags(FALSE)
 	, m_bAutoLoad(FALSE)
+	, m_bPushAllRemotes(FALSE)
 {
 	m_bAutoLoad = CAppUtils::IsSSHPutty();
 }
@@ -56,6 +59,7 @@ void CPushDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BRANCH_SOURCE, this->m_BranchSource);
 	DDX_Control(pDX, IDC_REMOTE, this->m_Remote);
 	DDX_Control(pDX, IDC_URL, this->m_RemoteURL);
+	DDX_Control(pDX, IDC_BUTTON_BROWSE_SOURCE_BRANCH, m_BrowseLocalRef);
 	DDX_Check(pDX,IDC_FORCE,this->m_bForce);
 	DDX_Check(pDX,IDC_PUSHALL,this->m_bPushAllBranches);
 	DDX_Check(pDX,IDC_PACK,this->m_bPack);
@@ -148,6 +152,13 @@ BOOL CPushDlg::OnInitDialog()
 	if(!CAppUtils::IsSSHPutty())
 		m_bAutoLoad = false;
 
+	m_BrowseLocalRef.m_bRightArrow = TRUE;
+	m_BrowseLocalRef.m_bDefaultClick = FALSE;
+	m_BrowseLocalRef.m_bMarkDefault = FALSE;
+	m_BrowseLocalRef.AddEntry(CString(MAKEINTRESOURCE(IDS_REFBROWSE)));
+	m_BrowseLocalRef.AddEntry(CString(MAKEINTRESOURCE(IDS_LOG)));
+	m_BrowseLocalRef.AddEntry(CString(MAKEINTRESOURCE(IDS_REFLOG)));
+
 	Refresh();
 
 
@@ -169,8 +180,12 @@ void CPushDlg::Refresh()
 	STRING_VECTOR list;
 	m_Remote.Reset();
 
+	list.push_back(CString(MAKEINTRESOURCE(IDS_PROC_PUSHFETCH_ALLREMOTES)));
 	if(!g_Git.GetRemoteList(list))
 	{
+		if (list.size() <= 2)
+			list.erase(list.begin());
+
 		for(unsigned int i=0;i<list.size();i++)
 		{
 			m_Remote.AddString(list[i]);
@@ -276,6 +291,7 @@ void CPushDlg::OnBnClickedOk()
 	if( GetCheckedRadioButton(IDC_RD_REMOTE,IDC_RD_URL) == IDC_RD_REMOTE)
 	{
 		m_URL=m_Remote.GetString();
+		m_bPushAllRemotes = (m_Remote.GetCurSel() == 0 && m_Remote.GetCount() > 1);
 	}
 	if( GetCheckedRadioButton(IDC_RD_REMOTE,IDC_RD_URL) == IDC_RD_URL)
 	{
@@ -334,6 +350,11 @@ void CPushDlg::OnBnClickedOk()
 			this->m_BranchRemote.SaveHistory();
 			m_RemoteReg = m_Remote.GetString();
 		}
+		if (!m_BranchSourceName.IsEmpty() && !g_Git.IsBranchTagNameUnique(m_BranchSourceName))
+		{
+			CMessageBox::Show(NULL, IDS_B_T_NOT_UNIQUE, IDS_APPNAME, MB_OK | MB_ICONEXCLAMATION);
+			return;
+		}
 	}
 
 	this->m_regAutoLoad = m_bAutoLoad ;
@@ -349,8 +370,41 @@ void CPushDlg::OnBnClickedRemoteManage()
 
 void CPushDlg::OnBnClickedButtonBrowseSourceBranch()
 {
-	if(CBrowseRefsDlg::PickRefForCombo(&m_BranchSource, gPickRef_Head))
-		OnCbnSelchangeBranchSource();
+	switch (m_BrowseLocalRef.GetCurrentEntry())
+	{
+	case 0: /* Browse Refence*/
+		{
+			if(CBrowseRefsDlg::PickRefForCombo(&m_BranchSource, gPickRef_Head))
+				OnCbnSelchangeBranchSource();
+		}
+		break;
+
+	case 1: /* Log */
+		{
+			CLogDlg dlg;
+			dlg.SetSelect(true);
+			if(dlg.DoModal() == IDOK)
+			{
+				if (dlg.GetSelectedHash().IsEmpty())
+					return;
+				
+				m_BranchSource.SetWindowText(dlg.GetSelectedHash());
+				OnCbnSelchangeBranchSource();
+			}
+		}
+		break;
+
+	case 2: /*RefLog*/
+		{
+			CRefLogDlg dlg;
+			if(dlg.DoModal() == IDOK)
+			{
+				m_BranchSource.SetWindowText(dlg.m_SelectedHash);
+				OnCbnSelchangeBranchSource();
+			}
+		}
+		break;
+	}
 }
 
 void CPushDlg::OnBnClickedButtonBrowseDestBranch()

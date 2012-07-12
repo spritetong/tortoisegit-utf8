@@ -86,6 +86,7 @@ public:
 	 */
 	void SetFromWin(LPCTSTR pPath);
 	void SetFromWin(const CString& sPath);
+	void SetFromWin(LPCTSTR pPath, bool bIsDirectory);
 	void SetFromWin(const CString& sPath, bool bIsDirectory);
 	/**
 	 * Set the path from an unknown source.
@@ -391,7 +392,8 @@ public:
 	 * Delete all the files in the list, then clear the list.
 	 * \param bTrash if true, the items are deleted using the Windows trash bin
 	 */
-	void DeleteAllFiles(bool bTrash);
+	void DeleteAllFiles(bool bTrash, bool bFilesOnly = true);
+	static bool DeleteViaShell(LPCTSTR path, bool useTrashbin);
 	/** Remove duplicate entries from the list (sorts the list as a side-effect */
 	void RemoveDuplicates();
 	/** Removes all paths which are on or in a Subversion admin directory */
