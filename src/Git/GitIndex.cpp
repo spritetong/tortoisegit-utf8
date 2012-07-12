@@ -99,7 +99,7 @@ int CGitIndexList::ReadIndex(CString IndexFile)
 
 			CAutoFile hfile = CreateFile(IndexFile,
 									GENERIC_READ,
-									FILE_SHARE_READ|FILE_SHARE_DELETE|FILE_SHARE_WRITE,
+									FILE_SHARE_READ|FILE_SHARE_DELETE,
 									NULL,
 									OPEN_EXISTING,
 									FILE_ATTRIBUTE_NORMAL,
@@ -883,14 +883,14 @@ int CGitIgnoreItem::FetchIgnoreList(const CString &projectroot, const CString &f
 	this->m_BaseDir.Empty();
 	if (!isGlobal)
 	{
-		CString base = file.Mid(projectroot.GetLength());
+		CString base = file.Mid(projectroot.GetLength() + 1);
 		base.Replace(_T('\\'), _T('/'));
 
 		int start = base.ReverseFind(_T('/'));
 		if(start > 0)
 		{
 			base = base.Left(start);
-			this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8);
+			this->m_BaseDir = CUnicodeUtils::GetMulti(base, CP_UTF8) + "/";
 		}
 	}
 	{
@@ -1220,7 +1220,7 @@ bool CGitIgnoreList::CheckAndUpdateCoreExcludefile(const CString &adminDir)
 }
 const CString CGitIgnoreList::GetWindowsHome()
 {
-	static CString sWindowsHome(get_windows_home_directory());
+	static CString sWindowsHome(g_Git.GetHomeDirectory());
 	return sWindowsHome;
 }
 bool CGitIgnoreList::IsIgnore(const CString &path,const CString &projectroot)
@@ -1364,6 +1364,61 @@ bool CGitHeadFileMap::CheckHeadUpdate(const CString &gitdir)
 	return false;
 }
 
+int CGitHeadFileMap::IsUnderVersionControl(const CString &gitdir, const CString &path, bool isDir, bool *isVersion)
+{
+	try
+	{
+		if (path.IsEmpty())
+		{
+			*isVersion = true;
+			return 0;
+		}
+
+		CString subpath = path;
+		subpath.Replace(_T('\\'), _T('/'));
+		if(isDir)
+			subpath += _T('/');
+
+		subpath.MakeLower();
+
+		CheckHeadUpdate(gitdir);
+
+		SHARED_TREE_PTR treeptr;
+		treeptr = SafeGet(gitdir);
+
+		if (treeptr->m_Head != treeptr->m_TreeHash)
+		{
+			treeptr->ReadHeadHash(gitdir);
+
+			// Init Repository
+			if (treeptr->m_HeadFile.IsEmpty())
+			{
+				*isVersion = false;
+				return 0;
+			}
+			else if (treeptr->ReadTree())
+			{
+				treeptr->m_LastModifyTimeHead = 0;
+				*isVersion = false;
+				return 1;
+			}
+			SafeSet(gitdir, treeptr);
+		}
+
+		if(isDir)
+			*isVersion = (SearchInSortVector(*treeptr, subpath.GetBuffer(), subpath.GetLength()) >= 0);
+		else
+			*isVersion = (SearchInSortVector(*treeptr, subpath.GetBuffer(), -1) >= 0);
+		subpath.ReleaseBuffer();
+	}
+	catch(...)
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
 int CGitHeadFileMap::GetHeadHash(const CString &gitdir, CGitHash &hash)
 {
 	SHARED_TREE_PTR ptr;
@@ -1394,94 +1449,3 @@ int CGitHeadFileMap::GetHeadHash(const CString &gitdir, CGitHash &hash)
 	}
 	return 0;
 }
-#if 0
-
-int CGitStatus::GetStatus(const CString &gitdir, const CString &path, git_wc_status_kind *status, BOOL IsFull, BOOL IsRecursive , FIll_STATUS_CALLBACK callback , void *pData)
-{
-	int result;
-	__int64 time;
-	bool dir;
-
-	git_wc_status_kind dirstatus = git_wc_status_none;
-	if (status)
-	{
-		g_Git.GetFileModifyTime(path, &time, &dir);
-		if(path.IsEmpty())
-			result = _tstat64( gitdir, &buf );
-		else
-			result = _tstat64( gitdir+_T("\\")+path, &buf );
-
-		if(result)
-			return -1;
-
-		if(buf.st_mode & _S_IFDIR)
-		{
-			if(!path.IsEmpty())
-			{
-				if( path.Right(1) != _T("\\"))
-					path += _T("\\");
-			}
-			int len = path.GetLength();
-
-			for (int i = 0; i < size(); i++)
-			{
-				if (at(i).m_FileName.GetLength() > len)
-				{
-					if (at(i).m_FileName.Left(len) == path)
-					{
-						if(!IsFull)
-						{
-							*status = git_wc_status_normal;
-							if(callback)
-								callback(gitdir + _T("\\") + path, *status, pData);
-							return 0;
-
-						}
-						else
-						{
-							result = _tstat64(gitdir + _T("\\") + at(i).m_FileName, &buf);
-							if (result)
-								continue;
-
-							*status = git_wc_status_none;
-							GetFileStatus(gitdir, at(i).m_FileName, status, buf, callback, pData);
-							if (*status != git_wc_status_none)
-							{
-								if (dirstatus == git_wc_status_none)
-								{
-									dirstatus = git_wc_status_normal;
-								}
-								if (*status != git_wc_status_normal)
-								{
-									dirstatus = git_wc_status_modified;
-								}
-							}
-
-						}
-					}
-				}
-			}
-
-			if (dirstatus != git_wc_status_none)
-			{
-				*status = dirstatus;
-			}
-			else
-			{
-				*status = git_wc_status_unversioned;
-			}
-			if(callback)
-				callback(gitdir + _T("\\") + path, *status, pData);
-
-			return 0;
-
-		}
-		else
-		{
-			GetFileStatus(gitdir, path, status, buf, callback, pData);
-		}
-	}
-	return 0;
-
-}
-#endif

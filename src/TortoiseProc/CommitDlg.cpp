@@ -40,6 +40,7 @@
 #include "COMError.h"
 #include "Globals.h"
 #include "SysProgressDlg.h"
+#include "MassiveGitTask.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,6 +69,7 @@ CCommitDlg::CCommitDlg(CWnd* pParent /*=NULL*/)
 	, m_bSetCommitDateTime(FALSE)
 	, m_bCreateNewBranch(FALSE)
 	, m_bCreateTagAfterCommit(FALSE)
+	, m_bForceCommitAmend(false)
 {
 	this->m_bCommitAmend=FALSE;
 	m_bPushAfterCommit = FALSE;
@@ -369,32 +371,6 @@ BOOL CCommitDlg::OnInitDialog()
 	}
 	err = FALSE;
 
-	if (g_Git.IsInitRepos())
-	{
-		m_bCommitAmend = FALSE;
-		GetDlgItem(IDC_COMMIT_AMEND)->EnableWindow(FALSE);
-		UpdateData(FALSE);
-	}
-	else
-	{
-		if(m_bCommitAmend)
-		{
-			GetDlgItem(IDC_COMMIT_AMEND)->EnableWindow(FALSE);
-			GetDlgItem(IDC_COMMIT_AMENDDIFF)->ShowWindow(SW_SHOW);
-		}
-
-		CGitHash hash = g_Git.GetHash(_T("HEAD"));
-		GitRev headRevision;
-		headRevision.GetParentFromHash(hash);
-		// do not allow to show diff to "last" revision if it has more that one parent
-		if (headRevision.ParentsCount() != 1)
-		{
-			m_bAmendDiffToLastCommit = true;
-			UpdateData(FALSE);
-			GetDlgItem(IDC_COMMIT_AMENDDIFF)->EnableWindow(FALSE);
-		}
-	}
-
 	this->m_ctrlShowPatch.SetURL(CString());
 
 	BOOL viewPatchEnabled = FALSE;
@@ -425,10 +401,28 @@ void CCommitDlg::OnOK()
 	}
 	this->UpdateData();
 
-	if (m_bCreateNewBranch && !g_Git.IsBranchNameValid(m_sCreateNewBranch))
+	if (m_bCreateNewBranch)
 	{
-		ShowEditBalloon(IDC_NEWBRANCH, IDS_B_T_NOTEMPTY, TTI_ERROR);
-		return;
+		if (!g_Git.IsBranchNameValid(m_sCreateNewBranch))
+		{
+			ShowEditBalloon(IDC_NEWBRANCH, IDS_B_T_NOTEMPTY, TTI_ERROR);
+			return;
+		}
+		if (g_Git.BranchTagExists(m_sCreateNewBranch))
+		{
+			// branch already exists
+			CString msg;
+			msg.LoadString(IDS_B_EXISTS);
+			msg += _T(" ") + CString(MAKEINTRESOURCE(IDS_B_DELETEORDIFFERENTNAME));
+			ShowEditBalloon(IDC_NEWBRANCH, msg, CString(MAKEINTRESOURCE(IDS_WARN_WARNING)));
+			return;
+		}
+		if (g_Git.BranchTagExists(m_sCreateNewBranch, false))
+		{
+			// tag with the same name exists -> shortref is ambiguous
+			if (CMessageBox::Show(m_hWnd, IDS_B_SAMETAGNAMEEXISTS, IDS_APPNAME, 2, IDI_EXCLAMATION, IDS_CONTINUEBUTTON, IDS_ABORTBUTTON) == 2)
+				return;
+		}
 	}
 
 	CString id;
@@ -477,6 +471,7 @@ void CCommitDlg::OnOK()
 
 	CTGitPathList itemsToAdd;
 	CTGitPathList itemsToRemove;
+	CMassiveGitTask mgtReAddAfterCommit(_T("add --ignore-errors -f"));
 	//std::set<CString> checkedLists;
 	//std::set<CString> uncheckedLists;
 
@@ -615,7 +610,7 @@ void CCommitDlg::OnOK()
 					bCloseCommitDlg=false;
 					break;
 				}
-
+				mgtReAddAfterCommit.AddFile(*entry);
 			}
 			else if(!( entry->m_Action & CTGitPath::LOGACTIONS_UNVER ) )
 			{
@@ -756,21 +751,24 @@ void CCommitDlg::OnOK()
 		progress.m_PreText = out;			// show any output already generated in log window
 		progress.m_bAutoCloseOnSuccess = m_bAutoClose;
 
+		int indexReCommit = -1;
+		int indexTag = -1;
+
 		if (!m_bNoPostActions && !m_bAutoClose)
 		{
-			progress.m_PostCmdList.Add( IsGitSVN? CString(MAKEINTRESOURCE(IDS_MENUSVNDCOMMIT)): CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
-			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_RECOMMIT)));
-			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUTAG)));
+			if (IsGitSVN)
+				progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUSVNDCOMMIT)));
+			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
+			indexReCommit = progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_RECOMMIT)));
+			indexTag = progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUTAG)));
 		}
-
-		m_PostCmd = IsGitSVN? GIT_POST_CMD_DCOMMIT:GIT_POST_CMD_PUSH;
 
 		DWORD userResponse = progress.DoModal();
 
-		if(progress.m_GitStatus || userResponse == (IDC_PROGRESS_BUTTON1+1))
+		if(progress.m_GitStatus || userResponse == (IDC_PROGRESS_BUTTON1 + indexReCommit))
 		{
 			bCloseCommitDlg = false;
-			if( userResponse == (IDC_PROGRESS_BUTTON1+1 ))
+			if (userResponse == IDC_PROGRESS_BUTTON1 + indexReCommit)
 			{
 				this->m_sLogMessage.Empty();
 				m_cLogMessage.SetText(m_sLogMessage);
@@ -778,14 +776,18 @@ void CCommitDlg::OnOK()
 
 			this->Refresh();
 		}
-		else if(userResponse == IDC_PROGRESS_BUTTON1 + 2)
+		else if (userResponse == IDC_PROGRESS_BUTTON1 + indexTag)
 		{
 			m_bCreateTagAfterCommit=true;
 		}
-		else if(userResponse == IDC_PROGRESS_BUTTON1)
+		else if (userResponse >= IDC_PROGRESS_BUTTON1 && userResponse < IDC_PROGRESS_BUTTON1 + indexReCommit)
 		{
-			//User pressed 'Push' button after successful commit.
+			// User pressed 'DCommit' or 'Push' button after successful commit.
 			m_bPushAfterCommit=true;
+			if (userResponse == IDC_PROGRESS_BUTTON1 && IsGitSVN)
+				m_PostCmd = GIT_POST_CMD_DCOMMIT;
+			else
+				m_PostCmd = GIT_POST_CMD_PUSH;
 		}
 
 		CFile::Remove(tempfile);
@@ -830,6 +832,11 @@ void CCommitDlg::OnOK()
 			}
 		}
 		RestoreFiles(progress.m_GitStatus == 0);
+		if (((DWORD)CRegStdDWORD(_T("Software\\TortoiseGit\\ReaddUnselectedAddedFilesAfterCommit"), TRUE)) == TRUE)
+		{
+			BOOL cancel;
+			mgtReAddAfterCommit.Execute(cancel);
+		}
 	}
 	else if(bAddSuccess)
 	{
@@ -1009,6 +1016,8 @@ UINT CCommitDlg::StatusThread()
 	DialogEnableWindow(IDC_NOAUTOSELECTSUBMODULES, false);
 	GetDlgItem(IDC_EXTERNALWARNING)->ShowWindow(SW_HIDE);
 	DialogEnableWindow(IDC_EXTERNALWARNING, false);
+	DialogEnableWindow(IDC_COMMIT_AMEND, FALSE);
+	DialogEnableWindow(IDC_COMMIT_AMENDDIFF, FALSE);
 	// read the list of recent log entries before querying the WC for status
 	// -> the user may select one and modify / update it while we are crawling the WC
 
@@ -1109,6 +1118,47 @@ UINT CCommitDlg::StatusThread()
 			DialogEnableWindow(IDC_KEEPLISTS, true);
 		if (m_ListCtrl.HasLocks())
 			DialogEnableWindow(IDC_WHOLE_PROJECT, true);
+
+		// activate amend checkbox (if necessary)
+		if (g_Git.IsInitRepos())
+		{
+			m_bCommitAmend = FALSE;
+			UpdateData(FALSE);
+		}
+		else
+		{
+			if (m_bForceCommitAmend)
+			{
+				GetDlgItem(IDC_COMMIT_AMENDDIFF)->ShowWindow(SW_SHOW);
+				m_bCommitAmend = TRUE;
+				UpdateData(FALSE);
+			}
+			else
+				GetDlgItem(IDC_COMMIT_AMEND)->EnableWindow(TRUE);
+
+			CGitHash hash;
+			try
+			{
+				hash = g_Git.GetHash(_T("HEAD"));
+			}
+			catch (char* msg)
+			{
+				CString err(msg);
+				MessageBox(_T("Could not get HEAD hash.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
+				ExitProcess(1);
+			}
+			GitRev headRevision;
+			headRevision.GetParentFromHash(hash);
+			// do not allow to show diff to "last" revision if it has more that one parent
+			if (headRevision.ParentsCount() != 1)
+			{
+				m_bAmendDiffToLastCommit = true;
+				UpdateData(FALSE);
+			}
+			else
+				GetDlgItem(IDC_COMMIT_AMENDDIFF)->EnableWindow(TRUE);
+		}
+
 		// we have the list, now signal the main thread about it
 		SendMessage(WM_AUTOLISTREADY);	// only send the message if the thread wasn't told to quit!
 	}

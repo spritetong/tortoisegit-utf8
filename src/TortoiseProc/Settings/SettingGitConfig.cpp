@@ -224,13 +224,9 @@ void CSettingGitConfig::OnCbnSelchangeSafeCrLf()
 
 void CSettingGitConfig::OnBnClickedEditglobalgitconfig()
 {
-	char charBuf[MAX_PATH];
-	TCHAR buf[MAX_PATH];
-	strcpy_s(charBuf, MAX_PATH, get_windows_home_directory());
-	_tcscpy_s(buf, MAX_PATH, CA2CT(charBuf));
-	_tcscat_s(buf, MAX_PATH, _T("\\.gitconfig"));
+	CString filename = g_Git.GetHomeDirectory() + _T("\\.gitconfig");
 	// use alternative editor because of LineEndings
-	CAppUtils::LaunchAlternativeEditor(buf);
+	CAppUtils::LaunchAlternativeEditor(filename);
 }
 
 void CSettingGitConfig::OnBnClickedEditlocalgitconfig()
@@ -244,14 +240,13 @@ void CSettingGitConfig::OnBnClickedEditlocalgitconfig()
 
 void CSettingGitConfig::OnBnClickedEditsystemgitconfig()
 {
-	TCHAR buf[MAX_PATH];
-	const char * systemdir = get_msysgit_etc();
+	const wchar_t * systemdir = wget_msysgit_etc();
 	if (!systemdir)
 	{
 		CMessageBox::Show(NULL, IDS_PROC_GITCONFIG_NOMSYSGIT, IDS_APPNAME, MB_ICONERROR);
 		return;
 	}
-	_tcscpy_s(buf, MAX_PATH, CA2CT(systemdir));
+	CString filename(systemdir, wcslen(systemdir));
 	// use alternative editor because of LineEndings
-	CAppUtils::LaunchAlternativeEditor(buf);
+	CAppUtils::LaunchAlternativeEditor(filename);
 }

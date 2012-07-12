@@ -973,6 +973,7 @@ void CGitStatusListCtrl::AddEntry(CTGitPath * GitPath, WORD /*langID*/, int list
 {
 	static CString from(MAKEINTRESOURCE(IDS_STATUSLIST_FROM));
 	static HINSTANCE hResourceHandle(AfxGetResourceHandle());
+	static bool abbreviateRenamings(((DWORD)CRegDWORD(_T("Software\\TortoiseGit\\AbbreviateRenamings"), FALSE)) == TRUE); 
 
 	CString path = GitPath->GetGitPathString();
 
@@ -989,10 +990,35 @@ void CGitStatusListCtrl::AddEntry(CTGitPath * GitPath, WORD /*langID*/, int list
 	}
 	if(GitPath->m_Action & (CTGitPath::LOGACTIONS_REPLACED|CTGitPath::LOGACTIONS_COPY) && !GitPath->GetGitOldPathString().IsEmpty())
 	{
-		// relative path
-		CString rename;
-		rename.Format(from, GitPath->GetGitOldPathString());
-		entryname += _T(" ") + rename;
+		if (!abbreviateRenamings)
+		{
+			// relative path
+			CString rename;
+			rename.Format(from, GitPath->GetGitOldPathString());
+			entryname += _T(" ") + rename;
+		}
+		else
+		{
+			CTGitPathList tgpl;
+			tgpl.AddPath(*GitPath);
+			CTGitPath old(GitPath->GetGitOldPathString());
+			tgpl.AddPath(old);
+			CString commonRoot = tgpl.GetCommonRoot().GetGitPathString();
+			if (!commonRoot.IsEmpty())
+				commonRoot += _T("/");
+			if (old.GetFileOrDirectoryName() == GitPath->GetFileOrDirectoryName() && old.GetContainingDirectory().GetGitPathString() != "" && GitPath->GetContainingDirectory().GetGitPathString())
+			{
+				entryname = commonRoot + _T("{") + GitPath->GetGitOldPathString().Mid(commonRoot.GetLength(), old.GetGitPathString().GetLength() - commonRoot.GetLength() - old.GetFileOrDirectoryName().GetLength() - 1) + _T(" => ") + GitPath->GetGitPathString().Mid(commonRoot.GetLength(), GitPath->GetGitPathString().GetLength() - commonRoot.GetLength() - old.GetFileOrDirectoryName().GetLength() - 1) +  _T("}/") + old.GetFileOrDirectoryName();
+			}
+			else if (!commonRoot.IsEmpty())
+			{
+				entryname = commonRoot + _T("{") + GitPath->GetGitOldPathString().Mid(commonRoot.GetLength()) + _T(" => ") + GitPath->GetGitPathString().Mid(commonRoot.GetLength()) + _T("}");
+			}
+			else
+			{
+				entryname = GitPath->GetGitOldPathString().Mid(commonRoot.GetLength()) + _T(" => ") + GitPath->GetGitPathString().Mid(commonRoot.GetLength());
+			}
+		}
 	}
 
 	InsertItem(index, entryname, icon_idx);
@@ -3636,14 +3662,15 @@ void CGitStatusListCtrl::StartDiff(int fileindex)
 			if( file1.m_ParentNo & MERGE_MASK)
 			{
 
-				CTGitPath base,theirs, mine;
+				CTGitPath base, theirs, mine, merge;
 
-				CTGitPath merge=file1;
-				CTGitPath directory = merge.GetDirectory();
+				CString temppath;
+				GetTempPath(temppath);
+				temppath.TrimRight(_T("\\"));
 
-				mine.SetFromGit(CAppUtils::GetMergeTempFile(_T("LOCAL"),merge));
-				theirs.SetFromGit(CAppUtils::GetMergeTempFile(_T("REMOTE"),merge));
-				base.SetFromGit(CAppUtils::GetMergeTempFile(_T("BASE"),merge));
+				mine.SetFromGit(temppath + _T("\\") + file1.GetFileOrDirectoryName() + _T(".LOCAL") + file1.GetFileExtension());
+				theirs.SetFromGit(temppath + _T("\\") + file1.GetFileOrDirectoryName() + _T(".REMOTE") + file1.GetFileExtension());
+				base.SetFromGit(temppath + _T("\\") + file1.GetFileOrDirectoryName() + _T(".BASE") + file1.GetFileExtension());
 
 				CFile tempfile;
 				//create a empty file, incase stage is not three
@@ -3654,7 +3681,7 @@ void CGitStatusListCtrl::StartDiff(int fileindex)
 				tempfile.Open(base.GetWinPathString(),CFile::modeCreate|CFile::modeReadWrite);
 				tempfile.Close();
 
-				merge.SetFromGit(merge.GetGitPathString()+_T("Merged"));
+				merge.SetFromGit(temppath + _T("\\") + file1.GetFileOrDirectoryName() + _T(".Merged") + file1.GetFileExtension());
 
 				int parent1=-1, parent2 =-1;
 				for(int i=0;i<this->m_arStatusArray.size();i++)
@@ -5323,8 +5350,10 @@ int CGitStatusListCtrl::RevertSelectedItemToVersion()
 		cmd.Format(_T("git.exe checkout %s -- \"%s\""),m_CurrentVersion,fentry->GetGitPathString());
 		out.Empty();
 		if (g_Git.Run(cmd, &out, CP_UTF8))
+		{
 			if (MessageBox(out, _T("TortoiseGit"), MB_ICONEXCLAMATION | MB_OKCANCEL) == IDCANCEL)
 				break;
+		}
 		else
 			count++;
 	}

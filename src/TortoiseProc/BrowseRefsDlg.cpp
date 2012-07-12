@@ -66,7 +66,8 @@ CBrowseRefsDlg::CBrowseRefsDlg(CString cmdPath, CWnd* pParent /*=NULL*/)
 	m_initialRef(L"HEAD"),
 	m_pickRef_Kind(gPickRef_All),
 	m_pListCtrlRoot(NULL),
-	m_bHasWC(true)
+	m_bHasWC(true),
+	m_SelectedFilters(LOGFILTER_ALL)
 {
 
 }
@@ -80,6 +81,7 @@ void CBrowseRefsDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_REF,			m_RefTreeCtrl);
 	DDX_Control(pDX, IDC_LIST_REF_LEAFS,	m_ListRefLeafs);
+	DDX_Control(pDX, IDC_BROWSEREFS_EDIT_FILTER, m_ctrlFilter);
 }
 
 
@@ -92,6 +94,9 @@ BEGIN_MESSAGE_MAP(CBrowseRefsDlg, CResizableStandAloneDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_REF_LEAFS, &CBrowseRefsDlg::OnNMDblclkListRefLeafs)
 	ON_NOTIFY(LVN_ENDLABELEDIT, IDC_LIST_REF_LEAFS, &CBrowseRefsDlg::OnLvnEndlabeleditListRefLeafs)
 	ON_NOTIFY(LVN_BEGINLABELEDIT, IDC_LIST_REF_LEAFS, &CBrowseRefsDlg::OnLvnBeginlabeleditListRefLeafs)
+	ON_EN_CHANGE(IDC_BROWSEREFS_EDIT_FILTER, &CBrowseRefsDlg::OnEnChangeEditFilter)
+	ON_MESSAGE(WM_FILTEREDIT_INFOCLICKED, OnClickedInfoIcon)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -107,8 +112,15 @@ BOOL CBrowseRefsDlg::OnInitDialog()
 	CResizableStandAloneDialog::OnInitDialog();
 	CAppUtils::MarkWindowAsUnpinnable(m_hWnd);
 
+	// the filter control has a 'cancel' button (the red 'X'), we need to load its bitmap
+	m_ctrlFilter.SetCancelBitmaps(IDI_CANCELNORMAL, IDI_CANCELPRESSED);
+	m_ctrlFilter.SetInfoIcon(IDI_FILTEREDIT);
+	SetFilterCueText();
+
 	AddAnchor(IDC_TREE_REF, TOP_LEFT, BOTTOM_LEFT);
 	AddAnchor(IDC_LIST_REF_LEAFS, TOP_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_BROWSEREFS_STATIC_FILTER, TOP_LEFT);
+	AddAnchor(IDC_BROWSEREFS_EDIT_FILTER, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDHELP, BOTTOM_RIGHT);
 
 	m_ListRefLeafs.SetExtendedStyle(m_ListRefLeafs.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
@@ -119,6 +131,8 @@ BOOL CBrowseRefsDlg::OnInitDialog()
 	m_ListRefLeafs.InsertColumn(eCol_Date, temp, 0, 100);
 	temp.LoadString(IDS_LASTCOMMIT);
 	m_ListRefLeafs.InsertColumn(eCol_Msg, temp, 0, 300);
+	temp.LoadString(IDS_LASTAUTHOR);
+	m_ListRefLeafs.InsertColumn(eCol_LastAuthor, temp, 0, 100);
 	temp.LoadString(IDS_HASH);
 	m_ListRefLeafs.InsertColumn(eCol_Hash, temp, 0, 80);
 
@@ -406,14 +420,19 @@ void CBrowseRefsDlg::FillListCtrlForShadowTree(CShadowTree* pTree, CString refNa
 {
 	if(pTree->IsLeaf())
 	{
-		if (!(pTree->m_csRefName.IsEmpty() || pTree->m_csRefName == "refs" && pTree->m_pParent == NULL))
+		CString filter;
+		m_ctrlFilter.GetWindowText(filter);
+		filter.MakeLower();
+		CString ref = refNamePrefix + pTree->m_csRefName;
+		if (!(pTree->m_csRefName.IsEmpty() || pTree->m_csRefName == "refs" && pTree->m_pParent == NULL) && IsMatchFilter(pTree, ref, filter))
 		{
 			int indexItem = m_ListRefLeafs.InsertItem(m_ListRefLeafs.GetItemCount(), L"");
 
 			m_ListRefLeafs.SetItemData(indexItem,(DWORD_PTR)pTree);
-			m_ListRefLeafs.SetItemText(indexItem,eCol_Name, refNamePrefix+pTree->m_csRefName);
+			m_ListRefLeafs.SetItemText(indexItem,eCol_Name, ref);
 			m_ListRefLeafs.SetItemText(indexItem,eCol_Date, pTree->m_csDate);
 			m_ListRefLeafs.SetItemText(indexItem,eCol_Msg, pTree->m_csSubject);
+			m_ListRefLeafs.SetItemText(indexItem,eCol_LastAuthor, pTree->m_csAuthor);
 			m_ListRefLeafs.SetItemText(indexItem,eCol_Hash, pTree->m_csRefHash);
 		}
 	}
@@ -430,6 +449,46 @@ void CBrowseRefsDlg::FillListCtrlForShadowTree(CShadowTree* pTree, CString refNa
 			FillListCtrlForShadowTree(&itSubTree->second,csThisName,false);
 		}
 	}
+}
+
+bool CBrowseRefsDlg::IsMatchFilter(const CShadowTree* pTree, const CString &ref, const CString &filter)
+{
+	if (m_SelectedFilters & LOGFILTER_REFNAME)
+	{
+		CString msg = ref;
+		msg = msg.MakeLower();
+
+		if (msg.Find(filter) >= 0)
+			return true;
+	}
+
+	if (m_SelectedFilters & LOGFILTER_SUBJECT)
+	{
+		CString msg = pTree->m_csSubject;
+		msg = msg.MakeLower();
+
+		if (msg.Find(filter) >= 0)
+			return true;
+	}
+
+	if (m_SelectedFilters & LOGFILTER_AUTHORS)
+	{
+		CString msg = pTree->m_csAuthor;
+		msg = msg.MakeLower();
+
+		if (msg.Find(filter) >= 0)
+			return true;
+	}
+
+	if (m_SelectedFilters & LOGFILTER_REVS)
+	{
+		CString msg = pTree->m_csRefHash;
+		msg = msg.MakeLower();
+
+		if (msg.Find(filter) >= 0)
+			return true;
+	}
+	return false;
 }
 
 bool CBrowseRefsDlg::ConfirmDeleteRef(VectorPShadowTree& leafs)
@@ -656,6 +715,7 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 		CString temp;
 		temp.LoadString(IDS_MENULOG);
 		popupMenu.AppendMenuIcon(eCmd_ViewLog, temp, IDI_LOG);
+		popupMenu.AppendMenuIcon(eCmd_RepoBrowser, IDS_LOG_BROWSEREPO, IDI_REPOBROWSE);
 		if(bShowReflogOption)
 		{
 			temp.LoadString(IDS_MENUREFLOG);
@@ -795,6 +855,9 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 			dlg.SetStartRef(selectedLeafs[0]->GetRefName());
 			dlg.DoModal();
 		}
+		break;
+	case eCmd_RepoBrowser:
+		CAppUtils::RunTortoiseProc(_T("/command:repobrowser /path:\"") + g_Git.m_CurrentDir + _T("\" /rev:") + selectedLeafs[0]->GetRefName());
 		break;
 	case eCmd_DeleteBranch:
 	case eCmd_DeleteRemoteBranch:
@@ -959,6 +1022,7 @@ public:
 		case CBrowseRefsDlg::eCol_Name:	return pLeft->GetRefName().CompareNoCase(pRight->GetRefName());
 		case CBrowseRefsDlg::eCol_Date:	return pLeft->m_csDate_Iso8601.CompareNoCase(pRight->m_csDate_Iso8601);
 		case CBrowseRefsDlg::eCol_Msg:	return pLeft->m_csSubject.CompareNoCase(pRight->m_csSubject);
+		case CBrowseRefsDlg::eCol_LastAuthor: return pLeft->m_csAuthor.CompareNoCase(pRight->m_csAuthor);
 		case CBrowseRefsDlg::eCol_Hash:	return pLeft->m_csRefHash.CompareNoCase(pRight->m_csRefHash);
 		}
 		return 0;
@@ -1116,4 +1180,91 @@ void CBrowseRefsDlg::OnLvnBeginlabeleditListRefLeafs(NMHDR *pNMHDR, LRESULT *pRe
 		*pResult = TRUE; //Dont allow renaming any other things then branches at the moment.
 		return;
 	}
+}
+
+void CBrowseRefsDlg::OnEnChangeEditFilter()
+{
+	SetTimer(IDT_FILTER, 1000, NULL);
+}
+
+void CBrowseRefsDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == IDT_FILTER)
+	{
+		KillTimer(IDT_FILTER);
+		FillListCtrlForTreeNode(m_RefTreeCtrl.GetSelectedItem());
+	}
+
+	CResizableStandAloneDialog::OnTimer(nIDEvent);
+}
+
+LRESULT CBrowseRefsDlg::OnClickedInfoIcon(WPARAM /*wParam*/, LPARAM lParam)
+{
+	// FIXME: x64 version would get this function called with unexpected parameters.
+	if (!lParam)
+		return 0;
+
+	RECT * rect = (LPRECT)lParam;
+	CPoint point;
+	CString temp;
+	point = CPoint(rect->left, rect->bottom);
+#define LOGMENUFLAGS(x) (MF_STRING | MF_ENABLED | (m_SelectedFilters & x ? MF_CHECKED : MF_UNCHECKED))
+	CMenu popup;
+	if (popup.CreatePopupMenu())
+	{
+		temp.LoadString(IDS_LOG_FILTER_REFNAME);
+		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_REFNAME), LOGFILTER_REFNAME, temp);
+
+		temp.LoadString(IDS_LOG_FILTER_SUBJECT);
+		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_SUBJECT), LOGFILTER_SUBJECT, temp);
+
+		temp.LoadString(IDS_LOG_FILTER_AUTHORS);
+		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_AUTHORS), LOGFILTER_AUTHORS, temp);
+
+		temp.LoadString(IDS_LOG_FILTER_REVS);
+		popup.AppendMenu(LOGMENUFLAGS(LOGFILTER_REVS), LOGFILTER_REVS, temp);
+
+		int selection = popup.TrackPopupMenu(TPM_RETURNCMD | TPM_LEFTALIGN | TPM_NONOTIFY, point.x, point.y, this, 0);
+		if (selection != 0)
+		{
+			m_SelectedFilters ^= selection;
+			SetFilterCueText();
+			SetTimer(IDT_FILTER, 1000, NULL);
+		}
+	}
+	return 0L;
+}
+
+void CBrowseRefsDlg::SetFilterCueText()
+{
+	CString temp(MAKEINTRESOURCE(IDS_LOG_FILTER_BY));
+	temp += _T(" ");
+
+	if (m_SelectedFilters & LOGFILTER_REFNAME)
+		temp += CString(MAKEINTRESOURCE(IDS_LOG_FILTER_REFNAME));
+
+	if (m_SelectedFilters & LOGFILTER_SUBJECT)
+	{
+		if (temp.ReverseFind(_T(' ')) != temp.GetLength() - 1)
+			temp += _T(", ");
+		temp += CString(MAKEINTRESOURCE(IDS_LOG_FILTER_SUBJECT));
+	}
+
+	if (m_SelectedFilters & LOGFILTER_AUTHORS)
+	{
+		if (temp.ReverseFind(_T(' ')) != temp.GetLength() - 1)
+			temp += _T(", ");
+		temp += CString(MAKEINTRESOURCE(IDS_LOG_FILTER_AUTHORS));
+	}
+
+	if (m_SelectedFilters & LOGFILTER_REVS)
+	{
+		if (temp.ReverseFind(_T(' ')) != temp.GetLength() - 1)
+			temp += _T(", ");
+		temp += CString(MAKEINTRESOURCE(IDS_LOG_FILTER_REVS));
+	}
+
+	// to make the cue banner text appear more to the right of the edit control
+	temp = _T("   ") + temp;
+	m_ctrlFilter.SetCueBanner(temp.TrimRight());
 }

@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 
 #include "HorizontalResizableStandAloneDialog.h"
 #include "HistoryCombo.h"
+#include "MenuButton.h"
 #include "registry.h"
 // CPushDlg dialog
 
@@ -40,18 +41,20 @@ protected:
 	CHistoryCombo	m_BranchSource;
 	CHistoryCombo	m_Remote;
 	CHistoryCombo	m_RemoteURL;
+	CMenuButton		m_BrowseLocalRef;
+	CRegString		m_RemoteReg;
 
 public:
 	CString			m_URL;
 	CString			m_BranchSourceName;
 	CString			m_BranchRemoteName;
-	CRegString		m_RemoteReg;
 
 	BOOL			m_bTags;
 	BOOL			m_bForce;
 	BOOL			m_bPack;
 	BOOL			m_bAutoLoad;
 	BOOL			m_bPushAllBranches;
+	BOOL			m_bPushAllRemotes;
 
 protected:
 	CRegDWORD		m_regAutoLoad;

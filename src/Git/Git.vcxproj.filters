@@ -50,9 +50,6 @@
     <ClInclude Include="TGitPath.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CrashReport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Git.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -135,7 +135,7 @@ IDB_BITMAP_REFTYPE      BITMAP                  "..\\resources\\reftype.bmp"
 // Dialog
 //
 
-IDD_ABOUT DIALOGEX 0, 0, 333, 297
+IDD_ABOUT DIALOGEX 0, 0, 333, 265
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About TortoiseGit"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -148,9 +148,8 @@ BEGIN
     LTEXT           "and support the developers",IDC_SUPPORTLINK,14,165,312,8
     GROUPBOX        "Version Information",IDC_VERSIONBOX,7,187,319,50
     EDITTEXT        IDC_VERSIONABOUT,14,199,304,35,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
-    LTEXT           "This product includes software developed by CollabNet (http://www.Collab.Net/)",IDC_STATIC,14,239,312,8
-    PUSHBUTTON      "Check For Updates...",IDC_UPDATE,7,276,110,14
-    DEFPUSHBUTTON   "OK",IDOK,276,276,50,14
+    PUSHBUTTON      "Check For Updates...",IDC_UPDATE,7,244,110,14
+    DEFPUSHBUTTON   "OK",IDOK,276,244,50,14
     LTEXT           "based on TortoiseSVN (http://www.tortoisesvn.net/)",IDC_STATIC,13,71,114,8
 END
 
@@ -229,7 +228,7 @@ BEGIN
     PUSHBUTTON      "{BugTraq}",IDC_BUGTRAQBUTTON,265,3,78,14,NOT WS_VISIBLE | WS_DISABLED
     EDITTEXT        IDC_BUGID,294,3,49,14,ES_AUTOHSCROLL
     CONTROL         "Scintilla",IDC_LOGMESSAGE,"Scintilla",WS_TABSTOP,13,32,331,72,WS_EX_STATICEDGE
-    CONTROL         "*Amend &Last Commit",IDC_COMMIT_AMEND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,111,135,10
+    CONTROL         "*Amend &Last Commit",IDC_COMMIT_AMEND,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,14,111,135,10
     CONTROL         "Show diff to last commit",IDC_COMMIT_AMENDDIFF,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,212,110,132,10
     CONTROL         "Set commit &date",IDC_COMMIT_SETDATETIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,125,102,10
     CONTROL         "",IDC_COMMIT_DATEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | NOT WS_VISIBLE | WS_TABSTOP,123,123,66,13,WS_EX_RIGHT
@@ -627,8 +626,10 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "General::Context Menu"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Cascaded context menu",IDC_STATIC,7,7,286,210
-    CONTROL         "",IDC_MENULIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,12,19,274,121
+    GROUPBOX        "Cascaded context menu",IDC_STATIC,7,7,286,139
+    CONTROL         "",IDC_MENULIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,12,19,274,103
+    CONTROL         "Select/deselect &all",IDC_SELECTALL,"Button",BS_AUTO3STATE | WS_TABSTOP,12,126,108,14
+    PUSHBUTTON      "Restore Default",IDC_RESTORE,204,126,82,14
     CONTROL         "Hide Menus for unversioned paths",IDC_HIDEMENUS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,148,274,10
     GROUPBOX        "Do not show the context menu for the following paths:",IDC_STATIC,7,161,286,56
     EDITTEXT        IDC_NOCONTEXTPATHS,12,173,274,36,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
@@ -639,7 +640,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "General::Dialogs"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Log messages",IDC_STATIC,7,7,286,62
+    GROUPBOX        "Log messages",IDC_STATIC,7,7,286,73
     LTEXT           "&Font for log messages:",IDC_STATIC,14,17,92,13,SS_CENTERIMAGE
     COMBOBOX        IDC_FONTNAMES,107,17,136,90,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | CBS_SORT | CBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_FONTSIZES,253,17,31,47,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
@@ -651,20 +652,21 @@ BEGIN
     CONTROL         "apply --topo-order",IDC_TOPOORDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,44,120,10
     CONTROL         "Can double-click in log list to compare with previous revision",IDC_DIFFBYDOUBLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,55,270,10
-    GROUPBOX        "Misc",IDC_STATIC,7,73,286,47
-    LTEXT           "&Autoclose:",IDC_STATIC,14,82,85,16,SS_CENTERIMAGE | NOT WS_VISIBLE
-    COMBOBOX        IDC_AUTOCLOSECOMBO,107,85,177,75,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Abbreviate renamings",IDC_ABBREVIATERENAMINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,66,270,10
+    GROUPBOX        "Misc",IDC_STATIC,7,86,286,47
+    LTEXT           "&Autoclose:",IDC_STATIC,14,95,85,16,SS_CENTERIMAGE | NOT WS_VISIBLE
+    COMBOBOX        IDC_AUTOCLOSECOMBO,107,98,177,75,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Use recycle bin when reverting",IDC_USERECYCLEBIN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,103,270,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,116,270,10
     CONTROL         "&Use auto-completion of file paths and keywords",IDC_AUTOCOMPLETION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,135,271,10
-    LTEXT           "&Timeout in seconds to stop the auto-completion parsing",IDC_AUTOCOMPLETIONTIMEOUTLABEL,14,152,231,8,SS_NOTIFY
-    EDITTEXT        IDC_AUTOCOMPLETIONTIMEOUT,252,150,31,12,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
-    LTEXT           "Max. items to keep in the log message history",IDC_MAXHISTORYLABEL,14,167,226,8,SS_NOTIFY
-    EDITTEXT        IDC_MAXHISTORY,252,163,31,14,ES_AUTOHSCROLL
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,150,271,10
+    LTEXT           "&Timeout in seconds to stop the auto-completion parsing",IDC_AUTOCOMPLETIONTIMEOUTLABEL,14,167,231,8,SS_NOTIFY
+    EDITTEXT        IDC_AUTOCOMPLETIONTIMEOUT,252,165,31,12,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    LTEXT           "Max. items to keep in the log message history",IDC_MAXHISTORYLABEL,14,182,226,8,SS_NOTIFY
+    EDITTEXT        IDC_MAXHISTORY,252,178,31,14,ES_AUTOHSCROLL
     CONTROL         "Select items automatically",IDC_SELECTFILESONCOMMIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,180,238,10
-    GROUPBOX        "Commit",IDC_COMMITGROUP,7,124,286,71
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,195,238,10
+    GROUPBOX        "Commit",IDC_COMMITGROUP,7,139,286,71
 END
 
 IDD_RESOLVE DIALOGEX 0, 0, 289, 154
@@ -997,14 +999,14 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFR
 CAPTION "Push"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Branch",IDC_BRANCH_GROUP,7,7,295,69
+    GROUPBOX        "Ref",IDC_BRANCH_GROUP,7,7,295,69
     CONTROL         "&Push all branches",IDC_PUSHALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,18,276,10
     LTEXT           "&Local:",IDC_STATIC_SOURCE,15,34,53,8
-    CONTROL         "",IDC_BRANCH_SOURCE,"ComboBoxEx32",CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,33,195,65
-    PUSHBUTTON      "...",IDC_BUTTON_BROWSE_SOURCE_BRANCH,277,32,18,15
+    CONTROL         "",IDC_BRANCH_SOURCE,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,33,198,65
+    PUSHBUTTON      "",IDC_BUTTON_BROWSE_SOURCE_BRANCH,280,32,15,15
     LTEXT           "&Remote:",IDC_STATIC_REMOTE,15,57,52,8
-    CONTROL         "",IDC_BRANCH_REMOTE,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,55,195,56
-    PUSHBUTTON      "...",IDC_BUTTON_BROWSE_DEST_BRANCH,277,54,18,15
+    CONTROL         "",IDC_BRANCH_REMOTE,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,55,198,56
+    PUSHBUTTON      "...",IDC_BUTTON_BROWSE_DEST_BRANCH,280,54,15,15
     GROUPBOX        "Destination",IDC_URL_GROUP,7,80,295,54
     CONTROL         "Re&mote:",IDC_RD_REMOTE,"Button",BS_AUTORADIOBUTTON,15,95,53,10
     CONTROL         "",IDC_REMOTE,"ComboBoxEx32",CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,92,171,70
@@ -1324,12 +1326,13 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYS
 CAPTION "RefLog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "&Ref:",IDC_STATIC_REF,9,9,27,8
+    CONTROL         "",IDC_COMBOBOXEX_REF,"ComboBoxEx32",CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP,55,7,128,80
+    CONTROL         "",IDC_REFLOG_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,7,27,342,138
+    PUSHBUTTON      "&Clear stash",IDC_REFLOG_BUTTONCLEARSTASH,7,175,79,14,NOT WS_VISIBLE
     DEFPUSHBUTTON   "OK",IDOK,184,175,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,241,175,50,14
     PUSHBUTTON      "Help",IDHELP,299,175,50,14
-    LTEXT           "Ref",IDC_STATIC_REF,9,9,27,8
-    CONTROL         "",IDC_COMBOBOXEX_REF,"ComboBoxEx32",CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP,55,7,128,80
-    CONTROL         "",IDC_REFLOG_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,7,27,342,138
 END
 
 IDD_SUBMODULE_ADD DIALOGEX 0, 0, 271, 122
@@ -1446,23 +1449,23 @@ BEGIN
     PUSHBUTTON      "Help",IDHELP,338,241,50,14
 END
 
-IDD_CLEAN DIALOGEX 0, 0, 261, 125
+IDD_CLEAN DIALOGEX 0, 0, 261, 117
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Clean"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Clean Type",IDC_GROUP_CLEAN_TYPE,7,5,247,60
-    CONTROL         "Clean &All Untracked file (-fx)",IDC_RADIO_CLEAN_ALL,
+    GROUPBOX        "Clean Type",IDC_GROUP_CLEAN_TYPE,7,5,247,56
+    CONTROL         "Remove &all untracked files (-fx)",IDC_RADIO_CLEAN_ALL,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,19,232,10
-    CONTROL         "Clean Only &Non-ignore untrack (-f)",IDC_RADIO_CLEAN_NO,
+    CONTROL         "Remove &non-ignored untracked files (-f)",IDC_RADIO_CLEAN_NO,
                     "Button",BS_AUTORADIOBUTTON,15,32,232,10
-    CONTROL         "Clean Only Ignore file (-fX)",IDC_RADIO_CLEAN_IGNORE,
+    CONTROL         "Remove ignored files (-fX)",IDC_RADIO_CLEAN_IGNORE,
                     "Button",BS_AUTORADIOBUTTON,15,45,232,10
-    CONTROL         "Remove Untracked Directory (-d)",IDC_CHECK_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,68,232,10
-    DEFPUSHBUTTON   "OK",IDOK,81,104,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,142,104,50,14
-    PUSHBUTTON      "Help",IDHELP,204,104,50,14
-    LTEXT           "Attention: This command affects the whole working tree and will delete all untracked files without using the recycle bin!",IDC_STATIC,14,83,233,20
+    CONTROL         "Remove untracked directories (-d)",IDC_CHECK_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,68,232,10
+    DEFPUSHBUTTON   "OK",IDOK,81,96,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,142,96,50,14
+    PUSHBUTTON      "Help",IDHELP,204,96,50,14
+    LTEXT           "Attention: This command affects the whole working tree!",IDC_STATIC,14,83,233,10
 END
 
 IDD_PATCH_VIEW DIALOGEX 0, 0, 248, 195
@@ -1492,7 +1495,9 @@ CAPTION "General::Set Extend Menu Item"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Move to extended context menu (press shift key to show it)",-1,7,7,286,210
-    CONTROL         "",IDC_MENULIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,12,19,274,198
+    CONTROL         "",IDC_MENULIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,12,19,274,175
+    CONTROL         "Select/deselect &all",IDC_SELECTALL,"Button",BS_AUTO3STATE | WS_TABSTOP,12,198,106,14
+    PUSHBUTTON      "Restore Default",IDC_RESTORE,204,198,82,14
 END
 
 IDD_CREATEREPO DIALOGEX 0, 0, 309, 97
@@ -1567,6 +1572,71 @@ BEGIN
     EDITTEXT        IDC_TOSUBJECT,52,96,234,12,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
 
+IDD_IGNORE DIALOGEX 0, 0, 261, 151
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ignore"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Ignore Type",IDC_GROUP_IGNORE_TYPE,7,7,247,46
+    CONTROL         "Ignore item(s) only in the containing folder(s)",IDC_RADIO_IGNORETYPE_ONLYINFOLDER,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,21,231,10
+    CONTROL         "Ignore item(s) recursively",IDC_RADIO_IGNORETYPE_RECURSIVELY,
+                    "Button",BS_AUTORADIOBUTTON,15,34,231,10
+    GROUPBOX        "Ignore File",IDC_GROUP_IGNORE_FILE,7,62,247,60
+    CONTROL         ".gitignore in the repository root",IDC_RADIO_IGNOREFILE_GLOBALGITIGNORE,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,75,231,10
+    CONTROL         ".gitignore in the containing directories of the items",IDC_RADIO_IGNOREFILE_LOCALGITIGNORES,
+                    "Button",BS_AUTORADIOBUTTON,15,89,231,10
+    CONTROL         ".git/info/exclude",IDC_RADIO_IGNOREFILE_GITINFOEXCLUDE,
+                    "Button",BS_AUTORADIOBUTTON,15,103,231,10
+    DEFPUSHBUTTON   "OK",IDOK,95,130,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,149,130,50,14
+    PUSHBUTTON      "Help",IDHELP,204,130,50,14,WS_DISABLED
+END
+
+IDD_SUBMODULE_UPDATE DIALOGEX 0, 0, 242, 77
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Submodule Update"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Submodule Update Options",IDC_GROUP_INFO,7,7,225,41
+    CONTROL         "&Initialize submodules (--init)",IDC_CHECK_SUBMODULE_INIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,17,210,13
+    CONTROL         "&Recursive",IDC_CHECK_SUBMODULE_RECURSIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,31,210,13
+    DEFPUSHBUTTON   "OK",IDOK,69,55,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,55,50,14
+    PUSHBUTTON      "Help",IDHELP,182,55,50,14,WS_DISABLED
+END
+
+IDD_DIALOG_BROWSE_REFS DIALOGEX 0, 0, 465, 255
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Browse references"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Filter:",IDC_BROWSEREFS_STATIC_FILTER,125,8,37,9
+    EDITTEXT        IDC_BROWSEREFS_EDIT_FILTER,164,7,294,12,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    CONTROL         "",IDC_TREE_REF,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,24,108,207
+    CONTROL         "",IDC_LIST_REF_LEAFS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_EDITLABELS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,125,24,333,207
+    DEFPUSHBUTTON   "OK",IDOK,285,234,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,347,234,50,14
+    PUSHBUTTON      "Help",IDHELP,408,234,50,14
+END
+
+IDD_ADD_REMOTE DIALOGEX 0, 0, 300, 84
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add Remote"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Name:",IDC_STATIC,16,22,22,8
+    EDITTEXT        IDC_EDIT_NAME,44,20,249,14,ES_AUTOHSCROLL
+    LTEXT           "URL:",IDC_STATIC,26,40,12,8
+    EDITTEXT        IDC_EDIT_URL,44,38,249,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,113,63,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,178,63,50,14
+    PUSHBUTTON      "Help",IDHELP,243,63,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1576,6 +1646,11 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
+    IDD_ABOUT, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 258
+    END
+
     IDD_ADD, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -2172,6 +2247,14 @@ BEGIN
         BOTTOMMARGIN, 85
     END
 
+    IDD_REFLOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 349
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 189
+    END
+
     IDD_SETTINGIT_CONFIG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -2293,6 +2376,43 @@ BEGIN
         VERTGUIDE, 286
         TOPMARGIN, 7
         BOTTOMMARGIN, 114
+    END
+
+    IDD_IGNORE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 254
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_SUBMODULE_UPDATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 232
+        VERTGUIDE, 15
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 69
+    END
+
+    IDD_DIALOG_BROWSE_REFS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 458
+        VERTGUIDE, 125
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
+        HORZGUIDE, 231
+    END
+
+    IDD_ADD_REMOTE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 293
+        VERTGUIDE, 38
+        VERTGUIDE, 44
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 77
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2486,7 +2606,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_GDIPLUS_MISSING "GDI+ is required to save the revision graph as a picture.\nYou can get GDI+ from\n<u><a=http://www.microsoft.com/downloads/details.aspx?FamilyID=6a63ab9c-df12-4d41-933c-be590feaa05a&DisplayLang=en>http://www.microsoft.com/downloads/details.aspx?FamilyID=6a63ab9c-df12-4d41-933c-be590feaa05a&DisplayLang=en</a></u>"
+    IDS_LOG_FILTER_REFNAME  "Refname"
     IDS_ERR_NOTENOUGHMEMORY "Not enough memory to complete operation."
     IDS_ERR_MUSTBEURL       "This is not a valid URL.\nPlease enter an URL here."
     IDS_ERR_INVALIDREVNOWC  "Invalid revision number! Valid revisions are:\nHEAD\npositive decimal numbers,\ndates in one of the following example forms:\n{2002-02-17}\n{15:30}\n{15:30:00.200000}\n{""2002-02-17 15:30""}\n{""2002-02-17 15:30 +0230""}\n{2002-02-17T15:30}\n{2002-02-17T15:30Z}\n{2002-02-17T15:30-04:00}\n{20020217T1530}\n{20020217T1530Z}\n{20020217T1530-0500}"
@@ -3444,7 +3564,7 @@ BEGIN
     IDS_PROC_STASHSUCCESS   "<ct=0xff0000>Stash Success</ct>"
     IDS_PROC_NOUSERDATA     "User name and email must be set before commit.\r\n Do you want to set these now?"
     IDS_PROC_PREVIOUSVERSION "Previous Version"
-    IDS_PROC_REFINVALID     """%"" is invalid."
+    IDS_PROC_REFINVALID     """%s"" is invalid."
     IDS_IGNOREBUTTON        "&Ignore"
     IDS_PROC_STASHAPPLYFAILED "<ct=0x0000FF>Stash Apply failed!!!</ct>"
     IDS_PROC_FILEDIFF_VERSION2BASE "Version 2 (Base)"
@@ -3517,83 +3637,29 @@ BEGIN
     IDS_PROC_NEWBRANCHTAG_TRACK_TT 
                             "If checked --track is passed to git, if unchecked --no-track is passed to git, else neither --track nor --no-track is passed to git (see help)."
     IDS_STATUSLIST_FROM     "(from %s)"
+    IDS_LASTAUTHOR          "Last Author"
+    IDS_B_T_NOT_UNIQUE      "The entered source ref is ambiguous. You have to make it unique (e.g. by adding ""refs/heads/"" as a prefix for branches or ""refs/tags/"" for tags)!"
+    IDS_B_EXISTS            "A branch with this name already exists."
+    IDS_T_EXISTS            "A tag with this name already exists."
+    IDS_B_DELETEORDIFFERENTNAME 
+                            "Delete the existing branch or use a different name."
+    IDS_B_T_DIFFERENTNAMEORFORCE 
+                            "Use a different name or use the ""Force"" option to overwrite it."
+    IDS_B_DIFFERENTNAMEOROVERRIDE 
+                            "Use a different name or use the ""Override branch"" option."
+    IDS_T_SAMEBRANCHNAMEEXISTS 
+                            "A branch with the same name as your entered tag name already exists (so the short ref is ambiguous).\nThis can cause problems so you should avoid it."
+    IDS_B_SAMETAGNAMEEXISTS "A tag with the same name as your entered branch name already exists (so the short ref is ambiguous).\nThis can cause problems so you should avoid it."
+    IDS_SETTINGS_ABBREVIATERENAMINGS_TT 
+                            "List a renamed file as ""long/path/{to => for}/file.txt"" instead of ""long/path/for/file.txt (from long/path/to/file.txt)""."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PROC_PUSHFETCH_ALLREMOTES "- all -"
 END
 
 #endif    // Englisch (USA) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Dutch (Netherlands) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
-#ifdef _WIN32
-LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_DIALOG_BROWSE_REFS DIALOGEX 0, 0, 465, 255
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-EXSTYLE WS_EX_APPWINDOW
-CAPTION "Browse references"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,285,234,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,347,234,50,14
-    CONTROL         "",IDC_TREE_REF,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,108,224
-    CONTROL         "",IDC_LIST_REF_LEAFS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_EDITLABELS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,125,7,333,224
-    PUSHBUTTON      "Help",IDHELP,408,234,50,14
-END
-
-IDD_ADD_REMOTE DIALOGEX 0, 0, 300, 84
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Add Remote"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Name:",IDC_STATIC,16,22,22,8
-    EDITTEXT        IDC_EDIT_NAME,44,20,249,14,ES_AUTOHSCROLL
-    LTEXT           "URL:",IDC_STATIC,26,40,12,8
-    EDITTEXT        IDC_EDIT_URL,44,38,249,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,113,63,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,178,63,50,14
-    PUSHBUTTON      "Help",IDHELP,243,63,50,14
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_DIALOG_BROWSE_REFS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 458
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 248
-        HORZGUIDE, 231
-    END
-
-    IDD_ADD_REMOTE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 293
-        VERTGUIDE, 38
-        VERTGUIDE, 44
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 77
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-#endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -99,6 +99,34 @@
             </listitem>
         </varlistentry>
         <varlistentry>
+            <term condition="pot">ReaddUnselectedAddedFilesAfterCommit</term>
+            <listitem>
+                <para>
+                    This option toggles the re-adding of unselected added files after a commit. Up to
+                    TortoiseGit 1.7.10 added files which were not checked on a commit, were removed from
+                    the index and unversioned after the commit. Set this value to <literal>false</literal>
+                    to restore the old behavior.
+                    Set this value to <literal>true</literal> to readd these files again after the commit (default).
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term condition="pot">ScintillaDirect2D</term>
+            <listitem>
+                <para>
+                    This option enables the use of Direct2D accelerated
+                    drawing in the Scintilla control which is used
+                    as the edit box in e.g. the commit dialog (also for the attached patch window), the
+                    unified diff viewer and TortoiseGitBlame.
+                    With some graphic cards however this sometimes
+                    doesn't work properly so that the cursor to enter
+                    text isn't always visible. If that happens, you
+                    can turn this feature off by setting this value
+                    to <literal>false</literal>.
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
             <term condition="pot">ShowContextMenuIcons</term>
             <listitem>
                 <para>
@@ -108,6 +136,16 @@
                     if you don't want TortoiseGit to show icons for the
                     shell context menu items.
                     Set this value to <literal>true</literal> to show the icons again.
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+            <term condition="pot">ShowListBackgroundImage</term>
+            <listitem>
+                <para>
+                    If you do not want to have a small background image in list controls (e.g. Commit Dialog)
+                    set this value to <literal>false</literal>.
+                    Set this value to <literal>true</literal> to show the images again (default).
                 </para>
             </listitem>
         </varlistentry>

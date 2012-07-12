@@ -593,6 +593,12 @@
     <ClCompile Include="Commands\RepositoryBrowserCommand.cpp">
       <Filter>Commands\RepositoryBrowser</Filter>
     </ClCompile>
+    <ClCompile Include="SubmoduleUpdateDlg.cpp">
+      <Filter>Commands\Submodule</Filter>
+    </ClCompile>
+    <ClCompile Include="IgnoreDlg.cpp">
+      <Filter>Utility Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddRemoteDlg.h">
@@ -1032,6 +1038,12 @@
     </ClInclude>
     <ClInclude Include="Commands\RepositoryBrowserCommand.h">
       <Filter>Commands\RepositoryBrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="SubmoduleUpdateDlg.h">
+      <Filter>Commands\Submodule</Filter>
+    </ClInclude>
+    <ClInclude Include="IgnoreDlg.h">
+      <Filter>Utility Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

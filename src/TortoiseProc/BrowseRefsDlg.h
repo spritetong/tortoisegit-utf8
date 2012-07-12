@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2009-2011 - TortoiseGit
+// Copyright (C) 2009-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,8 @@
 #include "Git.h"
 #include <map>
 #include "StandAloneDlg.h"
+#include "afxwin.h"
+#include "FilterEdit.h"
 
 const int gPickRef_Head		= 1;
 const int gPickRef_Tag		= 2;
@@ -87,7 +89,8 @@ public:
 		eCmd_Diff,
 		eCmd_Fetch,
 		eCmd_Switch,
-		eCmd_Rename
+		eCmd_Rename,
+		eCmd_RepoBrowser,
 	};
 
 	enum eCol
@@ -95,6 +98,7 @@ public:
 		eCol_Name,
 		eCol_Date,
 		eCol_Msg,
+		eCol_LastAuthor,
 		eCol_Hash
 	};
 
@@ -136,6 +140,14 @@ private:
 	CShadowTree*	m_pListCtrlRoot;
 	CTreeCtrl		m_RefTreeCtrl;
 	CListCtrl		m_ListRefLeafs;
+
+	CFilterEdit		m_ctrlFilter;
+	afx_msg void OnEnChangeEditFilter();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	DWORD			m_SelectedFilters;
+	void			SetFilterCueText();
+	afx_msg LRESULT OnClickedInfoIcon(WPARAM wParam, LPARAM lParam);
+	bool			IsMatchFilter(const CShadowTree* pTree, const CString &ref, const CString &filter);
 
 	int				m_currSortCol;
 	bool			m_currSortDesc;

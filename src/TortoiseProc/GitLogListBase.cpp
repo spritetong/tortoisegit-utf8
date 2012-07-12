@@ -113,7 +113,15 @@ CGitLogListBase::CGitLogListBase():CHintListCtrl()
 	if (CTGitPath(g_Git.m_CurrentDir).HasAdminDir())
 	{
 		m_CurrentBranch=g_Git.GetCurrentBranch();
-		m_HeadHash=g_Git.GetHash(_T("HEAD"));
+		try {
+			m_HeadHash=g_Git.GetHash(_T("HEAD"));
+		}
+		catch (char* msg)
+		{
+			CString err(msg);
+			MessageBox(_T("Could not get HEAD hash.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
+			ExitProcess(1);
+		}
 	}
 
 	m_From=-1;;
@@ -1530,18 +1538,31 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 				{
 					if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_SAVE))
 						popup.AppendMenuIcon(ID_STASH_SAVE, IDS_MENUSTASHSAVE, IDI_COMMIT);
+				}
 
-					if (CTGitPath(g_Git.m_CurrentDir).HasStashDir())
+				bool isStash = false;
+				for (int i = 0; i < m_HashMap[pSelLogEntry->m_CommitHash].size(); i++)
+				{
+					if (m_HashMap[pSelLogEntry->m_CommitHash][i] == _T("refs/stash"))
 					{
-						if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_POP))
-							popup.AppendMenuIcon(ID_STASH_POP, IDS_MENUSTASHPOP, IDI_RELOCATE);
-
-						if(m_ContextMenuMask&GetContextMenuBit(ID_STASH_LIST))
-							popup.AppendMenuIcon(ID_STASH_LIST, IDS_MENUSTASHLIST, IDI_LOG);
+						isStash = true;
+						break;
 					}
+				}
+
+				if (CTGitPath(g_Git.m_CurrentDir).HasStashDir() && (pSelLogEntry->m_CommitHash.IsEmpty() || isStash))
+				{
+					if (m_ContextMenuMask&GetContextMenuBit(ID_STASH_POP))
+						popup.AppendMenuIcon(ID_STASH_POP, IDS_MENUSTASHPOP, IDI_RELOCATE);
+
+					if (m_ContextMenuMask&GetContextMenuBit(ID_STASH_LIST))
+						popup.AppendMenuIcon(ID_STASH_LIST, IDS_MENUSTASHLIST, IDI_LOG);
 
 					popup.AppendMenu(MF_SEPARATOR, NULL);
+				}
 
+				if (pSelLogEntry->m_CommitHash.IsEmpty())
+				{
 					if(m_ContextMenuMask&GetContextMenuBit(ID_FETCH))
 						popup.AppendMenuIcon(ID_FETCH, IDS_MENUFETCH, IDI_PULL);
 
@@ -1895,9 +1916,16 @@ void CGitLogListBase::CopySelectionToClipBoard(bool HashOnly)
 				//pLogEntry->GetFiles(this)
 				//LogChangedPathArray * cpatharray = pLogEntry->pArChangedPaths;
 
+				CString from(MAKEINTRESOURCE(IDS_STATUSLIST_FROM));
 				for (int cpPathIndex = 0; cpPathIndex<pLogEntry->GetFiles(this).GetCount(); ++cpPathIndex)
 				{
-					sPaths += ((CTGitPath&)pLogEntry->GetFiles(this)[cpPathIndex]).GetActionName() + _T(" : ") + pLogEntry->GetFiles(this)[cpPathIndex].GetGitPathString();
+					sPaths += ((CTGitPath&)pLogEntry->GetFiles(this)[cpPathIndex]).GetActionName() + _T(": ") + pLogEntry->GetFiles(this)[cpPathIndex].GetGitPathString();
+					if (((CTGitPath&)pLogEntry->GetFiles(this)[cpPathIndex]).m_Action & (CTGitPath::LOGACTIONS_REPLACED|CTGitPath::LOGACTIONS_COPY) && !((CTGitPath&)pLogEntry->GetFiles(this)[cpPathIndex]).GetGitOldPathString().IsEmpty())
+					{
+						CString rename;
+						rename.Format(from, ((CTGitPath&)pLogEntry->GetFiles(this)[cpPathIndex]).GetGitOldPathString());
+						sPaths += _T(" ") + rename;
+					}
 					sPaths += _T("\r\n");
 				}
 				sPaths.Trim();
@@ -2179,8 +2207,16 @@ int CGitLogListBase::BeginFetchLog()
 	if(g_Git.IsInitRepos())
 		return 0;
 
-	if (git_open_log(&m_DllGitLog, CUnicodeUtils::GetMulti(cmd, CP_UTF8).GetBuffer()))
+	try {
+		if (git_open_log(&m_DllGitLog, CUnicodeUtils::GetMulti(cmd, CP_UTF8).GetBuffer()))
+		{
+			return -1;
+		}
+	}
+	catch (char* msg)
 	{
+		CString err(msg);
+		MessageBox(_T("Could not open log.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
 		return -1;
 	}
 
@@ -2325,8 +2361,18 @@ UINT CGitLogListBase::LogThread()
 	if(!g_Git.IsInitRepos())
 	{
 		g_Git.m_critGitDllSec.Lock();
-		git_get_log_firstcommit(m_DllGitLog);
-		int total = git_get_log_estimate_commit_count(m_DllGitLog);
+		int total = 0;
+		try
+		{
+			git_get_log_firstcommit(m_DllGitLog);
+			total = git_get_log_estimate_commit_count(m_DllGitLog);
+		}
+		catch (char* msg)
+		{
+			CString err(msg);
+			MessageBox(_T("Could not get first commit.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
+			ExitProcess(1);
+		}
 		g_Git.m_critGitDllSec.Unlock();
 
 		GIT_COMMIT commit;
@@ -2337,7 +2383,16 @@ UINT CGitLogListBase::LogThread()
 		while( ret== 0)
 		{
 			g_Git.m_critGitDllSec.Lock();
-			ret = git_get_log_nextcommit(this->m_DllGitLog, &commit, m_ShowMask & CGit::LOG_INFO_FOLLOW);
+			try
+			{
+				ret = git_get_log_nextcommit(this->m_DllGitLog, &commit, m_ShowMask & CGit::LOG_INFO_FOLLOW);
+			}
+			catch (char* msg)
+			{
+				CString err(msg);
+				MessageBox(_T("Could not get next commit.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
+				ExitProcess(1);
+			}
 			g_Git.m_critGitDllSec.Unlock();
 
 			if(ret)
@@ -3065,7 +3120,7 @@ LRESULT CGitLogListBase::OnFindDialogMessage(WPARAM /*wParam*/, LPARAM /*lParam*
 		CGitHash hash;
 
 		if(!str.IsEmpty())
-			hash = g_Git.GetHash(str);
+			hash = g_Git.GetHash(str + _T("^{}")); // add ^{} in order to get the correct SHA-1 (especially for signed tags)
 
 		if(!hash.IsEmpty())
 		{

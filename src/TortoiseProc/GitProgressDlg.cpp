@@ -971,8 +971,12 @@ UINT CGitProgressDlg::ProgressThread()
 		info.LoadString(IDS_PROGRS_INFOFAILED);
 	SetDlgItemText(IDC_INFOTEXT, info);
 	ResizeColumns();
-	SendMessage(DM_SETDEFID, IDOK);
-	GetDlgItem(IDOK)->SetFocus();
+	CWnd * pWndOk = GetDlgItem(IDOK);
+	if (pWndOk && ::IsWindow(pWndOk->GetSafeHwnd()))
+	{
+		SendMessage(DM_SETDEFID, IDOK);
+		GetDlgItem(IDOK)->SetFocus();
+	}
 
 	CString sFinalInfo;
 	if (!m_sTotalBytesTransferred.IsEmpty())
@@ -1880,7 +1884,7 @@ bool CGitProgressDlg::CmdAdd(CString& sWindowTitle, bool& localoperation)
 			return false;
 		}
 		projectConfigA.ReleaseBuffer();
-		CString globalConfig = CString(get_windows_home_directory()) + _T("\\.gitconfig");
+		CString globalConfig = g_Git.GetHomeDirectory() + _T("\\.gitconfig");
 		if (PathFileExists(globalConfig))
 		{
 			CStringA globalConfigA = CUnicodeUtils::GetMulti(globalConfig, CP_UTF8);

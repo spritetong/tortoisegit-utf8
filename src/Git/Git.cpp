@@ -379,6 +379,8 @@ public:
 	CGitCall_ByteVector(CString cmd,BYTE_VECTOR* pvector, BYTE_VECTOR* pvectorErr = NULL):CGitCall(cmd),m_pvector(pvector),m_pvectorErr(pvectorErr){}
 	virtual bool OnOutputData(const BYTE* data, size_t size)
 	{
+		if (size == 0)
+			return false;
 		size_t oldsize=m_pvector->size();
 		m_pvector->resize(m_pvector->size()+size);
 		memcpy(&*(m_pvector->begin()+oldsize),data,size);
@@ -386,7 +388,7 @@ public:
 	}
 	virtual bool OnOutputErrData(const BYTE* data, size_t size)
 	{
-		if (!m_pvectorErr)
+		if (!m_pvectorErr || size == 0)
 			return false;
 		size_t oldsize = m_pvectorErr->size();
 		m_pvectorErr->resize(m_pvectorErr->size() + size);
@@ -699,7 +701,8 @@ int CGit::GetCurrentBranchFromFile(const CString &sProjectRoot, CString &sBranch
 	{
 		//# We're on a branch.  It might not exist.  But
 		//# HEAD looks good enough to be a branch.
-		sBranchOut = s + len;
+		CStringA utf8Branch(s + len);
+		sBranchOut = CUnicodeUtils::GetUnicode(utf8Branch);
 		sBranchOut.TrimRight(_T(" \r\n\t"));
 
 		if ( sBranchOut.IsEmpty() )
@@ -1111,6 +1114,49 @@ CString	CGit::FixBranchName(const CString& branchName)
 	return tempBranchName;
 }
 
+bool CGit::IsBranchTagNameUnique(const CString& name)
+{
+	CString output;
+
+	int ret = g_Git.Run(_T("git show-ref --tags --heads ") + name, &output, NULL, CP_UTF8);
+	if (!ret)
+	{
+		int i = 0, pos = 0;
+		while (pos >= 0)
+		{
+			if (!output.Tokenize(_T("\n"), pos).IsEmpty())
+				i++;
+		}
+		if (i >= 2)
+			return false;
+	}
+
+	return true;
+}
+
+/*
+Checks if a branch or tag with the given name exists
+isBranch is true -> branch, tag otherwise
+*/
+bool CGit::BranchTagExists(const CString& name, bool isBranch /*= true*/)
+{
+	CString cmd, output;
+
+	cmd = _T("git show-ref ");
+	if (isBranch)
+		cmd += _T("--heads ");
+	else
+		cmd += _T("--tags ");
+
+	int ret = g_Git.Run(cmd + name, &output, NULL, CP_UTF8);
+	if (!ret)
+	{
+		if (!output.IsEmpty())
+			return true;
+	}
+
+	return false;
+}
 
 CString CGit::DerefFetchHead()
 {
@@ -1203,7 +1249,8 @@ int CGit::GetRemoteList(STRING_VECTOR &list)
 		while( pos>=0 )
 		{
 			one=output.Tokenize(_T("\n"),pos);
-			list.push_back(one);
+			if (!one.IsEmpty())
+				list.push_back(one);
 		}
 	}
 	return ret;
@@ -1254,10 +1301,18 @@ int addto_map_each_ref_fn(const char *refname, const unsigned char *sha1, int /*
 
 	if(strncmp(refname, "refs/tags", 9) == 0)
 	{
-		GIT_HASH refhash;
-		if(!git_deref_tag(sha1, refhash))
+		try
 		{
-			(*map)[(char*)refhash].push_back(str+_T("^{}"));
+			GIT_HASH refhash;
+			if(!git_deref_tag(sha1, refhash))
+			{
+				(*map)[(char*)refhash].push_back(str+_T("^{}"));
+			}
+		}
+		catch (char* msg)
+		{
+			CString err(msg);
+			::MessageBox(NULL, _T("Could not get (readable) reference for hash ") + hash.ToString() + _T(".\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
 		}
 	}
 	return 0;
@@ -1318,11 +1373,9 @@ BOOL CGit::CheckMsysGitDir()
 	_tgetenv_s(&homesize, NULL, 0, _T("HOME"));
 	if (!homesize)
 	{
-		char charBuf[MAX_PATH];
-		TCHAR buf[MAX_PATH];
-		strcpy_s(charBuf, MAX_PATH, get_windows_home_directory());
-		_tcscpy_s(buf, MAX_PATH, CA2CT(charBuf));
-		m_Environment.SetEnv(_T("HOME"), buf);
+		CString home = g_Git.GetHomeDirectory();
+		m_Environment.SetEnv(_T("HOME"), home.GetBuffer());
+		home.ReleaseBuffer();
 	}
 	CString str;
 
@@ -1363,7 +1416,7 @@ BOOL CGit::CheckMsysGitDir()
 
 	CRegString msysdir=CRegString(REG_MSYSGIT_PATH,_T(""),FALSE);
 	str=msysdir;
-	if(str.IsEmpty())
+	if(str.IsEmpty() || !FileExists(str + _T("\\git.exe")))
 	{
 		CRegString msysinstalldir=CRegString(REG_MSYSGIT_INSTALL,_T(""),FALSE,HKEY_LOCAL_MACHINE);
 		str=msysinstalldir;
@@ -1380,6 +1433,8 @@ BOOL CGit::CheckMsysGitDir()
 			if ( FindGitPath() )
 			{
 				m_bInitialized = TRUE;
+				msysdir = CGit::ms_LastMsysGitDir;
+				msysdir.write();
 				return TRUE;
 			}
 
@@ -1410,6 +1465,12 @@ BOOL CGit::CheckMsysGitDir()
 
 	m_bInitialized = TRUE;
 	return true;
+}
+
+CString CGit::GetHomeDirectory()
+{
+	const wchar_t * homeDir = wget_windows_home_directory();
+	return CString(homeDir, wcslen(homeDir));
 }
 
 BOOL CGit::CheckCleanWorkTree()
