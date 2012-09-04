@@ -14,16 +14,16 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
     <Filter Include="Utils">
-      <UniqueIdentifier>{88756296-aa22-404f-abb6-206838b8eac3}</UniqueIdentifier>
+      <UniqueIdentifier>{881df6bf-0aac-4ac9-9b2d-aa8f0d1a9940}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils\Source Files">
-      <UniqueIdentifier>{634d0965-d82c-4195-96e0-f754c93c7900}</UniqueIdentifier>
+      <UniqueIdentifier>{613039f2-ae1f-4f3f-a533-c76d820ef77f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils\Header Files">
-      <UniqueIdentifier>{9f90fbc7-507e-47f5-9925-381f4ad51ba4}</UniqueIdentifier>
+      <UniqueIdentifier>{4a3581dd-8618-4e8c-86ab-845934ddef48}</UniqueIdentifier>
     </Filter>
     <Filter Include="Libdiff">
-      <UniqueIdentifier>{5ec2fbe1-fc36-401f-b3bc-21fe853f5fbc}</UniqueIdentifier>
+      <UniqueIdentifier>{05e05573-49c0-4496-b7e8-b8a13620f6a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +75,6 @@
     <ClCompile Include="Patch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\MiscUI\SysProgressDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RightView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\MiscUI\SysProgressDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TortoiseMerge.cpp">
@@ -112,6 +112,9 @@
       <Filter>Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Utils\CmdLineParser.cpp">
+      <Filter>Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\CommonAppUtils.cpp">
       <Filter>Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Utils\MiscUI\DIB.cpp">
@@ -142,6 +145,9 @@
       <Filter>Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Utils\MiscUI\ScrollTool.cpp">
+      <Filter>Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\MiscUI\StandAloneDlg.cpp">
       <Filter>Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Utils\StringUtils.cpp">
@@ -285,12 +291,6 @@
     <ClCompile Include="libsvn_diff\zutil.c">
       <Filter>Libdiff</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\MiscUI\StandAloneDlg.cpp">
-      <Filter>Utils\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\CommonAppUtils.cpp">
-      <Filter>Utils\Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h">
@@ -341,7 +341,7 @@
     <ClInclude Include="Patch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\MiscUI\SysProgressDlg.h">
+    <ClInclude Include="..\Utils\MiscUI\ProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -389,6 +389,9 @@
     <ClInclude Include="..\Utils\CmdLineParser.h">
       <Filter>Utils\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\CommonAppUtils.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Utils\MiscUI\DIB.h">
       <Filter>Utils\Header Files</Filter>
     </ClInclude>
@@ -422,6 +425,12 @@
     <ClInclude Include="..\Utils\MiscUI\ScrollTool.h">
       <Filter>Utils\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\SmartHandle.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\MiscUI\StandAloneDlg.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Utils\StringUtils.h">
       <Filter>Utils\Header Files</Filter>
     </ClInclude>
@@ -437,68 +446,61 @@
     <ClInclude Include="libsvn_diff\diff.h">
       <Filter>Libdiff</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\MiscUI\StandAloneDlg.h">
-      <Filter>Utils\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\CommonAppUtils.h">
-      <Filter>Utils\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\SmartHandle.h">
-      <Filter>Utils\Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\download.avi">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\lineadded.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineconflicted.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineconflictedignored.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineedited.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\LineEndingCR.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\LineEndingCRLF.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\LineEndingLF.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineequal.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineremoved.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\linewhitespace.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Toolbar.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseMerge.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\TortoiseMerge.rc2">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\tortoisemerge_logoflipped.bmp">
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\lineadded.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tortoisegit_logoflipped.bmp">
+    </Image>
+    <Image Include="..\Resources\lineconflicted.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ttf_glyph.bmp">
+    </Image>
+    <Image Include="..\Resources\lineconflictedignored.ico">
       <Filter>Resource Files</Filter>
-    </None>
+    </Image>
+    <Image Include="..\Resources\lineedited.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\LineEndingCR.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\LineEndingCRLF.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\LineEndingLF.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lineequal.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lineremoved.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\linewhitespace.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tortoisegit_logoflipped.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseMerge.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tortoisemerge_logoflipped.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ttf_glyph.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\Resources\TortoiseMergeENG.rc">

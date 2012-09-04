@@ -6,41 +6,50 @@
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Source Files\win32">
-      <UniqueIdentifier>{1e3547f8-788c-447a-84a0-44e71283ed1a}</UniqueIdentifier>
+      <UniqueIdentifier>{85420db4-c42a-4431-b765-aab96cf6f61f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\transports">
-      <UniqueIdentifier>{8fea0091-6217-43a8-9354-31f747c5f349}</UniqueIdentifier>
+      <UniqueIdentifier>{63aa588d-5872-4282-ae74-6d984668c815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xdiff">
+      <UniqueIdentifier>{e052b8dc-c1d2-436b-988d-3f91d91c1b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\compat">
+      <UniqueIdentifier>{74dd5bd6-b119-41ff-9d9b-0a36ed981a1f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{8a5fba2b-0711-425e-9461-800f82e42251}</UniqueIdentifier>
+      <UniqueIdentifier>{fb23e06a-8513-4a61-8e52-8fbb6e441c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\compat">
+      <UniqueIdentifier>{65d60ad0-3d62-48c9-8484-264e0152ace3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Public Header Files">
-      <UniqueIdentifier>{cc11fc8c-f58f-441f-a832-dfe74cb1f0e6}</UniqueIdentifier>
+      <UniqueIdentifier>{8b2e0462-a022-4e78-bf4b-b18ff1eefac9}</UniqueIdentifier>
     </Filter>
     <Filter Include="deps">
-      <UniqueIdentifier>{227baad3-5286-4a6b-9b83-02c2b4cfc418}</UniqueIdentifier>
+      <UniqueIdentifier>{66575d94-f075-452e-b2cf-2da05dcc4b5c}</UniqueIdentifier>
     </Filter>
     <Filter Include="deps\http-parser">
-      <UniqueIdentifier>{643c59c4-122b-47a8-96a0-3625a9706350}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{f2d61e41-010a-4154-9db4-22314d939775}</UniqueIdentifier>
+      <UniqueIdentifier>{e5281725-fe46-4eea-ba11-9a83dace8fc4}</UniqueIdentifier>
     </Filter>
     <Filter Include="deps\regex">
-      <UniqueIdentifier>{474bcfee-1559-4f4f-b059-affca75a8f97}</UniqueIdentifier>
+      <UniqueIdentifier>{fab198d3-717b-4827-a202-8cd9c09e20cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\xdiff">
-      <UniqueIdentifier>{c707c231-fbe7-43e9-94f9-711a8d931253}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\compat">
-      <UniqueIdentifier>{491479e7-7ae7-48f4-a8cb-854d7a512032}</UniqueIdentifier>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{34dbdf28-e780-4b21-9af7-010e5984539c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\libgit2\src\attr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\attr_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\libgit2\src\blob.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -56,10 +65,22 @@
     <ClCompile Include="..\libgit2\src\config.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\libgit2\src\config_cache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\libgit2\src\config_file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\libgit2\src\crlf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\libgit2\src\delta-apply.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\diff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\diff_output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\errors.c">
@@ -74,10 +95,16 @@
     <ClCompile Include="..\libgit2\src\fileops.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\libgit2\src\filter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\libgit2\src\global.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\hash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\ignore.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\index.c">
@@ -86,10 +113,19 @@
     <ClCompile Include="..\libgit2\src\indexer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\libgit2\src\iterator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\message.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\libgit2\src\mwindow.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\netops.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\notes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\object.c">
@@ -114,6 +150,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\pkt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\pool.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\posix.c">
@@ -153,6 +192,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\status.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\submodule.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libgit2\src\tag.c">
@@ -203,30 +245,6 @@
     <ClCompile Include="..\libgit2\src\transports\local.c">
       <Filter>Source Files\transports</Filter>
     </ClCompile>
-    <ClCompile Include="..\libgit2\deps\http-parser\http_parser.c">
-      <Filter>deps\http-parser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\attr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\attr_file.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\ignore.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\deps\regex\regcomp.c">
-      <Filter>deps\regex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\deps\regex\regex.c">
-      <Filter>deps\regex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\deps\regex\regex_internal.c">
-      <Filter>deps\regex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\deps\regex\regexec.c">
-      <Filter>deps\regex</Filter>
-    </ClCompile>
     <ClCompile Include="..\libgit2\src\xdiff\xdiffi.c">
       <Filter>Source Files\xdiff</Filter>
     </ClCompile>
@@ -248,44 +266,23 @@
     <ClCompile Include="..\libgit2\src\xdiff\xutils.c">
       <Filter>Source Files\xdiff</Filter>
     </ClCompile>
-    <ClCompile Include="..\libgit2\src\diff_output.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\iterator.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\filter.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\config_cache.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\crlf.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\diff.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\notes.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\branch.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\message.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\pool.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libgit2\src\submodule.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\libgit2\src\compat\fnmatch.c">
       <Filter>Source Files\compat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libgit2\deps\http-parser\http_parser.c">
+      <Filter>deps\http-parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\deps\regex\regex.c">
+      <Filter>deps\regex</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\libgit2\src\attr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\attr_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libgit2\src\blob.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -313,7 +310,7 @@
     <ClInclude Include="..\libgit2\src\delta-apply.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\src\dir.h">
+    <ClInclude Include="..\libgit2\src\diff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\fetch.h">
@@ -325,22 +322,40 @@
     <ClInclude Include="..\libgit2\src\fileops.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libgit2\src\filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libgit2\src\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libgit2\src\hashtable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\ignore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libgit2\src\index.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libgit2\src\iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libgit2\src\map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\mwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\netops.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\notes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\odb.h">
@@ -355,10 +370,16 @@
     <ClInclude Include="..\libgit2\src\pkt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libgit2\src\pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libgit2\src\posix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\pqueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\reflog.h">
@@ -406,13 +427,13 @@
     <ClInclude Include="..\libgit2\src\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\src\win32\fnmatch.h">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
     <ClInclude Include="..\libgit2\src\win32\mingw-compat.h">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\win32\msvc-compat.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tgit\compat\win32\poll.h">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\src\win32\posix.h">
@@ -423,6 +444,12 @@
     </ClInclude>
     <ClInclude Include="..\libgit2\src\win32\utf-conv.h">
       <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\compat\fnmatch.h">
+      <Filter>Header Files\compat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\include\git2\attr.h">
+      <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\blob.h">
       <Filter>Public Header Files</Filter>
@@ -439,10 +466,10 @@
     <ClInclude Include="..\libgit2\include\git2\config.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\errors.h">
+    <ClInclude Include="..\libgit2\include\git2\diff.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2.h">
+    <ClInclude Include="..\libgit2\include\git2\errors.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\index.h">
@@ -455,6 +482,9 @@
       <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\net.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\include\git2\notes.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\object.h">
@@ -499,10 +529,7 @@
     <ClInclude Include="..\libgit2\include\git2\tag.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\thread-utils.h">
-      <Filter>Public Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\transport.h">
+    <ClInclude Include="..\libgit2\include\git2\threads.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\tree.h">
@@ -511,107 +538,20 @@
     <ClInclude Include="..\libgit2\include\git2\types.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\zlib.h">
-      <Filter>Public Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\deps\http-parser\http_parser.h">
-      <Filter>deps\http-parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\attr_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\attr.h">
-      <Filter>Public Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\threads.h">
-      <Filter>Public Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\version.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\windows.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\src\protocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\attr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\ignore.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\libgit2\deps\http-parser\http_parser.h">
+      <Filter>deps\http-parser</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\deps\regex\config.h">
       <Filter>deps\regex</Filter>
     </ClInclude>
     <ClInclude Include="..\libgit2\deps\regex\regex.h">
       <Filter>deps\regex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\deps\regex\regex_internal.h">
-      <Filter>deps\regex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xdiff.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xdiffi.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xemit.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xinclude.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xmacros.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xprepare.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xtypes.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\xdiff\xutils.h">
-      <Filter>Source Files\xdiff</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\iterator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\filter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\diff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\notes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\branch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\pool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\config_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\khash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\oidmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\src\strmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\merge.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libgit2\include\git2\submodule.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

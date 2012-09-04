@@ -37,19 +37,21 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="small.ico">
+    <Image Include="small.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="touch.ico">
+    </Image>
+    <Image Include="touch.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="touch.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="touch.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="touch.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

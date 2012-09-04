@@ -14,10 +14,10 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
     <Filter Include="MiscUi">
-      <UniqueIdentifier>{950c73fa-b8d4-4864-9fe6-8d91c9dd5ec4}</UniqueIdentifier>
+      <UniqueIdentifier>{90e0c8b0-59f9-42da-a8f8-4fc5c61e2eae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tree">
-      <UniqueIdentifier>{fc134031-d00a-4820-b9db-5e7b21ebb382}</UniqueIdentifier>
+      <UniqueIdentifier>{a493904f-8c46-46e3-92de-eecad26df3ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +40,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="COMError.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonAppUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CSmtp.cpp">
@@ -111,6 +114,9 @@
     <ClCompile Include="SysImageList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SysInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TempFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -165,13 +171,13 @@
     <ClCompile Include="MiscUI\Picture.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
-    <ClCompile Include="MiscUI\SysProgressDlg.cpp">
-      <Filter>MiscUi</Filter>
-    </ClCompile>
     <ClCompile Include="MiscUI\ScrollTool.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
     <ClCompile Include="MiscUI\SplitterControl.cpp">
+      <Filter>MiscUi</Filter>
+    </ClCompile>
+    <ClCompile Include="MiscUI\SysProgressDlg.cpp">
       <Filter>MiscUi</Filter>
     </ClCompile>
     <ClCompile Include="MiscUI\Tooltip.cpp">
@@ -188,12 +194,6 @@
     </ClCompile>
     <ClCompile Include="TreePropSheet\TreePropSheet.cpp">
       <Filter>Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="SysInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonAppUtils.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,10 +224,16 @@
     <ClInclude Include="MailMsg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="SmartHandle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="SoundUtils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="strconv.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SysInfo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TempFile.h">
@@ -244,12 +250,6 @@
     </ClInclude>
     <ClInclude Include="TreePropSheet\TreePropSheet.h">
       <Filter>Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="SysInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonAppUtils.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

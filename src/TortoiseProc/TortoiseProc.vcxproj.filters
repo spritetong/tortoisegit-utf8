@@ -2,147 +2,147 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Utils">
-      <UniqueIdentifier>{a7eec1d3-a1c9-4f55-af93-ca9851a3d7ae}</UniqueIdentifier>
+      <UniqueIdentifier>{2fefaf63-2fb2-4fa1-bd53-60636cf6ba22}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;h;hpp;hxx;hm;inl;inc</Extensions>
     </Filter>
     <Filter Include="Utils\General">
-      <UniqueIdentifier>{36b67d13-d9e8-440d-8b0c-25f32830d1a1}</UniqueIdentifier>
+      <UniqueIdentifier>{9ecfcec5-1719-4975-8036-408d3d70cf9e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils\UI">
-      <UniqueIdentifier>{0df97306-4d93-483b-a548-39fd456ab5dc}</UniqueIdentifier>
+      <UniqueIdentifier>{508933e7-c760-48ac-aa93-6cfb195d3b4c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{cfbc5e7c-ebd4-421c-8241-25ee10da59f6}</UniqueIdentifier>
+      <UniqueIdentifier>{cb86faa8-cf64-42d4-9e53-39c38cacb64d}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
     </Filter>
     <Filter Include="Commands">
-      <UniqueIdentifier>{9bb39a31-d962-4904-aca1-5c28e164d71b}</UniqueIdentifier>
+      <UniqueIdentifier>{251cf059-9f38-40de-88de-95765dfa408f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Commit">
-      <UniqueIdentifier>{fad56a68-6298-4206-987d-650c771dcf57}</UniqueIdentifier>
+      <UniqueIdentifier>{71278ccb-550b-4417-b0d4-226c782b73d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\About">
-      <UniqueIdentifier>{856586f4-e6bd-4870-9d40-34510180f71e}</UniqueIdentifier>
+      <UniqueIdentifier>{eec3fd9d-f220-4c8b-97cc-74a02c0803aa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Blame">
-      <UniqueIdentifier>{bcfa4139-be26-449c-9d63-cb7d9747c1b9}</UniqueIdentifier>
+      <UniqueIdentifier>{ad92c09c-540d-458c-849d-490edc180ed4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Log">
-      <UniqueIdentifier>{e80a71eb-9022-4a96-ad5b-a1a20f2e4ea5}</UniqueIdentifier>
+      <UniqueIdentifier>{16a376ca-a94a-4e93-9269-cd4f03751ea6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\RefLog">
-      <UniqueIdentifier>{17349380-0654-4a94-b94f-d5935aac18e8}</UniqueIdentifier>
+      <UniqueIdentifier>{0afb90f8-9a28-4771-b10f-f000a06e5b4c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Submodule">
-      <UniqueIdentifier>{cce0f018-18e4-45ca-b888-023d16eaf628}</UniqueIdentifier>
+      <UniqueIdentifier>{39596c7c-2f1b-4f94-b96e-6f045dd7a313}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Rename">
-      <UniqueIdentifier>{7f439111-f018-473d-bb63-74518f46fbf7}</UniqueIdentifier>
+      <UniqueIdentifier>{42e3aac0-e3b5-495c-b8af-fcc12c99a363}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Remove">
-      <UniqueIdentifier>{3acd369e-3ccf-4da4-b073-c1178afb7bf1}</UniqueIdentifier>
+      <UniqueIdentifier>{4ff7497c-3b15-4fb1-bcc5-e7b841aa685d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Revert">
-      <UniqueIdentifier>{9d4139af-6b4c-490a-b820-d29722bfddd0}</UniqueIdentifier>
+      <UniqueIdentifier>{142f7979-dcff-4b47-8518-18ecee6b641b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Clean">
-      <UniqueIdentifier>{a10fe8ba-3c01-4c08-814a-119509b954fa}</UniqueIdentifier>
+      <UniqueIdentifier>{a0b8b809-ce7f-4106-bda3-7c779caadcea}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Clone">
-      <UniqueIdentifier>{e1e69b2c-7ca7-4e4c-a92d-7e0e393ae23c}</UniqueIdentifier>
+      <UniqueIdentifier>{324f33ff-b34d-48fc-9eeb-94a9d468497a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\PullFetch">
-      <UniqueIdentifier>{26882a32-2107-4b22-ba5a-3ffaff7d1f15}</UniqueIdentifier>
+      <UniqueIdentifier>{c3bc3a9c-373e-400c-9181-ee53f546ffee}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\push">
-      <UniqueIdentifier>{ddf89343-ac7d-475b-85e3-b01c035dcd14}</UniqueIdentifier>
+      <UniqueIdentifier>{f414f6d6-d5a3-490c-8413-791e369e9e27}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\branch%255ctag">
-      <UniqueIdentifier>{a7394283-2a56-4a62-9ac3-cf5a877ec43e}</UniqueIdentifier>
+      <UniqueIdentifier>{bd65d0ab-dff8-41b8-b4f9-dfdd869dbf2e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Export">
-      <UniqueIdentifier>{d9725fca-b199-4436-82c9-544fdef636c6}</UniqueIdentifier>
+      <UniqueIdentifier>{3cebae2f-5856-40aa-90ef-9a9d7a47b7c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Add">
-      <UniqueIdentifier>{e8307578-cdf0-48c7-81c1-1c939c63a631}</UniqueIdentifier>
+      <UniqueIdentifier>{0407ce80-ef60-4dd3-8f45-a11bf86f3107}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Ignore">
-      <UniqueIdentifier>{246a89ff-4308-41c1-a108-ac5c4457c8fc}</UniqueIdentifier>
+      <UniqueIdentifier>{ec5beb92-aea4-43f1-b593-b5fb2d996daf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Patch">
-      <UniqueIdentifier>{fbe1878f-49c6-471b-b028-86193274a101}</UniqueIdentifier>
+      <UniqueIdentifier>{111c129d-37f5-4174-bac8-e4fe13fb9fe5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\cat">
-      <UniqueIdentifier>{cb976d5c-f975-413f-b9e7-ce94e09a16a3}</UniqueIdentifier>
+      <UniqueIdentifier>{8776d699-6a3c-4386-bb83-d9c136b465a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\setting">
-      <UniqueIdentifier>{a0abb704-5975-44f1-b0ca-719fed50876f}</UniqueIdentifier>
+      <UniqueIdentifier>{adce6d6b-4b72-4178-b4ab-3a101380dcfd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Switch">
-      <UniqueIdentifier>{74cb9765-0b8d-48cd-99bb-aba1e637c34c}</UniqueIdentifier>
+      <UniqueIdentifier>{d96b3e55-7c5c-47e7-b523-4706569011fc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\PrevDiff">
-      <UniqueIdentifier>{e2aaa4e9-55ce-44f2-9275-5c59177c2150}</UniqueIdentifier>
+      <UniqueIdentifier>{73e762d2-0ccc-4fc0-8359-74aa5f067ce0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Diff">
-      <UniqueIdentifier>{44b4e283-a826-48ab-842c-50834983bbba}</UniqueIdentifier>
+      <UniqueIdentifier>{fd592958-25ed-44d8-80fb-8b0de67e622b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Compare">
-      <UniqueIdentifier>{e2509991-d0e3-4931-b5b1-1637bd90dfe9}</UniqueIdentifier>
+      <UniqueIdentifier>{2f2dc2a9-0510-4f1a-8991-f38569fbf070}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Conflict">
-      <UniqueIdentifier>{c64d33eb-c8d8-4492-911c-e9d9d39bc2cf}</UniqueIdentifier>
+      <UniqueIdentifier>{e67c1e44-dbce-4125-9327-e1be29847874}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Rebase">
-      <UniqueIdentifier>{630ccf7a-8e27-46a6-909f-c8030015db1a}</UniqueIdentifier>
+      <UniqueIdentifier>{213b6eaa-fd63-4173-91f7-48b99354cce5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\merge">
-      <UniqueIdentifier>{c01bf2c6-c11e-488e-96ca-99bc2c436cda}</UniqueIdentifier>
+      <UniqueIdentifier>{7084a569-635c-440d-9d50-362cfc3de83a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\ReposStatus">
-      <UniqueIdentifier>{8b899650-c00a-410f-ae17-3db7453d5711}</UniqueIdentifier>
+      <UniqueIdentifier>{7c1578c1-9dd5-484f-b37c-d6d575ec6224}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Copy">
-      <UniqueIdentifier>{4bcccc58-e434-493f-9432-81b3d60271cd}</UniqueIdentifier>
+      <UniqueIdentifier>{25daae85-3954-4047-9145-0f1fcd65e7a7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\SendMail">
-      <UniqueIdentifier>{947c21f8-8a64-46f9-b56e-9726815274a2}</UniqueIdentifier>
+      <UniqueIdentifier>{5b32b801-ccb7-4d02-8da1-a8b77802fa05}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Stash">
-      <UniqueIdentifier>{ce3672f8-d7d6-48b7-a874-c77fe48e36a4}</UniqueIdentifier>
+      <UniqueIdentifier>{2717bcb1-2635-4d3c-aa8b-aaf586a07fba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\RefBrowse">
-      <UniqueIdentifier>{e2683eee-a507-4742-9b68-786fdae5aca5}</UniqueIdentifier>
+      <UniqueIdentifier>{c20b453e-ff74-4ed1-b9ed-21b222e5c70b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\SVN">
-      <UniqueIdentifier>{78f00e1b-096e-4497-8225-40d509404cb1}</UniqueIdentifier>
+      <UniqueIdentifier>{675de096-0aa1-4a89-b1a7-a89a88cdddf4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Sync">
-      <UniqueIdentifier>{afb03145-ce2b-413c-bc96-dd3fe7a57258}</UniqueIdentifier>
+      <UniqueIdentifier>{38bba5cd-43ce-4d02-9db3-1fb627aa91d5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\UpdateCheck">
-      <UniqueIdentifier>{221981e2-2dee-4360-b01b-d0db442b6394}</UniqueIdentifier>
+      <UniqueIdentifier>{9ba9aed6-b15a-4d10-b1b7-3c911ee29f30}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\Paste">
-      <UniqueIdentifier>{ac0e1e37-8bbf-436e-a243-5016a0298665}</UniqueIdentifier>
+      <UniqueIdentifier>{5ecc8248-f5f9-4b2c-999c-ac1d1942c950}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\requestpull">
-      <UniqueIdentifier>{1ec4dc5f-f499-44a7-82ca-b856499ccfe4}</UniqueIdentifier>
+      <UniqueIdentifier>{294ff1ec-0c1a-46d7-bb12-9afb8ca80e11}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\CreateRepository">
-      <UniqueIdentifier>{3b9da5d9-12a8-4145-b9c8-d110dd8a356a}</UniqueIdentifier>
+      <UniqueIdentifier>{64dd48b6-350f-4bf7-86fd-07724c9e82cf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\bisect">
-      <UniqueIdentifier>{ba2f00cb-d5f6-4352-bb4c-39ad7da31c64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utility Dialogs">
-      <UniqueIdentifier>{eb08f7b2-873a-4ef2-b5e7-b78a2a1d4003}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Git">
-      <UniqueIdentifier>{c81b0090-eef7-44cd-9f1f-769de5da128e}</UniqueIdentifier>
+      <UniqueIdentifier>{cf3af029-2ccf-443d-a4b6-6b35415a82c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Commands\RepositoryBrowser">
-      <UniqueIdentifier>{0a4994bc-1284-4bda-98d7-c0ad248fc5e5}</UniqueIdentifier>
+      <UniqueIdentifier>{2e165849-0c2d-4068-a74a-46b4cdaa4fdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility Dialogs">
+      <UniqueIdentifier>{dcb948e6-eb14-454a-8d49-a3277e6969a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Git">
+      <UniqueIdentifier>{ee2b154a-8276-4856-b048-f554e4f2024a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +155,13 @@
     <ClCompile Include="FindDlg.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\Utils\Libraries.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="LogFile.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MassiveGitTask.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Patch.cpp">
@@ -233,6 +239,9 @@
     <ClCompile Include="LogDlgHelper.cpp">
       <Filter>Commands\Log</Filter>
     </ClCompile>
+    <ClCompile Include="LoglistUtils.cpp">
+      <Filter>Commands\Log</Filter>
+    </ClCompile>
     <ClCompile Include="StatGraphDlg.cpp">
       <Filter>Commands\Log</Filter>
     </ClCompile>
@@ -249,6 +258,9 @@
       <Filter>Commands\Submodule</Filter>
     </ClCompile>
     <ClCompile Include="Commands\SubmoduleCommand.cpp">
+      <Filter>Commands\Submodule</Filter>
+    </ClCompile>
+    <ClCompile Include="SubmoduleUpdateDlg.cpp">
       <Filter>Commands\Submodule</Filter>
     </ClCompile>
     <ClCompile Include="Commands\DropMoveCommand.cpp">
@@ -384,6 +396,9 @@
       <Filter>Commands\setting</Filter>
     </ClCompile>
     <ClCompile Include="Settings\Settings.cpp">
+      <Filter>Commands\setting</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\SettingsAdvanced.cpp">
       <Filter>Commands\setting</Filter>
     </ClCompile>
     <ClCompile Include="Settings\SettingsBugtraqConfig.cpp">
@@ -536,6 +551,12 @@
     <ClCompile Include="BisectStartDlg.cpp">
       <Filter>Commands\bisect</Filter>
     </ClCompile>
+    <ClCompile Include="RepositoryBrowser.cpp">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands\RepositoryBrowserCommand.cpp">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClCompile>
     <ClCompile Include="ChangedDlg.cpp">
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
@@ -545,6 +566,9 @@
     <ClCompile Include="GitProgressDlg.cpp">
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="IgnoreDlg.cpp">
+      <Filter>Utility Dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="InputDlg.cpp">
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
@@ -552,6 +576,9 @@
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="ResetDlg.cpp">
+      <Filter>Utility Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="SubmoduleDiffDlg.cpp">
       <Filter>Utility Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="GitDiff.cpp">
@@ -572,33 +599,6 @@
     <ClCompile Include="TortoiseProc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="SubmoduleDiffDlg.cpp">
-      <Filter>Utility Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="MassiveGitTask.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings\SettingsAdvanced.cpp">
-      <Filter>Commands\setting</Filter>
-    </ClCompile>
-    <ClCompile Include="LoglistUtils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\Libraries.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="RepositoryBrowser.cpp">
-      <Filter>Commands\RepositoryBrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="Commands\RepositoryBrowserCommand.cpp">
-      <Filter>Commands\RepositoryBrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="SubmoduleUpdateDlg.cpp">
-      <Filter>Commands\Submodule</Filter>
-    </ClCompile>
-    <ClCompile Include="IgnoreDlg.cpp">
-      <Filter>Utility Dialogs</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddRemoteDlg.h">
@@ -608,6 +608,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="LogFile.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MassiveGitTask.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Patch.h">
@@ -679,6 +682,9 @@
     <ClInclude Include="LogDlgHelper.h">
       <Filter>Commands\Log</Filter>
     </ClInclude>
+    <ClInclude Include="LoglistUtils.h">
+      <Filter>Commands\Log</Filter>
+    </ClInclude>
     <ClInclude Include="StatGraphDlg.h">
       <Filter>Commands\Log</Filter>
     </ClInclude>
@@ -695,6 +701,9 @@
       <Filter>Commands\Submodule</Filter>
     </ClInclude>
     <ClInclude Include="Commands\SubmoduleCommand.h">
+      <Filter>Commands\Submodule</Filter>
+    </ClInclude>
+    <ClInclude Include="SubmoduleUpdateDlg.h">
       <Filter>Commands\Submodule</Filter>
     </ClInclude>
     <ClInclude Include="Commands\DropMoveCommand.h">
@@ -830,6 +839,9 @@
       <Filter>Commands\setting</Filter>
     </ClInclude>
     <ClInclude Include="Settings\Settings.h">
+      <Filter>Commands\setting</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingsAdvanced.h">
       <Filter>Commands\setting</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingsBugtraqConfig.h">
@@ -973,6 +985,12 @@
     <ClInclude Include="BisectStartDlg.h">
       <Filter>Commands\bisect</Filter>
     </ClInclude>
+    <ClInclude Include="RepositoryBrowser.h">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\RepositoryBrowserCommand.h">
+      <Filter>Commands\RepositoryBrowser</Filter>
+    </ClInclude>
     <ClInclude Include="BranchCombox.h">
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
@@ -988,6 +1006,9 @@
     <ClInclude Include="GitProgressDlg.h">
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="IgnoreDlg.h">
+      <Filter>Utility Dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="InputDlg.h">
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
@@ -995,6 +1016,9 @@
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="ResetDlg.h">
+      <Filter>Utility Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SubmoduleDiffDlg.h">
       <Filter>Utility Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="GitDiff.h">
@@ -1015,303 +1039,407 @@
     <ClInclude Include="TortoiseProc.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="SubmoduleDiffDlg.h">
-      <Filter>Utility Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\tgit_xutf8.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="MassiveGitTask.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\SettingsAdvanced.h">
-      <Filter>Commands\setting</Filter>
-    </ClInclude>
-    <ClInclude Include="LoglistUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\Libraries.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="RepositoryBrowser.h">
-      <Filter>Commands\RepositoryBrowser</Filter>
-    </ClInclude>
-    <ClInclude Include="Commands\RepositoryBrowserCommand.h">
-      <Filter>Commands\RepositoryBrowser</Filter>
-    </ClInclude>
-    <ClInclude Include="SubmoduleUpdateDlg.h">
-      <Filter>Commands\Submodule</Filter>
-    </ClInclude>
-    <ClInclude Include="IgnoreDlg.h">
-      <Filter>Utility Dialogs</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\actionad.ico">
+    <Image Include="..\Resources\actionad.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\actionadded.ico">
+    </Image>
+    <Image Include="..\Resources\actionadded.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\actiondeleted.ico">
+    </Image>
+    <Image Include="..\Resources\actiondeleted.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\actionfetching.ico">
+    </Image>
+    <Image Include="..\Resources\actionfetching.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\actionmodified.ico">
+    </Image>
+    <Image Include="..\Resources\actionmodified.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\actionreplaced.ico">
+    </Image>
+    <Image Include="..\Resources\actionreplaced.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\AddBackground.ico">
+    </Image>
+    <Image Include="..\Resources\AddBackground.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\AddedIcon.ico">
+    </Image>
+    <Image Include="..\Resources\AddedIcon.ico">
       <Filter>Resource Files</Filter>
-    </None>
+    </Image>
+    <Image Include="..\Resources\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\bugtraq.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\cache.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\CacheList.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\cancel-highlight.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\cancel-normal.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\cancel-pressed.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\CFMBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\checkout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\clippaste.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\CommitBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ConflictIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\copy.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\CopyBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\DeletedIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\DelunversionedBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\dialogs.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Drives.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\explorer.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ExportBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\extwarning.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\filteredit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\general.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\git.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\gitconfig.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\gitremote.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\graph-bar-stacked.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\graph-bar.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\graph-line-stacked.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\graph-line.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\graph-pie.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\hook.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\iconset.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ImportBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ImportPatchesBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\InSubVersionIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Library.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lineadded.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lineconflicted.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lineremoved.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\logfilter.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\lookandfeel.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuabout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuadd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menublame.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucheckout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucleanup.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucommit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucompare.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuconflict.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucopy.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucreaterepos.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudelete.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudelunversioned.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudiff.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuexport.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuhelp.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuignore.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuimport.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menulog.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menumerge.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menupatch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuproperties.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurelocate.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurename.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuresolve.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurevert.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menusettings.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menushowchanged.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuswitch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuupdate.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\MergeBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\misc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ModifiedIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\newfolder.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\open.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Overlays.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\proxy.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\pull1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\refresh.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\reftype.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\RenameBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\RepoBrowserBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ResolveBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\restore.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\restoreovl.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\RevertBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_added.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_addedplus.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_deleted.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_lastcommit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_renamed.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_replaced.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraph_tag.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\revgraphbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\save.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\saveas.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\saveddata.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\showbranches.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\TortoiseBlame\small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ssh.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\switch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\SwitchBackground.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Tortoise.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Tortoise13by13.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Tortoise16by16.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Tortoise20by16.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseBlame.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tortoisegit_logoflipped.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseMerge.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseSmall.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenufile.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenufolder.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenulink.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenumultiple.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\ttf_glyph.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\update1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\warning-general.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\Resources\bin167.avi">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\bin168.avi">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\bitmap2.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\bugtraq.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\cache.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\CacheList.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\cancel-highlight.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\cancel-normal.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\cancel-pressed.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\CFMBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\checkout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\cleananim.avi">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\clippaste.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\CommitBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ConflictIcon.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\copy.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\CopyBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\DeletedIcon.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\DelunversionedBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\dialogs.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\download.avi">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Drives.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\explorer.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ExportBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\extwarning.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\filteredit.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\general.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\git.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\gitconfig.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\gitremote.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\graph-bar-stacked.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\graph-bar.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\graph-line-stacked.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\graph-line.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\graph-pie.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\hook.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\icon1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\iconset.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ImportBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ImportPatchesBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\InSubVersionIcon.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineadded.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineconflicted.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lineremoved.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\logfilter.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\lookandfeel.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuabout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuadd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menublame.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucheckout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucleanup.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucommit.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucompare.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuconflict.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucopy.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucreaterepos.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudelete.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudelunversioned.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudiff.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuexport.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuhelp.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuignore.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuimport.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menulog.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menumerge.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menupatch.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuproperties.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurelocate.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurename.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuresolve.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurevert.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menusettings.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menushowchanged.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuswitch.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuupdate.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\MergeBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\misc.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ModifiedIcon.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\newfolder.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\open.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Overlays.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\pan.cur">
@@ -1320,130 +1448,7 @@
     <None Include="..\Resources\pandown.cur">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Resources\proxy.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\pull1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\refresh.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\reftype.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\RenameBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ResolveBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\RevertBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_added.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_addedplus.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_deleted.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_lastcommit.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_renamed.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_replaced.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraph_tag.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\revgraphbar.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\save.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\saveas.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\saveddata.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\Resources\search.avi">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\TortoiseBlame\small.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ssh.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\switch.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\SwitchBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Toolbar.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Tortoise.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Tortoise13by13.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Tortoise16by16.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Tortoise20by16.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseBlame.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tortoisegit_logoflipped.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseMerge.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseSmall.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenufile.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenufolder.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenulink.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenumultiple.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\ttf_glyph.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\up.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\update1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\warning-general.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\RepoBrowserBackground.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\showbranches.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -97,16 +97,18 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Cache.ico">
+    <Image Include="res\Cache.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\Cache.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Cache.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Cache.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

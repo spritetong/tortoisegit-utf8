@@ -26,17 +26,20 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -44,6 +47,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -64,31 +68,27 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\TortoiseGitBlame\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\TortoiseGitBlame\$(Configuration)64\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\TortoiseGitBlame\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\TortoiseGitBlame\$(Configuration)64\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseGitBlame\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseGitBlame\$(Configuration)64\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseGitBlame\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\$(Configuration)64\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseGitBlame\$(Configuration)64\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -115,15 +115,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
-    <Manifest />
     <Manifest>
-      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +139,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -151,14 +147,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
-    <Manifest />
     <Manifest>
-      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -171,6 +165,7 @@
       <AdditionalIncludeDirectories>./;../../ext/gitdll;..\Git;..\TortoiseProc;..\..\ext\scintilla\include;..\Utils;..\Utils\MiscUI;..\..\ext\hunspell;..\..\ext\ResizableLib;..\Resources;../TortoiseMerge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -184,16 +179,15 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>../../ext/wingit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
-    <Manifest />
     <Manifest>
-      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -206,11 +200,11 @@
       <AdditionalIncludeDirectories>./;../../ext/gitdll;..\Git;..\TortoiseProc;..\..\ext\scintilla\include;..\Utils;..\Utils\MiscUI;..\..\ext\hunspell;..\..\ext\ResizableLib;..\Resources;../TortoiseMerge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -219,21 +213,18 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;gdiplus.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;UxTheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
-    <Manifest />
     <Manifest>
-      <AdditionalManifestFiles>..\DeclareDPIAware.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>..\DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\TortoiseProc\Colors.cpp" />
-    <ClCompile Include="..\TortoiseProc\LoglistUtils.cpp" />
     <ClCompile Include="..\Utils\CommonAppUtils.cpp" />
     <ClCompile Include="EditGotoDlg.cpp" />
     <ClCompile Include="..\TortoiseMerge\FileTextLines.cpp" />
@@ -245,6 +236,7 @@
     <ClCompile Include="..\TortoiseProc\LogDataVector.cpp" />
     <ClCompile Include="..\TortoiseProc\LogDlgHelper.cpp" />
     <ClCompile Include="LogListBlameAction.cpp" />
+    <ClCompile Include="..\TortoiseProc\LoglistUtils.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="..\TortoiseProc\ProjectProperties.cpp" />
@@ -262,16 +254,16 @@
     <ClCompile Include="TortoiseGitBlameView.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\TortoiseProc\LoglistUtils.h" />
-    <ClInclude Include="..\Utils\CommonAppUtils.h" />
     <ClInclude Include="GitBlameLogList.h" />
     <ClInclude Include="..\TortoiseProc\gitlogcache.h" />
     <ClInclude Include="..\TortoiseProc\GitLogListBase.h" />
     <ClInclude Include="..\TortoiseProc\lanes.h" />
     <ClInclude Include="..\TortoiseProc\LogDlgHelper.h" />
     <ClInclude Include="..\Utils\MiscUI\SciEdit.h" />
+    <ClInclude Include="..\Utils\CommonAppUtils.h" />
     <ClInclude Include="EditGotoDlg.h" />
     <ClInclude Include="..\TortoiseMerge\FileTextLines.h" />
+    <ClInclude Include="..\TortoiseProc\LoglistUtils.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MenuEncode.h" />
     <ClInclude Include="OutputWnd.h" />
@@ -283,17 +275,27 @@
     <ClInclude Include="TortoiseGitBlameView.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\blameres\output_wnd.ico" />
-    <None Include="hlp\Images\Bullet.gif" />
-    <None Include="..\Resources\blameres\output_wnd_hc.ico" />
-    <None Include="..\Resources\blameres\properties.bmp" />
-    <None Include="..\Resources\blameres\properties_hc.bmp" />
-    <None Include="..\Resources\blameres\properties_wnd.ico" />
-    <None Include="..\Resources\blameres\properties_wnd_hc.ico" />
-    <None Include="..\Resources\blameres\Toolbar.bmp" />
-    <None Include="..\Resources\blameres\Toolbar256.bmp" />
-    <None Include="..\Resources\blameres\TortoiseGitBlame.ico" />
-    <None Include="..\Resources\blameres\TortoiseGitBlameDoc.ico" />
+    <Image Include="hlp\Images\Bullet.gif" />
+    <Image Include="..\Resources\blameres\output_wnd.ico" />
+    <Image Include="..\Resources\blameres\output_wnd_hc.ico" />
+    <Image Include="..\Resources\blameres\properties.bmp" />
+    <Image Include="..\Resources\blameres\properties_hc.bmp" />
+    <Image Include="..\Resources\blameres\properties_wnd.ico" />
+    <Image Include="..\Resources\blameres\properties_wnd_hc.ico" />
+    <Image Include="..\Resources\blameres\Toolbar.bmp" />
+    <Image Include="..\Resources\blameres\Toolbar256.bmp" />
+    <Image Include="..\Resources\blameres\TortoiseGitBlame.ico" />
+    <Image Include="..\Resources\blameres\TortoiseGitBlameDoc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Resources\TortoiseGitBlameENG.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="hlp\afx_hidd_color.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
@@ -517,9 +519,9 @@
     <None Include="hlp\TortoiseGitBlame.hhk" />
     <CustomBuild Include="hlp\TortoiseGitBlame.hhp">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Making help file...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">start /wait hhc "hlp\TortoiseGitBlame.hhp"
 if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm"
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -527,12 +529,12 @@ echo.
 :HelpDone
 echo.
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">hlp\HTMLDefines.h</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)$(ProjectName).chm</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Making help file...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">start /wait hhc "hlp\TortoiseGitBlame.hhp"
 if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm"
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -540,12 +542,12 @@ echo.
 :HelpDone
 echo.
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">hlp\HTMLDefines.h</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)$(ProjectName).chm</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Making help file...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">start /wait hhc "hlp\TortoiseGitBlame.hhp"
 if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm"
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -553,12 +555,12 @@ echo.
 :HelpDone
 echo.
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">hlp\HTMLDefines.h</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)$(ProjectName).chm</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Making help file...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">start /wait /b hhc "hlp\TortoiseGitBlame.hhp" &gt;nul
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">start /wait hhc "hlp\TortoiseGitBlame.hhp"
 if not exist "hlp\TortoiseGitBlame_en.chm" goto :HelpError
-copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm" &gt;nul
+copy "hlp\TortoiseGitBlame_en.chm" "$(OutDir)TortoiseGitBlame_en.chm"
 goto :HelpDone
 :HelpError
 echo hlp\TortoiseGitBlame.hhp(1) : error:Problem encountered creating help file
@@ -566,17 +568,9 @@ echo.
 :HelpDone
 echo.
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">hlp\HTMLDefines.h</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)$(ProjectName).chm</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">hlp\HTMLDefines.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)$(ProjectName).chm;%(Outputs)</Outputs>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\Resources\TortoiseGitBlameENG.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir);..\TortoiseShell;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ext\build\ScintillaLexer.vcxproj">
@@ -609,7 +603,7 @@ echo.
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="\build\x64\TortoiseGit\src\Resources\TortoiseGitBlameENG.rc" />
+      <UserProperties RESOURCE_FILE="..\resources\TortoiseGitBlameENG.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

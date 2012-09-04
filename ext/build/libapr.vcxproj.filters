@@ -2,65 +2,65 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{4790e225-e4ea-4a4c-a6be-a9a9e11d3e33}</UniqueIdentifier>
+      <UniqueIdentifier>{c4b9fe1c-e255-4356-8461-2cb2ccf9eefa}</UniqueIdentifier>
       <Extensions>.c</Extensions>
     </Filter>
     <Filter Include="Source Files\atomic">
-      <UniqueIdentifier>{197a45c1-ac1e-4730-ab16-6f4eb0ff052c}</UniqueIdentifier>
+      <UniqueIdentifier>{b36e2bfd-0528-4b23-bef2-92254954a54c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\dso">
-      <UniqueIdentifier>{060eb2c9-c9af-4a3a-9bdf-396b78bde460}</UniqueIdentifier>
+      <UniqueIdentifier>{bdc1c7c2-8a3c-47e8-bdec-4edf9c3e4a43}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\file_io">
-      <UniqueIdentifier>{86e3b41b-bb6c-44c4-bdec-9f0167fd05f0}</UniqueIdentifier>
+      <UniqueIdentifier>{4fe736d3-c2fa-4d5a-aa64-8bc88e9067f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\locks">
-      <UniqueIdentifier>{514c7432-6950-4a90-b03c-0e807f247cfd}</UniqueIdentifier>
+      <UniqueIdentifier>{63e2731b-afe3-4ddd-8e49-7384e9d286c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\memory">
-      <UniqueIdentifier>{8ce9203a-f2dc-4d2c-9632-b2aa869391fc}</UniqueIdentifier>
+      <UniqueIdentifier>{ebbee11c-7887-40b3-8c94-d316b9fa8589}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\misc">
-      <UniqueIdentifier>{168a2358-2abb-4ced-aa40-c0e950e0252c}</UniqueIdentifier>
+      <UniqueIdentifier>{cc62aaa4-c542-4ab0-b9aa-a2a15ea5f9df}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\mmap">
-      <UniqueIdentifier>{c4cb7074-38b4-4395-b531-957320b766d1}</UniqueIdentifier>
+      <UniqueIdentifier>{85e4351b-27b7-40fc-bdc5-5c36da9082ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\network_io">
-      <UniqueIdentifier>{b83e83cf-9e77-4327-a627-fea07ff5468e}</UniqueIdentifier>
+      <UniqueIdentifier>{a7c50405-affd-4cf8-a4d3-ff6cd607c60f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\passwd">
-      <UniqueIdentifier>{2b6fcca1-d952-429a-a6c3-59b48c7f8d4f}</UniqueIdentifier>
+      <UniqueIdentifier>{00767f9b-c27a-4308-90c7-c8ceae2de33e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\poll">
-      <UniqueIdentifier>{89150fc3-e271-48f1-84db-9d9e4fae4b94}</UniqueIdentifier>
+      <UniqueIdentifier>{14e3d1f0-76cd-4111-b7e2-8e0f85b1ccc5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\random">
-      <UniqueIdentifier>{76a50008-cae2-42bd-b02a-3e9635372269}</UniqueIdentifier>
+      <UniqueIdentifier>{052efe6c-b180-4690-bc58-23909ae6b4b0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\shmem">
-      <UniqueIdentifier>{483edef3-8c26-4fa3-b7d4-52647130a549}</UniqueIdentifier>
+      <UniqueIdentifier>{f5f8534f-ea09-4b6d-86ed-52de87d2f130}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\strings">
-      <UniqueIdentifier>{a7cca327-257c-4447-abc4-404d95dbef72}</UniqueIdentifier>
+      <UniqueIdentifier>{3118b964-cf8c-4f72-ad35-1f7bef860eed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\tables">
-      <UniqueIdentifier>{793ca7c6-5626-4d18-9659-2ea2890a33ee}</UniqueIdentifier>
+      <UniqueIdentifier>{0f99c003-2e06-4ad4-b674-8daeb156ec3a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\threadproc">
-      <UniqueIdentifier>{b2d97445-7b9e-473a-a6d1-30ecd52550b5}</UniqueIdentifier>
+      <UniqueIdentifier>{04e8b420-aec5-42e5-b388-f7e5b7bfe364}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\time">
-      <UniqueIdentifier>{16d5ad09-4d44-40a9-8bca-f851fb20f5ea}</UniqueIdentifier>
+      <UniqueIdentifier>{3424ca26-4e6e-4176-b1b9-b6e178962b43}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\user">
-      <UniqueIdentifier>{c1943335-4eb6-4757-bbe8-631d14362f80}</UniqueIdentifier>
+      <UniqueIdentifier>{e0c8cfc1-eeca-4ad9-97df-10a09c59f908}</UniqueIdentifier>
     </Filter>
     <Filter Include="Private Header Files">
-      <UniqueIdentifier>{15a62fbc-f8c0-41fe-b2a7-cbbb8c4708b4}</UniqueIdentifier>
+      <UniqueIdentifier>{cb633356-702a-4aed-80e4-84e92dd61a29}</UniqueIdentifier>
     </Filter>
     <Filter Include="Public Header Files">
-      <UniqueIdentifier>{a7ced679-fe84-429b-9a8b-3d041d54a7cb}</UniqueIdentifier>
+      <UniqueIdentifier>{da02ffe8-a136-4632-b47d-ff41f9fd761e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -425,14 +425,12 @@
     <ResourceCompile Include="..\apr\libapr.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuildStep Include="..\apr\include\apr.h.in">
+    <CustomBuild Include="..\apr\include\apr.h.in">
       <Filter>Public Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="..\apr\include\apr.hnw">
+    </CustomBuild>
+    <CustomBuild Include="..\apr\include\apr.hnw">
       <Filter>Public Header Files</Filter>
-    </CustomBuildStep>
-  </ItemGroup>
-  <ItemGroup>
+    </CustomBuild>
     <CustomBuild Include="..\apr\include\apr.hw">
       <Filter>Public Header Files</Filter>
     </CustomBuild>

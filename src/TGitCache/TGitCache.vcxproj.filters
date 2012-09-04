@@ -66,6 +66,12 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Utils\StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utils\SysInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TGITCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,10 +81,7 @@
     <ClCompile Include="..\Utils\UnicodeUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\SysInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\StringUtils.cpp">
+    <ClCompile Include="..\Utils\UniqueQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,39 +128,45 @@
     <ClInclude Include="ShellUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\SmartHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="StatusCacheEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Git\TGitPath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TGitCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Utils\UnicodeUtils.h">
+    <ClInclude Include="..\Utils\StringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Utils\SysInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\StringUtils.h">
+    <ClInclude Include="TGitCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Resources\Tortoise.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseCache.ico">
-      <Filter>Resource Files</Filter>
-    </None>
+    <ClInclude Include="..\Git\TGitPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\UnicodeUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\UniqueQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TGitCache.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\Tortoise.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseCache.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
