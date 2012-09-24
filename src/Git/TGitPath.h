@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 // Copyright (C) 2003-2008 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -119,10 +119,6 @@ public:
 	 */
 	const CString& GetUIPathString() const;
 	/**
-	 * Checks if the path is an URL.
-	 */
-	bool IsUrl() const;
-	/**
 	 * Returns true if the path points to a directory
 	 */
 	bool IsDirectory() const;
@@ -224,6 +220,11 @@ public:
 	 */
 	__int64 GetLastWriteTime() const;
 
+	/**
+	 * Get the file size. Returns zero for directories or files that don't exist.
+	 */
+	__int64 GetFileSize() const;
+
 	bool IsReadOnly() const;
 
 	/**
@@ -274,11 +275,6 @@ public:
 	 */
 	bool IsValidOnWindows() const;
 
-	/**
-	 * Checks to see if the path or URL represents one of the special directories
-	 * (branches, tags, or trunk).
-	 */
-	bool IsSpecialDirectory() const;
 private:
 	// All these functions are const, and all the data
 	// is mutable, in order that the hidden caching operations
@@ -309,6 +305,7 @@ private:
 
 private:
 	mutable CString m_sBackslashPath;
+	mutable CString m_sLongBackslashPath;
 	mutable CString m_sFwdslashPath;
 	mutable CString m_sUIPath;
 	mutable	CStringA m_sUTF8FwdslashPath;
@@ -324,8 +321,8 @@ private:
 	mutable bool m_bIsDirectory;
 	mutable bool m_bLastWriteTimeKnown;
 	mutable bool m_bURLKnown;
-	mutable bool m_bIsURL;
 	mutable __int64 m_lastWriteTime;
+	mutable __int64 m_fileSize;
 	mutable bool m_bIsReadOnly;
 	mutable bool m_bHasAdminDirKnown;
 	mutable bool m_bHasAdminDir;

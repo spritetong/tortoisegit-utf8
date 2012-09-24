@@ -118,11 +118,5 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="Makefile" />
-    <None Include="Tortoise_es_ES.po">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Tortoise_it_IT.po">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

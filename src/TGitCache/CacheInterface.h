@@ -80,7 +80,8 @@ struct TGITCacheRequest
 struct TGITCacheResponse
 {
 	git_wc_status2_t m_status;
-	git_wc_entry_t m_entry;
+	bool m_bAssumeValid;
+	bool m_bSkipWorktree;
 };
 
 /**

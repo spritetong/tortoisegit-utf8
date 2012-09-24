@@ -282,6 +282,9 @@ void CBaseView::UpdateStatusBar()
 	case CFileTextLines::UNICODE_LE:
 		sBarText = _T("UTF-16LE ");
 		break;
+	case CFileTextLines::UNICODE_BE:
+		sBarText = _T("UTF-16BE ");
+		break;
 	case CFileTextLines::UTF8:
 		sBarText = _T("UTF8 ");
 		break;
@@ -2868,7 +2871,7 @@ void CBaseView::RemoveSelectedText()
 	}
 	CUndo::GetInstance().AddState(leftstate, rightstate, bottomstate, m_ptCaretPos);
 	// remove the lines at the end, to avoid problems with line indexes
-	if (linestoremove.size())
+	if (!linestoremove.empty())
 	{
 		std::vector<LONG>::const_iterator it = linestoremove.begin();
 		int nLineToRemove = *it;

@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2003-2006 - Stefan Kueng
+// Copyright (C) 2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -16,23 +16,30 @@
 // along with this program; if not, write to the Free Software Foundation,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-
 #pragma once
 
-/**
- * \ingroup Utils
- * CStdioFileT extends the standard CStdioFile MFC class to handle ANSI and
- * UNICODE files equally, independent on how the program is compiled.
- */
-class CStdioFileT : public CStdioFile
+// CUpdateListCtrl
+
+class CUpdateListCtrl : public CListCtrl
 {
+	DECLARE_DYNAMIC(CUpdateListCtrl)
+
 public:
-	CStdioFileT();
-	CStdioFileT(LPCTSTR lpszFileName, UINT nOpenFlags);
+	CUpdateListCtrl();
+	virtual ~CUpdateListCtrl();
+	enum
+	{
+		STATUS_NONE,
+		STATUS_DOWNLOADING = 0x10000,
+		STATUS_FAIL = 0x1,
+		STATUS_SUCCESS = 0x2,
+		STATUS_IGNORE = 0x4,
+		STATUS_MASK   = 0xffff
+	};
 
-	BOOL ReadString(CStringA& rString);
-	BOOL ReadString(CString& rString) {return CStdioFile::ReadString(rString);}
+	HFONT				m_boldFont;
 
-	void WriteString(LPCSTR lpsz);
-	void WriteString(LPCWSTR lpsz);
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
 };

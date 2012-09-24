@@ -1,5 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
+// Copyright (C) 2012 - TortoiseGit
 // Copyright (C) 2003-2008,2010 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
@@ -31,6 +32,7 @@ CMessageBox::CMessageBox(void)
 	, m_bShowCheck(FALSE)
 	, m_bDestroyIcon(FALSE)
 	, m_nDefButton(0)
+	, m_uType(0)
 {
 }
 
@@ -859,16 +861,16 @@ BOOL CMessageBox::OnInitDialog()
 	else
 		GetDlgItem(IDC_MESSAGEBOX_CHECKBOX)->ShowWindow(SW_HIDE);
 
+	SetWindowPos(&CWnd::wndTopMost,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+	SetForegroundWindow();
+	SetFocus(); //Just playing safe
+
 	if (m_nDefButton == 1)
 		GetDlgItem(IDC_MESSAGEBOX_BUTTON1)->SetFocus();
 	if (m_nDefButton == 2)
 		GetDlgItem(IDC_MESSAGEBOX_BUTTON2)->SetFocus();
 	if (m_nDefButton == 3)
 		GetDlgItem(IDC_MESSAGEBOX_BUTTON3)->SetFocus();
-
-	SetWindowPos(&CWnd::wndTopMost,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	SetForegroundWindow();
-	SetFocus(); //Just playing safe
 
 	return FALSE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

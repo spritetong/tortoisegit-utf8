@@ -112,58 +112,60 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="alphatoggle.ico">
+    <Image Include="alphatoggle.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="blend.ico">
+    </Image>
+    <Image Include="blend.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fitinwindow.ico">
+    </Image>
+    <Image Include="fitinwindow.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fittogether.ico">
+    </Image>
+    <Image Include="fittogether.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="imginfo.ico">
+    </Image>
+    <Image Include="imginfo.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="link.ico">
+    </Image>
+    <Image Include="link.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="origsize.ico">
+    </Image>
+    <Image Include="origsize.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="overlap.ico">
+    </Image>
+    <Image Include="overlap.ico">
       <Filter>Resource Files</Filter>
-    </None>
+    </Image>
+    <Image Include="player_fwd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player_rew.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player_start.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="player_stop.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TortoiseIDiff.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="vertical.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zoomin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="zoomout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\Resources\pan.cur">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Resources\pandown.cur">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="player_fwd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="player_rew.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="player_start.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="player_stop.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="TortoiseIDiff.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="vertical.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="zoomin.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="zoomout.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -40,7 +40,7 @@
             <term condition="pot">CacheTrayIcon</term>
             <listitem>
                 <para>
-                    To add a cache tray icon for the TSVNCache program, set
+                    To add a cache tray icon for the TGitCache program, set
                     this value to <literal>true</literal>.
                     This is really only useful for developers as it allows
                     you to terminate the program gracefully.
@@ -118,11 +118,12 @@
                     drawing in the Scintilla control which is used
                     as the edit box in e.g. the commit dialog (also for the attached patch window), the
                     unified diff viewer and TortoiseGitBlame.
-                    With some graphic cards however this sometimes
+                    With some graphic cards, however, this sometimes
                     doesn't work properly so that the cursor to enter
-                    text isn't always visible. If that happens, you
-                    can turn this feature off by setting this value
-                    to <literal>false</literal>.
+                    text isn't always visible, the redraw does not work
+                    or the background is flashing. It's disabled by default. You
+                    can turn this feature on by setting this value
+                    to <literal>true</literal>.
                 </para>
             </listitem>
         </varlistentry>
@@ -150,13 +151,25 @@
             </listitem>
         </varlistentry>
         <varlistentry>
+            <term condition="pot">TGitCacheCheckContent</term>
+            <listitem>
+                <para>
+                    This makes TGitCache check file contents if timestamps (to index) missmatch in order to
+                    calculate the file status.
+                    TortoiseGit 1.7.0 up to 1.7.12 calculated the file status based on the timestamp only,
+                    this is still the default, because checking the content of the files only works
+                    if AutoCrLf is disabled at the moment.
+                    If you want TGitCache to check the file contents (this might increase disk access and CPU time), set this value to <literal>true</literal>.
+                </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
             <term condition="pot">UseLibgit2</term>
             <listitem>
                 <para>
                     This makes TortoiseGit to use libgit2 as much as possible (e.g. for
-                    adding files to the index). It's disabled by default, since libgit2
-                    has some limitations ATM (UTF8 filename problems, doesn't support AutoCRLF and separate-git-dir).
-                    If you t want TortoiseGit to use libgit2, set this value to <literal>true</literal>.
+                    adding files to the index).
+                    If you do not want TortoiseGit to use libgit2 for file operations, set this value to <literal>false</literal>.
                 </para>
             </listitem>
         </varlistentry>

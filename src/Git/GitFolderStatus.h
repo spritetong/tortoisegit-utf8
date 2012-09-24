@@ -80,6 +80,8 @@ typedef struct FileStatusCacheEntry
 	const char*				url;		///< points to a (possibly) shared value
 	git_revnum_t			rev;
 	int						askedcounter;
+	bool					assumeValid;
+	bool					skipWorktree;
 } FileStatusCacheEntry;
 
 #define GITFOLDERSTATUS_CACHETIMES				10

@@ -2,23 +2,23 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{99e6fe1a-6879-4d20-b227-983e015ab91b}</UniqueIdentifier>
+      <UniqueIdentifier>{1cf40282-dbf2-4cde-a803-29de6e596edf}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{731d59df-c0b1-4771-810f-8b203767f091}</UniqueIdentifier>
+      <UniqueIdentifier>{64b40325-251b-44ad-9836-c843c5bc668d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{26f096db-f266-4277-b163-0f8feba22e5e}</UniqueIdentifier>
+      <UniqueIdentifier>{2af29c05-4772-461e-9279-fb209a3710a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="lexers">
-      <UniqueIdentifier>{5af9863a-2ac0-4833-a84d-6c8fc313db3a}</UniqueIdentifier>
+      <UniqueIdentifier>{b2976ad5-3c28-4174-981e-b9339fd44bf0}</UniqueIdentifier>
     </Filter>
     <Filter Include="lexlib">
-      <UniqueIdentifier>{25d48307-6273-400f-9007-6ca920982fff}</UniqueIdentifier>
+      <UniqueIdentifier>{9dc56611-fda6-40b9-ad53-d033cdb815fd}</UniqueIdentifier>
     </Filter>
     <Filter Include="win32">
-      <UniqueIdentifier>{8a3383da-f3cf-4382-8dec-9a62aad7e4e5}</UniqueIdentifier>
+      <UniqueIdentifier>{32a67214-8a05-48c0-b34e-04395c369543}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +118,9 @@
     <ClCompile Include="..\scintilla\lexers\LexAVE.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexAVS.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexBaan.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -142,6 +145,9 @@
     <ClCompile Include="..\scintilla\lexers\LexCOBOL.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexCoffeeScript.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexConf.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -158,6 +164,9 @@
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexD.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexECL.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexEiffel.cxx">
@@ -241,6 +250,9 @@
     <ClCompile Include="..\scintilla\lexers\LexOpal.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexOScript.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexOthers.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -316,6 +328,9 @@
     <ClCompile Include="..\scintilla\lexers\LexTCL.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexTCMD.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexTeX.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -329,6 +344,9 @@
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexVHDL.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scintilla\lexers\LexVisualProlog.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\scintilla\lexers\LexYAML.cxx">
@@ -366,24 +384,6 @@
     </ClCompile>
     <ClCompile Include="..\scintilla\win32\ScintillaWin.cxx">
       <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexAVS.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexCoffeeScript.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexTCMD.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexECL.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexOScript.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scintilla\lexers\LexVisualProlog.cxx">
-      <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

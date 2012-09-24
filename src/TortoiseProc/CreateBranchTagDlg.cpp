@@ -30,8 +30,9 @@
 IMPLEMENT_DYNAMIC(CCreateBranchTagDlg, CResizableStandAloneDialog)
 
 CCreateBranchTagDlg::CCreateBranchTagDlg(CWnd* pParent /*=NULL*/)
-	: CResizableStandAloneDialog(CCreateBranchTagDlg::IDD, pParent),
-	CChooseVersion(this)
+	: CResizableStandAloneDialog(CCreateBranchTagDlg::IDD, pParent)
+	, m_bForce(FALSE)
+	, CChooseVersion(this)
 {
 	m_bIsTag=0;
 	m_bSwitch = 0;	// default switch to checkbox not selected
@@ -101,16 +102,7 @@ BOOL CCreateBranchTagDlg::OnInitDialog()
 	AdjustControlSize(IDC_CHECK_SWITCH);
 	AdjustControlSize(IDC_CHECK_SIGN);
 
-	if(m_Base.IsEmpty())
-	{
-		this->SetDefaultChoose(IDC_RADIO_HEAD);
-
-	}
-	else
-	{
-		this->SetDefaultChoose(IDC_RADIO_VERSION);
-		this->GetDlgItem(IDC_COMBOBOXEX_VERSION)->SetWindowTextW(m_Base);
-	}
+	this->SetDefaultChoose(IDC_RADIO_HEAD);
 
 	Init();
 
@@ -185,7 +177,7 @@ void CCreateBranchTagDlg::OnBnClickedOk()
 		ShowEditBalloon(IDC_BRANCH_TAG, msg + _T(" ") + CString(MAKEINTRESOURCE(IDS_B_T_DIFFERENTNAMEORFORCE)), CString(MAKEINTRESOURCE(IDS_WARN_WARNING)));
 		return;
 	}
-	if (g_Git.BranchTagExists(m_BranchTagName, m_bIsTag))
+	if (g_Git.BranchTagExists(m_BranchTagName, m_bIsTag == TRUE))
 	{
 		CString msg;
 		if (m_bIsTag)
@@ -202,7 +194,7 @@ void CCreateBranchTagDlg::OnBnClickedOk()
 
 void CCreateBranchTagDlg::OnCbnSelchangeComboboxexBranch()
 {
-	if(this->m_ChooseVersioinBranch.GetString().Left(8)==_T("remotes/"))
+	if (this->m_ChooseVersioinBranch.GetString().Left(8)==_T("remotes/") && !m_bIsTag)
 	{
 		bool isDefault = false;
 		this->UpdateData();

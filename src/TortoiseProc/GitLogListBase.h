@@ -150,11 +150,16 @@ public:
 			m_bShowBugtraqColumn = false;
 	}
 
-	void ResetWcRev()
+	void ResetWcRev(bool refresh = false)
 	{
+		m_wcRev.Clear();
+		m_wcRev.GetSubject() = CString(MAKEINTRESOURCE(IDS_LOG_WORKINGDIRCHANGES));
+		m_wcRev.m_Mark = _T('-');
 		m_wcRev.GetBody() = CString(MAKEINTRESOURCE(IDS_LOG_FETCHINGSTATUS));
 		m_wcRev.m_CallDiffAsync = DiffAsync;
 		InterlockedExchange(&m_wcRev.m_IsDiffFiles, FALSE);
+		if (refresh && m_bShowWC)
+			m_arShownList[0] = &m_wcRev;
 	}
 	void SetProjectPropertiesPath(const CTGitPath& path) {m_ProjectProperties.ReadProps(path);}
 
@@ -163,6 +168,7 @@ public:
 	BOOL m_IsOldFirst;
 	void hideFromContextMenu(unsigned __int64 hideMask, bool exclusivelyShow);
 	BOOL m_IsRebaseReplaceGraph;
+	BOOL m_bNoHightlightHead;
 
 	void MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 
@@ -221,7 +227,6 @@ public:
 	ID_COMPARE = 1, // compare revision with WC
 	ID_SAVEAS,
 	ID_COMPARETWO, // compare two revisions
-	ID_UPDATE,
 	ID_COPY,
 	ID_REVERTREV,
 	ID_MERGEREV,
@@ -232,24 +237,19 @@ public:
 	ID_BLAME,
 	ID_REPOBROWSE,
 	ID_LOG,
-	ID_POPPROPS,
 	ID_EDITNOTE,
-	ID_EDITLOG,
 	ID_DIFF,
 	ID_OPENWITH,
 	ID_COPYCLIPBOARD,
 	ID_COPYHASH,
 	ID_REVERTTOREV,
 	ID_BLAMECOMPARE,
-	ID_BLAMETWO,
 	ID_BLAMEDIFF,
 	ID_VIEWREV,
 	ID_VIEWPATHREV,
 	ID_EXPORT,
 	ID_COMPAREWITHPREVIOUS,
 	ID_BLAMEWITHPREVIOUS,
-	ID_GETMERGELOGS,
-	ID_REVPROPS,
 	ID_CHERRY_PICK,
 	ID_CREATE_BRANCH,
 	ID_CREATE_TAG,
@@ -273,11 +273,20 @@ public:
 	ID_PUSH,
 	ID_FETCH,
 	ID_SHOWBRANCHES,
+	ID_COPYCLIPBOARDMESSAGES,
+	ID_BISECTSTART,
+	};
+	enum
+	{
+	ID_COPY_ALL,
+	ID_COPY_MESSAGE,
+	ID_COPY_SUBJECT,
+	ID_COPY_HASH,
 	};
 	inline unsigned __int64 GetContextMenuBit(int i){ return ((unsigned __int64 )0x1)<<i ;}
 	void InsertGitColumn();
 	void ResizeAllListCtrlCols();
-	void CopySelectionToClipBoard(bool hashonly=FALSE);
+	void CopySelectionToClipBoard(int toCopy = ID_COPY_ALL);
 	void DiffSelectedRevWithPrevious();
 	bool IsSelectionContinuous();
 	int  BeginFetchLog();
@@ -323,9 +332,8 @@ public:
 	}
 	void SafeTerminateThread()
 	{
-		if(m_LoadingThread!=NULL)
+		if (m_LoadingThread!=NULL && InterlockedExchange(&m_bExitThread, TRUE) == FALSE)
 		{
-			InterlockedExchange(&m_bExitThread,TRUE);
 			DWORD ret =::WaitForSingleObject(m_LoadingThread->m_hThread,20000);
 			if(ret == WAIT_TIMEOUT)
 				::TerminateThread(m_LoadingThread,0);
@@ -375,7 +383,7 @@ protected:
 	UINT LogThread();
 	void FetchLastLogInfo();
 	void FetchFullLogInfo(CString &from, CString &to);
-	void FillBackGround(HDC hdc, int Index,CRect &rect);
+	void FillBackGround(HDC hdc, DWORD_PTR Index, CRect &rect);
 	void DrawTagBranch(HDC,CRect &rect,INT_PTR index);
 	void DrawGraph(HDC,CRect &rect,INT_PTR index);
 

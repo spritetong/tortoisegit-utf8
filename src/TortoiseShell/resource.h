@@ -53,6 +53,7 @@
 #define IDS_MENUDESCSWITCH              143
 #define IDI_SHOWCHANGED                 143
 #define IDI_IGNORE                      144
+#define IDS_MENUASSUMEVALID             144
 #define IDS_MENUDESCEXPORT              145
 #define IDS_MENUDESCABOUT               146
 #define IDS_MENUDESCCREATEREPOS         147
@@ -120,6 +121,7 @@
 #define IDS_MENUDESCCREATEPATCH         208
 #define IDS_MENUDESCAPPLYPATCH          209
 #define IDS_MENUDESCSVNFETCH            210
+#define IDS_MENULOGSUBMODULE            211
 #define IDS_MENUUNDOADD                 212
 #define IDS_MENUDESCUNDOADD             213
 #define IDS_MENUPREVDIFF                214
@@ -143,7 +145,6 @@
 #define IDS_COLDESCAUTHOR               252
 #define IDS_FILEPROPONFOLDER            253
 #define IDS_PROPSNOTSAVED               254
-#define IDS_MENUADDASREPLACEMENT        255
 #define IDS_DROPMOVERENAMEMENU          256
 #define IDS_MENUREMOVEKEEP              271
 #define IDS_MENUDESCREMOVEKEEP          272
@@ -159,7 +160,6 @@
 #define IDS_MENUTAG                     307
 #define IDS_MENUFORMATPATCH             308
 #define IDS_MENUIMPORTPATCH             309
-#define IDS_MENUCHERRYPICK              310
 #define IDS_MENUFETCH                   311
 #define IDS_MENUREBASE                  312
 #define IDS_MENUSTASHSAVE               313
@@ -221,6 +221,7 @@
 #define IDC_EDITNAME                    1014
 #define IDC_EDITVALUE                   1015
 #define IDC_SHOWLOG                     1016
+#define IDC_SHOWSETTINGS                1017
 #define IDC_RECURSIVE                   1018
 #define IDS_git_USERCANCELLED           1181
 #define IDI_REPOBROWSE                  5145
@@ -259,6 +260,9 @@
 #define IDC_DEPTHEDIT                   11026
 #define IDC_CONFIG_USEREMAIL            11026
 #define IDC_CHECKSUM                    11027
+#define IDC_ASSUMEVALID                 11027
+#define IDC_EXECUTABLE                  11028
+#define IDC_SKIPWORKTREE                11029
 
 // Next default values for new objects
 // 
@@ -266,7 +270,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        5180
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         11026
+#define _APS_NEXT_CONTROL_VALUE         11028
 #define _APS_NEXT_SYMED_VALUE           5101
 #endif
 #endif

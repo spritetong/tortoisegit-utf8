@@ -39,6 +39,7 @@ CCachedDirectory::CCachedDirectory(const CTGitPath& directoryPath)
 	ATLASSERT(directoryPath.IsDirectory() || !PathFileExists(directoryPath.GetWinPath()));
 
 	m_directoryPath = directoryPath;
+	m_directoryPath.GetGitPathString(); // make sure git path string is set
 
 	m_currentFullStatus = m_mostImportantFileStatus = git_wc_status_none;
 	m_bRecursive = true;
@@ -162,6 +163,7 @@ BOOL CCachedDirectory::LoadFromDisk(FILE * pFile)
 			}
 			sPath.ReleaseBuffer(value);
 			m_directoryPath.SetFromWin(sPath);
+			m_directoryPath.GetGitPathString(); // make sure git path string is set
 		}
 		if (!m_ownStatus.LoadFromDisk(pFile))
 			return false;
@@ -242,7 +244,7 @@ CStatusCacheEntry CCachedDirectory::GetStatusFromCache(const CTGitPath& path, bo
 			}
 		}
 
-		CGitStatusCache::Instance().AddFolderForCrawling(path);
+		CGitStatusCache::Instance().AddFolderForCrawling(path.GetContainingDirectory());
 		return CStatusCacheEntry();
 	}
 
@@ -260,6 +262,7 @@ CStatusCacheEntry CCachedDirectory::GetStatusFromGit(const CTGitPath &path, CStr
 	}
 
 	GitStatus *pGitStatus = &CGitStatusCache::Instance().m_GitStatus;
+	UNREFERENCED_PARAMETER(pGitStatus);
 
 	CGitHash head;
 
@@ -297,8 +300,8 @@ CStatusCacheEntry CCachedDirectory::GetStatusFromGit(const CTGitPath &path, CStr
 					status2.text_status = status2.prop_status =
 						(isignore? git_wc_status_ignored:git_wc_status_unversioned);
 
-					dirEntry->m_ownStatus.SetStatus(&status2);
 					dirEntry->m_ownStatus.SetKind(git_node_dir);
+					dirEntry->m_ownStatus.SetStatus(&status2);
 
 				}
 				return dirEntry->m_ownStatus;
@@ -343,18 +346,22 @@ CStatusCacheEntry CCachedDirectory::GetStatusFromGit(const CTGitPath &path, CStr
 
 CStatusCacheEntry CCachedDirectory::GetStatusForMember(const CTGitPath& path, bool bRecursive,  bool bFetch /* = true */)
 {
-	CString strCacheKey;
+	CString sProjectRoot;
+	bool bIsVersionedPath;
+
 	bool bRequestForSelf = false;
 	if(path.IsEquivalentToWithoutCase(m_directoryPath))
 	{
 		bRequestForSelf = true;
+		AutoLocker lock(m_critSec);
+		// HasAdminDir might modify m_directoryPath, so we need to do it synchronized
+		bIsVersionedPath = m_directoryPath.HasAdminDir(&sProjectRoot);
 	}
-//OutputDebugStringA("GetStatusForMember: ");OutputDebugStringW(path.GetWinPathString());OutputDebugStringA("\r\n");
+	else
+		bIsVersionedPath = path.HasAdminDir(&sProjectRoot);
+
 	// In all most circumstances, we ask for the status of a member of this directory.
 	ATLASSERT(m_directoryPath.IsEquivalentToWithoutCase(path.GetContainingDirectory()) || bRequestForSelf);
-
-	CString sProjectRoot;
-	const BOOL bIsVersionedPath = path.HasAdminDir(&sProjectRoot);
 
 	//If is not version control path
 	if( !bIsVersionedPath)
@@ -424,21 +431,46 @@ int CCachedDirectory::EnumFiles(CTGitPath *path , bool IsFull)
 			sSubPath = s.Right(s.GetLength() - sProjectRoot.GetLength() );
 	}
 
+	// strip "\" at the end, otherwise cache lookups for drives do not work correctly
+	sProjectRoot.TrimRight(_T("\\"));
+
 	GitStatus *pStatus = &CGitStatusCache::Instance().m_GitStatus;
 	UNREFERENCED_PARAMETER(pStatus);
-	git_wc_status_kind status;
+	git_wc_status_kind status = git_wc_status_none;
 
 	if(!path->IsDirectory())
-		pStatus->GetFileStatus(sProjectRoot, sSubPath, &status, IsFull, false,true, GetStatusCallback,this);
+	{
+		bool assumeValid = false;
+		bool skipWorktree = false;
+		pStatus->GetFileStatus(sProjectRoot, sSubPath, &status, IsFull, false, true, GetStatusCallback, this, &assumeValid, &skipWorktree);
+	}
 	else
 	{
-		m_mostImportantFileStatus = git_wc_status_normal;
+		m_mostImportantFileStatus = git_wc_status_none;
 		pStatus->EnumDirStatus(sProjectRoot, sSubPath, &status, IsFull, false, true, GetStatusCallback,this);
 
-		m_ownStatus = git_wc_status_normal;
-	}
+		// folders must not be displayed as added or deleted only as modified
+		if (status == git_wc_status_deleted || status == git_wc_status_added)
+			status = git_wc_status_modified;
+		// this is necessary, even if the m_mostImportantFileStatus is set in GetStatusCallback,
+		// however, if it's missing, deleted subdirectories won't mark parents as modified
+		m_mostImportantFileStatus = GitStatus::GetMoreImportant(m_mostImportantFileStatus, status);
 
-	m_mostImportantFileStatus = GitStatus::GetMoreImportant(m_mostImportantFileStatus, status);
+		if (sSubPath.IsEmpty())
+		{
+			// request a shell notification for working trees which have not been examined before
+			if (m_currentFullStatus == git_wc_status_none)
+			{
+				m_currentFullStatus = git_wc_status_normal;
+				CGitStatusCache::Instance().UpdateShell(sProjectRoot);
+			}
+			m_ownStatus = git_wc_status_normal;
+		}
+		// otherwise folders which contain at least one ignored item gets displayed as ignored
+		// or: folders which were displayed as conflicted never recover from that state
+		else if (m_ownStatus.GetEffectiveStatus() == git_wc_status_ignored || m_ownStatus.GetEffectiveStatus() == git_wc_status_conflicted)
+			m_ownStatus = git_wc_status_normal;
+	}
 
 	return 0;
 }
@@ -459,8 +491,8 @@ CCachedDirectory::AddEntry(const CTGitPath& path, const git_wc_status2_t* pGitSt
 					{
 						CGitStatusCache::Instance().UpdateShell(path);
 						//ATLTRACE(_T("shell update for %s\n"), path.GetWinPath());
-						childDir->m_ownStatus.SetStatus(pGitStatus);
 						childDir->m_ownStatus.SetKind(git_node_dir);
+						childDir->m_ownStatus.SetStatus(pGitStatus);
 					}
 				}
 			}
@@ -477,6 +509,7 @@ CCachedDirectory::AddEntry(const CTGitPath& path, const git_wc_status2_t* pGitSt
 		if(!childDir)
 			return ;
 
+		AutoLocker lock(childDir->m_critSec);
 		CString cachekey = GetCacheKey(path);
 		CacheEntryMap::iterator entry_it = childDir->m_entryCache.lower_bound(cachekey);
 		if (entry_it != childDir->m_entryCache.end() && entry_it->first == cachekey)
@@ -523,8 +556,8 @@ CCachedDirectory::AddEntry(const CTGitPath& path, const git_wc_status2_t* pGitSt
 				{
 					CGitStatusCache::Instance().UpdateShell(parent->m_directoryPath);
 					//ATLTRACE(_T("shell update for %s\n"), parent->m_directoryPath.GetWinPathString());
-					parent->m_ownStatus.SetStatus(pGitStatus);
 					parent->m_ownStatus.SetKind(git_node_dir);
+					parent->m_ownStatus.SetStatus(pGitStatus);
 				}
 			}
 		}
@@ -537,7 +570,7 @@ CCachedDirectory::GetCacheKey(const CTGitPath& path)
 {
 	// All we put into the cache as a key is just the end portion of the pathname
 	// There's no point storing the path of the containing directory for every item
-	return path.GetWinPathString().Mid(m_directoryPath.GetWinPathString().GetLength()).MakeLower();
+	return path.GetWinPathString().Mid(m_directoryPath.GetWinPathString().GetLength()).MakeLower().TrimLeft(_T("\\"));
 }
 
 CString
@@ -546,12 +579,14 @@ CCachedDirectory::GetFullPathString(const CString& cacheKey)
 	return m_directoryPath.GetWinPathString() + _T("\\") + cacheKey;
 }
 
-BOOL CCachedDirectory::GetStatusCallback(const CString & path, git_wc_status_kind status,bool isDir, void *pUserData)
+BOOL CCachedDirectory::GetStatusCallback(const CString & path, git_wc_status_kind status,bool isDir, void *, bool assumeValid, bool skipWorktree)
 {
 	git_wc_status2_t _status;
 	git_wc_status2_t *status2 = &_status;
 
 	status2->prop_status = status2->text_status = status;
+	status2->assumeValid = assumeValid;
+	status2->skipWorktree = skipWorktree;
 
 	CTGitPath gitPath;
 
@@ -637,7 +672,7 @@ BOOL CCachedDirectory::GetStatusCallback(const CString & path, git_wc_status_kin
 			{
 				pThis->m_mostImportantFileStatus = GitStatus::GetMoreImportant(pThis->m_mostImportantFileStatus, status2->text_status);
 				pThis->m_mostImportantFileStatus = GitStatus::GetMoreImportant(pThis->m_mostImportantFileStatus, status2->prop_status);
-				if (((status2->text_status == git_wc_status_unversioned)||(status2->text_status == git_wc_status_none))
+				if ((status2->text_status == git_wc_status_unversioned)
 					&&(CGitStatusCache::Instance().IsUnversionedAsModified()))
 				{
 					// treat unversioned files as modified
@@ -779,7 +814,7 @@ void CCachedDirectory::RefreshStatus(bool bRecursive)
 	CacheEntryMap::iterator itMembers;
 	std::set<CTGitPath> refreshedpaths;
 	DWORD now = GetTickCount();
-	if (m_entryCache.size() == 0)
+	if (m_entryCache.empty())
 		return;
 	for (itMembers = m_entryCache.begin(); itMembers != m_entryCache.end(); ++itMembers)
 	{
@@ -803,7 +838,7 @@ void CCachedDirectory::RefreshStatus(bool bRecursive)
 					lock.Lock();
 					refreshedpaths.insert(refr_it, filePath);
 					itMembers = m_entryCache.begin();
-					if (m_entryCache.size()==0)
+					if (m_entryCache.empty())
 						return;
 					continue;
 				}

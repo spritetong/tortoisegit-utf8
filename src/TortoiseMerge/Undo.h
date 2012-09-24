@@ -53,13 +53,13 @@ public:
 
 	bool Undo(CBaseView * pLeft, CBaseView * pRight, CBaseView * pBottom);
 	void AddState(const viewstate& leftstate, const viewstate& rightstate, const viewstate& bottomstate, POINT pt);
-	bool CanUndo() {return (m_viewstates.size() > 0);}
+	bool CanUndo() { return (!m_viewstates.empty()); }
 
 	bool IsGrouping() { return m_groups.size() % 2 == 1; }
 	void BeginGrouping() { ASSERT(!IsGrouping()); m_groups.push_back(m_caretpoints.size()); }
 	void EndGrouping(){ ASSERT(IsGrouping()); m_groups.push_back(m_caretpoints.size()); }
 	void Clear();
-	void MarkAsOriginalState() { m_originalstate = m_viewstates.size(); }
+	void MarkAsOriginalState() { m_originalstate = (unsigned int)m_viewstates.size(); }
 protected:
 	void Undo(const viewstate& state, CBaseView * pView);
 	void UndoOne(CBaseView * pLeft, CBaseView * pRight, CBaseView * pBottom);

@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{739e0071-4b9e-4122-b02d-3db664900d15}</UniqueIdentifier>
+      <UniqueIdentifier>{774db6dc-0d10-46dc-80b0-3239f59a7716}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{f318fed8-e0cc-4926-9a2f-c30147279be3}</UniqueIdentifier>
+      <UniqueIdentifier>{65e2429f-f833-4844-b048-ad022c7897ca}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{547be479-6db3-4835-8e67-926c5b88bf60}</UniqueIdentifier>
+      <UniqueIdentifier>{26974968-bd52-40be-a106-a88fa39997f7}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
@@ -241,9 +241,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\PUTTY.ICO">
+    <Image Include="..\..\PUTTY.ICO">
       <Filter>Resource Files</Filter>
-    </None>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\TortoisePlink.rc">

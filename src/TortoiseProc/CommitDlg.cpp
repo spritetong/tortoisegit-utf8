@@ -92,7 +92,6 @@ void CCommitDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_COMMIT_SETDATETIME, m_bSetCommitDateTime);
 	DDX_Check(pDX, IDC_CHECK_NEWBRANCH, m_bCreateNewBranch);
 	DDX_Text(pDX, IDC_NEWBRANCH, m_sCreateNewBranch);
-	DDX_Control(pDX, IDC_SELECTALL, m_SelectAll);
 	DDX_Text(pDX, IDC_BUGID, m_sBugID);
 	DDX_Check(pDX, IDC_WHOLE_PROJECT, m_bWholeProject);
 	DDX_Control(pDX, IDC_SPLITTER, m_wndSplitter);
@@ -106,7 +105,6 @@ void CCommitDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CCommitDlg, CResizableStandAloneDialog)
-	ON_BN_CLICKED(IDC_SELECTALL, OnBnClickedSelectall)
 	ON_BN_CLICKED(IDHELP, OnBnClickedHelp)
 	ON_BN_CLICKED(IDC_SHOWUNVERSIONED, OnBnClickedShowunversioned)
 	ON_NOTIFY(SCN_UPDATEUI, IDC_LOGMESSAGE, OnScnUpdateUI)
@@ -119,6 +117,7 @@ BEGIN_MESSAGE_MAP(CCommitDlg, CResizableStandAloneDialog)
 	ON_REGISTERED_MESSAGE(CGitStatusListCtrl::GITSLNM_CHECKCHANGED, &CCommitDlg::OnGitStatusListCtrlCheckChanged)
 	ON_REGISTERED_MESSAGE(CGitStatusListCtrl::GITSLNM_ITEMCHANGED, &CCommitDlg::OnGitStatusListCtrlItemChanged)
 
+	ON_REGISTERED_MESSAGE(CLinkControl::LK_LINKITEMCLICKED, &CCommitDlg::OnCheck)
 	ON_REGISTERED_MESSAGE(WM_AUTOLISTREADY, OnAutoListReady)
 	ON_WM_TIMER()
 	ON_WM_SIZE()
@@ -191,8 +190,7 @@ BOOL CCommitDlg::OnInitDialog()
 
 	UpdateData(FALSE);
 
-	m_ListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD |GITSLC_COLDEL, _T("CommitDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT | GITSLC_POPSAVEAS)));
-	m_ListCtrl.SetSelectButton(&m_SelectAll);
+	m_ListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD | GITSLC_COLDEL, _T("CommitDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT | GITSLC_POPSAVEAS)), true, true);
 	m_ListCtrl.SetStatLabel(GetDlgItem(IDC_STATISTICS));
 	m_ListCtrl.SetCancelBool(&m_bCancelled);
 	m_ListCtrl.SetEmptyString(IDS_COMMITDLG_NOTHINGTOCOMMIT);
@@ -212,8 +210,6 @@ BOOL CCommitDlg::OnInitDialog()
 	m_tooltips.AddTool(IDC_EXTERNALWARNING, IDS_COMMITDLG_EXTERNALS);
 	m_tooltips.AddTool(IDC_COMMIT_AMEND,IDS_COMMIT_AMEND_TT);
 //	m_tooltips.AddTool(IDC_HISTORY, IDS_COMMITDLG_HISTORY_TT);
-
-	m_SelectAll.SetCheck(BST_INDETERMINATE);
 
 	CBugTraqAssociations bugtraq_associations;
 	bugtraq_associations.Load();
@@ -271,7 +267,6 @@ BOOL CCommitDlg::OnInitDialog()
 	GetWindowText(m_sWindowTitle);
 
 	AdjustControlSize(IDC_SHOWUNVERSIONED);
-	AdjustControlSize(IDC_SELECTALL);
 	AdjustControlSize(IDC_WHOLE_PROJECT);
 	AdjustControlSize(IDC_CHECK_NEWBRANCH);
 	AdjustControlSize(IDC_COMMIT_AMEND);
@@ -279,6 +274,30 @@ BOOL CCommitDlg::OnInitDialog()
 	AdjustControlSize(IDC_COMMIT_SETDATETIME);
 	AdjustControlSize(IDC_NOAUTOSELECTSUBMODULES);
 	AdjustControlSize(IDC_KEEPLISTS);
+
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKALL);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKNONE);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKUNVERSIONED);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKVERSIONED);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKADDED);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKDELETED);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKMODIFIED);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKFILES);
+	m_linkControl.ConvertStaticToLink(m_hWnd, IDC_CHECKSUBMODULES);
+
+	// line up all controls and adjust their sizes.
+#define LINKSPACING 9
+	RECT rc = AdjustControlSize(IDC_SELECTLABEL);
+	rc.right -= 15;	// AdjustControlSize() adds 20 pixels for the checkbox/radio button bitmap, but this is a label...
+	rc = AdjustStaticSize(IDC_CHECKALL, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKNONE, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKUNVERSIONED, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKVERSIONED, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKADDED, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKDELETED, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKMODIFIED, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKFILES, rc, LINKSPACING);
+	rc = AdjustStaticSize(IDC_CHECKSUBMODULES, rc, LINKSPACING);
 
 	GetClientRect(m_DlgOrigRect);
 	m_cLogMessage.GetClientRect(m_LogMsgOrigRect);
@@ -299,7 +318,6 @@ BOOL CCommitDlg::OnInitDialog()
 	AddAnchor(IDC_SPLITTER, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_FILELIST, TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_SHOWUNVERSIONED, BOTTOM_LEFT);
-	AddAnchor(IDC_SELECTALL, BOTTOM_LEFT);
 	AddAnchor(IDC_EXTERNALWARNING, BOTTOM_RIGHT);
 	AddAnchor(IDC_STATISTICS, BOTTOM_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_TEXT_INFO, TOP_RIGHT);
@@ -314,6 +332,17 @@ BOOL CCommitDlg::OnInitDialog()
 	AddAnchor(IDC_COMMIT_SETDATETIME,TOP_LEFT);
 	AddAnchor(IDC_COMMIT_DATEPICKER,TOP_LEFT);
 	AddAnchor(IDC_COMMIT_TIMEPICKER,TOP_LEFT);
+
+	AddAnchor(IDC_SELECTLABEL, TOP_LEFT);
+	AddAnchor(IDC_CHECKALL, TOP_LEFT);
+	AddAnchor(IDC_CHECKNONE, TOP_LEFT);
+	AddAnchor(IDC_CHECKUNVERSIONED, TOP_LEFT);
+	AddAnchor(IDC_CHECKVERSIONED, TOP_LEFT);
+	AddAnchor(IDC_CHECKADDED, TOP_LEFT);
+	AddAnchor(IDC_CHECKDELETED, TOP_LEFT);
+	AddAnchor(IDC_CHECKMODIFIED, TOP_LEFT);
+	AddAnchor(IDC_CHECKFILES, TOP_LEFT);
+	AddAnchor(IDC_CHECKSUBMODULES, TOP_LEFT);
 
 	if (hWndExplorer)
 		CenterWindow(CWnd::FromHandle(hWndExplorer));
@@ -472,10 +501,146 @@ void CCommitDlg::OnOK()
 	CTGitPathList itemsToAdd;
 	CTGitPathList itemsToRemove;
 	CMassiveGitTask mgtReAddAfterCommit(_T("add --ignore-errors -f"));
-	//std::set<CString> checkedLists;
-	//std::set<CString> uncheckedLists;
 
-		// now let the bugtraq plugin check the commit message
+	CString cmd;
+	CString out;
+
+	bool bAddSuccess=true;
+	bool bCloseCommitDlg=false;
+
+	CSysProgressDlg sysProgressDlg;
+	if (nListItems >= 25 && sysProgressDlg.IsValid())
+	{
+		sysProgressDlg.SetTitle(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_PREPARECOMMIT)));
+		sysProgressDlg.SetLine(1, CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_UPDATEINDEX)));
+		sysProgressDlg.SetTime(true);
+		sysProgressDlg.SetShowProgressBar(true);
+		sysProgressDlg.ShowModal(this, true);
+	}
+
+	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
+	DWORD currentTicks = GetTickCount();
+
+	for (int j=0; j<nListItems; j++)
+	{
+		CTGitPath *entry = (CTGitPath*)m_ListCtrl.GetItemData(j);
+		if (sysProgressDlg.IsValid())
+		{
+			if (GetTickCount() - currentTicks > 1000 || j == nListItems - 1 || j == 0)
+			{
+				sysProgressDlg.SetLine(2, entry->GetGitPathString(), true);
+				sysProgressDlg.SetProgress(j, nListItems);
+				AfxGetThread()->PumpMessage(); // process messages, in order to avoid freezing; do not call this too: this takes time!
+				currentTicks = GetTickCount();
+			}
+		}
+		if (entry->m_Checked)
+		{
+			if( entry->m_Action & CTGitPath::LOGACTIONS_UNVER)
+				cmd.Format(_T("git.exe add -f -- \"%s\""),entry->GetGitPathString());
+			else if ( entry->m_Action & CTGitPath::LOGACTIONS_DELETED)
+				cmd.Format(_T("git.exe update-index --force-remove -- \"%s\""),entry->GetGitPathString());
+			else
+				cmd.Format(_T("git.exe update-index  -- \"%s\""),entry->GetGitPathString());
+
+			if (g_Git.Run(cmd, &out, CP_UTF8))
+			{
+				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+				bAddSuccess = false ;
+				break;
+			}
+
+			if( entry->m_Action & CTGitPath::LOGACTIONS_REPLACED)
+				cmd.Format(_T("git.exe rm -- \"%s\""), entry->GetGitOldPathString());
+
+			g_Git.Run(cmd, &out, CP_UTF8);
+
+			nchecked++;
+		}
+		else
+		{
+			if(entry->m_Action & CTGitPath::LOGACTIONS_ADDED || entry->m_Action & CTGitPath::LOGACTIONS_REPLACED)
+			{	//To init git repository, there are not HEAD, so we can use git reset command
+				cmd.Format(_T("git.exe rm -f --cache -- \"%s\""),entry->GetGitPathString());
+				if (g_Git.Run(cmd, &out, CP_UTF8))
+				{
+					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
+					bAddSuccess = false ;
+					bCloseCommitDlg=false;
+					break;
+				}
+				mgtReAddAfterCommit.AddFile(*entry);
+
+				if (entry->m_Action & CTGitPath::LOGACTIONS_REPLACED && !entry->GetGitOldPathString().IsEmpty())
+				{
+					if (m_bCommitAmend && !m_bAmendDiffToLastCommit)
+						cmd.Format(_T("git.exe reset HEAD~2 -- \"%s\""), entry->GetGitOldPathString());
+					else
+						cmd.Format(_T("git.exe reset -- \"%s\""), entry->GetGitOldPathString());
+					g_Git.Run(cmd, &out, CP_UTF8);
+				}
+			}
+			else if(!( entry->m_Action & CTGitPath::LOGACTIONS_UNVER ) )
+			{
+				if (m_bCommitAmend && !m_bAmendDiffToLastCommit)
+				{
+					cmd.Format(_T("git.exe reset HEAD~2 -- \"%s\""), entry->GetGitPathString());
+				}
+				else
+				{
+					cmd.Format(_T("git.exe reset -- \"%s\""), entry->GetGitPathString());
+				}
+				g_Git.Run(cmd, &out, CP_UTF8);
+				if (m_bCommitAmend && !m_bAmendDiffToLastCommit)
+					continue;
+			}
+		}
+
+		if (sysProgressDlg.IsValid() && sysProgressDlg.HasUserCancelled())
+		{
+			bAddSuccess = false;
+			break;
+		}
+
+		CShellUpdater::Instance().AddPathForUpdate(*entry);
+	}
+
+	if (sysProgressDlg.IsValid())
+		sysProgressDlg.Stop();
+
+	if (bAddSuccess && m_bCreateNewBranch)
+	{
+		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_UTF8))
+		{
+			MessageBox(_T("Creating new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
+			bAddSuccess = false;
+		}
+		if (g_Git.Run(_T("git checkout ") + m_sCreateNewBranch, &out, CP_UTF8))
+		{
+			MessageBox(_T("Switching to new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
+			bAddSuccess = false;
+		}
+	}
+
+	if (bAddSuccess && CheckHeadDetach())
+		bAddSuccess = false;
+
+	m_sBugID.Trim();
+	CString sExistingBugID = m_ProjectProperties.FindBugID(m_sLogMessage);
+	sExistingBugID.Trim();
+	if (!m_sBugID.IsEmpty() && m_sBugID.Compare(sExistingBugID))
+	{
+		m_sBugID.Replace(_T(", "), _T(","));
+		m_sBugID.Replace(_T(" ,"), _T(","));
+		CString sBugID = m_ProjectProperties.sMessage;
+		sBugID.Replace(_T("%BUGID%"), m_sBugID);
+		if (m_ProjectProperties.bAppend)
+			m_sLogMessage += _T("\n") + sBugID + _T("\n");
+		else
+			m_sLogMessage = sBugID + _T("\n") + m_sLogMessage;
+	}
+
+	// now let the bugtraq plugin check the commit message
 	CComPtr<IBugTraqProvider2> pProvider2 = NULL;
 	if (m_BugTraqProvider)
 	{
@@ -513,216 +678,13 @@ void CCommitDlg::OnOK()
 		}
 	}
 
-	//CString checkedfiles;
-	//CString uncheckedfiles;
-
-	CString cmd;
-	CString out;
-
-	bool bAddSuccess=true;
-	bool bCloseCommitDlg=false;
-
-	CSysProgressDlg sysProgressDlg;
-	if (nListItems >= 25 && sysProgressDlg.IsValid())
-	{
-		sysProgressDlg.SetTitle(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_PREPARECOMMIT)));
-		sysProgressDlg.SetLine(1, CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_UPDATEINDEX)));
-		sysProgressDlg.SetTime(true);
-		sysProgressDlg.SetShowProgressBar(true);
-		sysProgressDlg.ShowModal(this, true);
-	}
-
-	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
-	DWORD currentTicks = GetTickCount();
-
-	for (int j=0; j<nListItems; j++)
-	{
-		CTGitPath *entry = (CTGitPath*)m_ListCtrl.GetItemData(j);
-		if (sysProgressDlg.IsValid())
-		{
-			if (GetTickCount() - currentTicks > 1000 || j == nListItems - 1 || j == 0)
-			{
-				sysProgressDlg.SetLine(2, entry->GetGitPathString(), true);
-				sysProgressDlg.SetProgress(j, nListItems);
-				AfxGetThread()->PumpMessage(); // process messages, in order to avoid freezing; do not call this too: this takes time!
-				currentTicks = GetTickCount();
-			}
-		}
-		//const CGitStatusListCtrl::FileEntry * entry = m_ListCtrl.GetListEntry(j);
-		if (entry->m_Checked)
-		{
-#if 0
-			if (entry->status == Git_wc_status_unversioned)
-			{
-				itemsToAdd.AddPath(entry->GetPath());
-			}
-			if (entry->status == Git_wc_status_conflicted)
-			{
-				bHasConflicted = true;
-			}
-			if (entry->status == Git_wc_status_missing)
-			{
-				itemsToRemove.AddPath(entry->GetPath());
-			}
-			if (entry->status == Git_wc_status_deleted)
-			{
-				arDeleted.Add(j);
-			}
-			if (entry->IsInExternal())
-			{
-				bCheckedInExternal = true;
-			}
-#endif
-			if( entry->m_Action & CTGitPath::LOGACTIONS_UNVER)
-				cmd.Format(_T("git.exe add -f -- \"%s\""),entry->GetGitPathString());
-			else if ( entry->m_Action & CTGitPath::LOGACTIONS_DELETED)
-				cmd.Format(_T("git.exe update-index --force-remove -- \"%s\""),entry->GetGitPathString());
-			else
-				cmd.Format(_T("git.exe update-index  -- \"%s\""),entry->GetGitPathString());
-
-			if (g_Git.Run(cmd, &out, CP_UTF8))
-			{
-				CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
-				bAddSuccess = false ;
-				break;
-			}
-
-			if( entry->m_Action & CTGitPath::LOGACTIONS_REPLACED)
-				cmd.Format(_T("git.exe rm -- \"%s\""), entry->GetGitOldPathString());
-
-			g_Git.Run(cmd, &out, CP_UTF8);
-
-			nchecked++;
-
-			//checkedLists.insert(entry->GetGitPathString());
-//			checkedfiles += _T("\"")+entry->GetGitPathString()+_T("\" ");
-		}
-		else
-		{
-			//uncheckedLists.insert(entry->GetGitPathString());
-			if(entry->m_Action & CTGitPath::LOGACTIONS_ADDED)
-			{	//To init git repository, there are not HEAD, so we can use git reset command
-				cmd.Format(_T("git.exe rm -f --cache -- \"%s\""),entry->GetGitPathString());
-				if (g_Git.Run(cmd, &out, CP_UTF8))
-				{
-					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
-					bAddSuccess = false ;
-					bCloseCommitDlg=false;
-					break;
-				}
-				mgtReAddAfterCommit.AddFile(*entry);
-			}
-			else if(!( entry->m_Action & CTGitPath::LOGACTIONS_UNVER ) )
-			{
-				if (m_bCommitAmend && !m_bAmendDiffToLastCommit)
-				{
-					cmd.Format(_T("git.exe reset HEAD~2 -- \"%s\""), entry->GetGitPathString());
-				}
-				else
-				{
-					cmd.Format(_T("git.exe reset -- \"%s\""), entry->GetGitPathString());
-				}
-				if (g_Git.Run(cmd, &out, CP_UTF8))
-				{
-					/* when reset a unstage file will report error.
-					CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK|MB_ICONERROR);
-					bAddSuccess = false ;
-					bCloseCommitDlg=false;
-					break;
-					*/
-				}
-				// && !entry->IsDirectory()
-				if (m_bCommitAmend && !m_bAmendDiffToLastCommit)
-					continue;
-			}
-
-		//	uncheckedfiles += _T("\"")+entry->GetGitPathString()+_T("\" ");
-#if 0
-			if ((entry->status != Git_wc_status_unversioned)	&&
-				(entry->status != Git_wc_status_ignored))
-			{
-				nUnchecked++;
-				uncheckedLists.insert(entry->GetChangeList());
-				if (m_bRecursive)
-				{
-					// This algorithm is for the sake of simplicity of the complexity O(N?
-					for (int k=0; k<nListItems; k++)
-					{
-						const CGitStatusListCtrl::FileEntry * entryK = m_ListCtrl.GetListEntry(k);
-						if (entryK->IsChecked() && entryK->GetPath().IsAncestorOf(entry->GetPath())  )
-						{
-							// Fall back to a non-recursive commit to prevent items being
-							// committed which aren't checked although its parent is checked
-							// (property change, directory deletion, ... )
-							m_bRecursive = false;
-							break;
-						}
-					}
-				}
-			}
-#endif
-		}
-
-		if (sysProgressDlg.IsValid() && sysProgressDlg.HasUserCancelled())
-		{
-			bAddSuccess = false;
-			break;
-		}
-
-		CShellUpdater::Instance().AddPathForUpdate(*entry);
-	}
-
-	if (sysProgressDlg.IsValid())
-		sysProgressDlg.Stop();
-
-	if (bAddSuccess && m_bCreateNewBranch)
-	{
-		if (g_Git.Run(_T("git branch ") + m_sCreateNewBranch, &out, CP_UTF8))
-		{
-			MessageBox(_T("Creating new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
-			bAddSuccess = false;
-		}
-		if (g_Git.Run(_T("git checkout ") + m_sCreateNewBranch, &out, CP_UTF8))
-		{
-			MessageBox(_T("Switching to new branch failed:\n") + out, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
-			bAddSuccess = false;
-		}
-	}
-
-	if (bAddSuccess && CheckHeadDetach())
-		bAddSuccess = false;
-
-	//if(uncheckedfiles.GetLength()>0)
-	//{
-	//	cmd.Format(_T("git.exe reset -- %s"),uncheckedfiles);
-	//	g_Git.Run(cmd,&out);
-	//}
-
-	m_sBugID.Trim();
-	if (!m_sBugID.IsEmpty())
-	{
-		m_sBugID.Replace(_T(", "), _T(","));
-		m_sBugID.Replace(_T(" ,"), _T(","));
-		CString sBugID = m_ProjectProperties.sMessage;
-		sBugID.Replace(_T("%BUGID%"), m_sBugID);
-		if (m_ProjectProperties.bAppend)
-			m_sLogMessage += _T("\n") + sBugID + _T("\n");
-		else
-			m_sLogMessage = sBugID + _T("\n") + m_sLogMessage;
-	}
-
-	//if(checkedfiles.GetLength()>0)
 	if (bAddSuccess && (nchecked || m_bCommitAmend ||  CTGitPath(g_Git.m_CurrentDir).IsMergeActive()))
 	{
-	//	cmd.Format(_T("git.exe update-index -- %s"),checkedfiles);
-	//	g_Git.Run(cmd,&out);
-
 		bCloseCommitDlg = true;
 
 		CString tempfile=::GetTempFile();
 
 		CAppUtils::SaveCommitUnicodeFile(tempfile,m_sLogMessage);
-		//file.WriteString(m_sLogMessage);
 
 		CTGitPath path=g_Git.m_CurrentDir;
 
@@ -759,11 +721,11 @@ void CCommitDlg::OnOK()
 			if (IsGitSVN)
 				progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUSVNDCOMMIT)));
 			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
-			indexReCommit = progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_RECOMMIT)));
-			indexTag = progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUTAG)));
+			indexReCommit = (int)progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_COMMIT_RECOMMIT)));
+			indexTag = (int)progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUTAG)));
 		}
 
-		DWORD userResponse = progress.DoModal();
+		INT_PTR userResponse = progress.DoModal();
 
 		if(progress.m_GitStatus || userResponse == (IDC_PROGRESS_BUTTON1 + indexReCommit))
 		{
@@ -774,6 +736,8 @@ void CCommitDlg::OnOK()
 				m_cLogMessage.SetText(m_sLogMessage);
 			}
 
+			m_bCommitAmend = FALSE;
+			UpdateData(FALSE);
 			this->Refresh();
 		}
 		else if (userResponse == IDC_PROGRESS_BUTTON1 + indexTag)
@@ -843,119 +807,7 @@ void CCommitDlg::OnOK()
 		CMessageBox::Show(this->m_hWnd, IDS_ERROR_NOTHING_COMMIT, IDS_COMMIT_FINISH, MB_OK | MB_ICONINFORMATION);
 		bCloseCommitDlg=false;
 	}
-#if 0
-	if (m_pathwatcher.GetNumberOfChangedPaths() && m_bRecursive)
-	{
-		// There are paths which got changed (touched at least).
-		// We have to find out if this affects the selection in the commit dialog
-		// If it could affect the selection, revert back to a non-recursive commit
-		CTGitPathList changedList = m_pathwatcher.GetChangedPaths();
-		changedList.RemoveDuplicates();
-		for (int i=0; i<changedList.GetCount(); ++i)
-		{
-			if (changedList[i].IsAdminDir())
-			{
-				// something inside an admin dir was changed.
-				// if it's the entries file, then we have to fully refresh because
-				// files may have been added/removed from version control
-				if ((changedList[i].GetWinPathString().Right(7).CompareNoCase(_T("entries")) == 0) &&
-					(changedList[i].GetWinPathString().Find(_T("\\tmp\\"))<0))
-				{
-					m_bRecursive = false;
-					break;
-				}
-			}
-			else if (!m_ListCtrl.IsPathShown(changedList[i]))
-			{
-				// a path which is not shown in the list has changed
-				CGitStatusListCtrl::FileEntry * entry = m_ListCtrl.GetListEntry(changedList[i]);
-				if (entry)
-				{
-					// check if the changed path would get committed by a recursive commit
-					if ((!entry->IsFromDifferentRepository()) &&
-						(!entry->IsInExternal()) &&
-						(!entry->IsNested()) &&
-						(!entry->IsChecked()))
-					{
-						m_bRecursive = false;
-						break;
-					}
-				}
-			}
-		}
-	}
 
-
-	// Now, do all the adds - make sure that the list is sorted so that parents
-	// are added before their children
-	itemsToAdd.SortByPathname();
-	Git Git;
-	if (!Git.Add(itemsToAdd, &m_ProjectProperties, Git_depth_empty, FALSE, FALSE, TRUE))
-	{
-		CMessageBox::Show(m_hWnd, Git.GetLastErrorMessage(), _T("TortoiseGit"), MB_ICONERROR);
-		InterlockedExchange(&m_bBlock, FALSE);
-		Refresh();
-		return;
-	}
-
-	// Remove any missing items
-	// Not sure that this sort is really necessary - indeed, it might be better to do a reverse sort at this point
-	itemsToRemove.SortByPathname();
-	Git.Remove(itemsToRemove, TRUE);
-
-	//the next step: find all deleted files and check if they're
-	//inside a deleted folder. If that's the case, then remove those
-	//files from the list since they'll get deleted by the parent
-	//folder automatically.
-	m_ListCtrl.Block(TRUE, FALSE);
-	INT_PTR nDeleted = arDeleted.GetCount();
-	for (INT_PTR i=0; i<arDeleted.GetCount(); i++)
-	{
-		if (m_ListCtrl.GetCheck(arDeleted.GetAt(i)))
-		{
-			const CTGitPath& path = m_ListCtrl.GetListEntry(arDeleted.GetAt(i))->GetPath();
-			if (path.IsDirectory())
-			{
-				//now find all children of this directory
-				for (int j=0; j<arDeleted.GetCount(); j++)
-				{
-					if (i!=j)
-					{
-						CGitStatusListCtrl::FileEntry* childEntry = m_ListCtrl.GetListEntry(arDeleted.GetAt(j));
-						if (childEntry->IsChecked())
-						{
-							if (path.IsAncestorOf(childEntry->GetPath()))
-							{
-								m_ListCtrl.SetEntryCheck(childEntry, arDeleted.GetAt(j), false);
-								nDeleted--;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	m_ListCtrl.Block(FALSE, FALSE);
-
-	if ((nUnchecked != 0)||(bCheckedInExternal)||(bHasConflicted)||(!m_bRecursive))
-	{
-		//save only the files the user has checked into the temporary file
-		m_ListCtrl.WriteCheckedNamesToPathList(m_pathList);
-	}
-
-	// the item count is used in the progress dialog to show the overall commit
-	// progress.
-	// deleted items only send one notification event, all others send two
-	m_itemsCount = ((m_selectedPathList.GetCount() - nDeleted - itemsToRemove.GetCount()) * 2) + nDeleted + itemsToRemove.GetCount();
-
-	if ((m_bRecursive)&&(checkedLists.size() == 1))
-	{
-		// all checked items belong to the same changelist
-		// find out if there are any unchecked items which belong to that changelist
-		if (uncheckedLists.find(*checkedLists.begin()) == uncheckedLists.end())
-			m_sChangeList = *checkedLists.begin();
-	}
-#endif
 	UpdateData();
 	m_regAddBeforeCommit = m_bShowUnversioned;
 	if (!GetDlgItem(IDC_WHOLE_PROJECT)->IsWindowEnabled())
@@ -1012,7 +864,6 @@ UINT CCommitDlg::StatusThread()
 	DialogEnableWindow(IDOK, false);
 	DialogEnableWindow(IDC_SHOWUNVERSIONED, false);
 	DialogEnableWindow(IDC_WHOLE_PROJECT, false);
-	DialogEnableWindow(IDC_SELECTALL, false);
 	DialogEnableWindow(IDC_NOAUTOSELECTSUBMODULES, false);
 	GetDlgItem(IDC_EXTERNALWARNING)->ShowWindow(SW_HIDE);
 	DialogEnableWindow(IDC_EXTERNALWARNING, false);
@@ -1020,6 +871,16 @@ UINT CCommitDlg::StatusThread()
 	DialogEnableWindow(IDC_COMMIT_AMENDDIFF, FALSE);
 	// read the list of recent log entries before querying the WC for status
 	// -> the user may select one and modify / update it while we are crawling the WC
+
+	DialogEnableWindow(IDC_CHECKALL, false);
+	DialogEnableWindow(IDC_CHECKNONE, false);
+	DialogEnableWindow(IDC_CHECKUNVERSIONED, false);
+	DialogEnableWindow(IDC_CHECKVERSIONED, false);
+	DialogEnableWindow(IDC_CHECKADDED, false);
+	DialogEnableWindow(IDC_CHECKDELETED, false);
+	DialogEnableWindow(IDC_CHECKMODIFIED, false);
+	DialogEnableWindow(IDC_CHECKFILES, false);
+	DialogEnableWindow(IDC_CHECKSUBMODULES, false);
 
 	if (m_History.GetCount()==0)
 	{
@@ -1112,7 +973,6 @@ UINT CCommitDlg::StatusThread()
 	{
 		DialogEnableWindow(IDC_SHOWUNVERSIONED, true);
 		DialogEnableWindow(IDC_WHOLE_PROJECT, true);
-		DialogEnableWindow(IDC_SELECTALL, true);
 		DialogEnableWindow(IDC_NOAUTOSELECTSUBMODULES, true);
 		if (m_ListCtrl.HasChangeLists())
 			DialogEnableWindow(IDC_KEEPLISTS, true);
@@ -1145,19 +1005,31 @@ UINT CCommitDlg::StatusThread()
 			{
 				CString err(msg);
 				MessageBox(_T("Could not get HEAD hash.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
-				ExitProcess(1);
 			}
-			GitRev headRevision;
-			headRevision.GetParentFromHash(hash);
-			// do not allow to show diff to "last" revision if it has more that one parent
-			if (headRevision.ParentsCount() != 1)
+			if (!hash.IsEmpty())
 			{
-				m_bAmendDiffToLastCommit = true;
-				UpdateData(FALSE);
+				GitRev headRevision;
+				try
+				{
+					headRevision.GetParentFromHash(hash);
+				}
+				catch (char* msg)
+				{
+					CString err(msg);
+					MessageBox(_T("Could not get parent from HEAD.\nlibgit reports:\n") + err, _T("TortoiseGit"), MB_ICONERROR);
+				}
+				// do not allow to show diff to "last" revision if it has more that one parent
+				if (headRevision.ParentsCount() != 1)
+				{
+					m_bAmendDiffToLastCommit = true;
+					UpdateData(FALSE);
+				}
+				else
+					GetDlgItem(IDC_COMMIT_AMENDDIFF)->EnableWindow(TRUE);
 			}
-			else
-				GetDlgItem(IDC_COMMIT_AMENDDIFF)->EnableWindow(TRUE);
 		}
+
+		UpdateCheckLinks();
 
 		// we have the list, now signal the main thread about it
 		SendMessage(WM_AUTOLISTREADY);	// only send the message if the thread wasn't told to quit!
@@ -1224,20 +1096,6 @@ void CCommitDlg::OnCancel()
 	RestoreFiles();
 	SaveSplitterPos();
 	CResizableStandAloneDialog::OnCancel();
-}
-
-void CCommitDlg::OnBnClickedSelectall()
-{
-	m_tooltips.Pop();	// hide the tooltips
-	UINT state = (m_SelectAll.GetState() & 0x0003);
-	if (state == BST_INDETERMINATE)
-	{
-		// It is not at all useful to manually place the checkbox into the indeterminate state...
-		// We will force this on to the unchecked state
-		state = BST_UNCHECKED;
-		m_SelectAll.SetCheck(state);
-	}
-	m_ListCtrl.SelectAll(state == BST_CHECKED);
 }
 
 BOOL CCommitDlg::PreTranslateMessage(MSG* pMsg)
@@ -1332,6 +1190,7 @@ void CCommitDlg::OnBnClickedShowunversioned()
 				m_ListCtrl.GetStatus(&this->m_pathList,false,false,true);
 		}
 		m_ListCtrl.Show(dwShow, 0, true, dwShow & ~(CTGitPath::LOGACTIONS_UNVER), true);
+		UpdateCheckLinks();
 	}
 }
 
@@ -1753,8 +1612,8 @@ void CCommitDlg::OnBnClickedHistory()
 	CString sMsg = historyDlg.GetSelectedText();
 	if (sMsg != m_cLogMessage.GetText().Left(sMsg.GetLength()))
 	{
-		CString sBugID = m_ProjectProperties.GetBugIDFromLog(sMsg);
-		if (!sBugID.IsEmpty())
+		CString sBugID = m_ProjectProperties.FindBugID(sMsg);
+		if ((!sBugID.IsEmpty()) && ((GetDlgItem(IDC_BUGID)->IsWindowVisible())))
 		{
 			SetDlgItemText(IDC_BUGID, sBugID);
 		}
@@ -1791,6 +1650,7 @@ void CCommitDlg::OnBnClickedBugtraqbutton()
 	// first try the IBugTraqProvider2 interface
 	CComPtr<IBugTraqProvider2> pProvider2 = NULL;
 	HRESULT hr = m_BugTraqProvider.QueryInterface(&pProvider2);
+	bool bugIdOutSet = false;
 	if (SUCCEEDED(hr))
 	{
 		//CString common = m_ListCtrl.GetCommonURL(false).GetGitPathString();
@@ -1810,6 +1670,7 @@ void CCommitDlg::OnBnClickedBugtraqbutton()
 		{
 			if (bugIDOut)
 			{
+				bugIdOutSet = true;
 				m_sBugID = bugIDOut;
 				SysFreeString(bugIDOut);
 				SetDlgItemText(IDC_BUGID, m_sBugID);
@@ -1869,7 +1730,7 @@ void CCommitDlg::OnBnClickedBugtraqbutton()
 	if (!m_ProjectProperties.sMessage.IsEmpty())
 	{
 		CString sBugID = m_ProjectProperties.FindBugID(m_sLogMessage);
-		if (!sBugID.IsEmpty())
+		if (!sBugID.IsEmpty() && !bugIdOutSet)
 		{
 			SetDlgItemText(IDC_BUGID, sBugID);
 		}
@@ -1882,7 +1743,6 @@ void CCommitDlg::OnBnClickedBugtraqbutton()
 	SafeArrayDestroy(pathList);
 	SysFreeString(originalMessage);
 	SysFreeString(temp);
-
 }
 
 void CCommitDlg::FillPatchView()
@@ -1927,6 +1787,32 @@ LRESULT CCommitDlg::OnGitStatusListCtrlItemChanged(WPARAM /*wparam*/, LPARAM /*l
 LRESULT CCommitDlg::OnGitStatusListCtrlCheckChanged(WPARAM, LPARAM)
 {
 	UpdateOKButton();
+	return 0;
+}
+
+LRESULT CCommitDlg::OnCheck(WPARAM wnd, LPARAM)
+{
+	HWND hwnd = (HWND)wnd;
+	bool check = !(GetAsyncKeyState(VK_SHIFT) & 0x8000);
+	if (hwnd == GetDlgItem(IDC_CHECKALL)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWEVERYTHING, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKNONE)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWEVERYTHING, !check);
+	else if (hwnd == GetDlgItem(IDC_CHECKUNVERSIONED)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWUNVERSIONED, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKVERSIONED)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWVERSIONED, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKADDED)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWADDED, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKDELETED)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWREMOVED, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKMODIFIED)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWMODIFIED, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKFILES)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWFILES, check);
+	else if (hwnd == GetDlgItem(IDC_CHECKSUBMODULES)->GetSafeHwnd())
+		m_ListCtrl.Check(GITSLC_SHOWSUBMODULES, check);
+
 	return 0;
 }
 
@@ -1985,6 +1871,16 @@ void CCommitDlg::DoSize(int delta)
 	RemoveAnchor(IDC_LISTGROUP);
 	RemoveAnchor(IDC_FILELIST);
 	RemoveAnchor(IDC_TEXT_INFO);
+	RemoveAnchor(IDC_SELECTLABEL);
+	RemoveAnchor(IDC_CHECKALL);
+	RemoveAnchor(IDC_CHECKNONE);
+	RemoveAnchor(IDC_CHECKUNVERSIONED);
+	RemoveAnchor(IDC_CHECKVERSIONED);
+	RemoveAnchor(IDC_CHECKADDED);
+	RemoveAnchor(IDC_CHECKDELETED);
+	RemoveAnchor(IDC_CHECKMODIFIED);
+	RemoveAnchor(IDC_CHECKFILES);
+	RemoveAnchor(IDC_CHECKSUBMODULES);
 
 	CSplitterControl::ChangeHeight(&m_cLogMessage, delta, CW_TOPALIGN);
 	CSplitterControl::ChangeHeight(GetDlgItem(IDC_MESSAGEGROUP), delta, CW_TOPALIGN);
@@ -1997,6 +1893,16 @@ void CCommitDlg::DoSize(int delta)
 	CSplitterControl::ChangePos(GetDlgItem(IDC_COMMIT_DATEPICKER),0,delta);
 	CSplitterControl::ChangePos(GetDlgItem(IDC_COMMIT_TIMEPICKER),0,delta);
 	CSplitterControl::ChangePos(GetDlgItem(IDC_TEXT_INFO),0,delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_SELECTLABEL), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKALL), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKNONE), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKUNVERSIONED), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKVERSIONED), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKADDED), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKDELETED), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKMODIFIED), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKFILES), 0, delta);
+	CSplitterControl::ChangePos(GetDlgItem(IDC_CHECKSUBMODULES), 0, delta);
 
 	AddAnchor(IDC_MESSAGEGROUP, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_LOGMESSAGE, TOP_LEFT, TOP_RIGHT);
@@ -2010,6 +1916,16 @@ void CCommitDlg::DoSize(int delta)
 	AddAnchor(IDC_COMMIT_DATEPICKER,TOP_LEFT);
 	AddAnchor(IDC_COMMIT_TIMEPICKER,TOP_LEFT);
 	AddAnchor(IDC_TEXT_INFO,TOP_RIGHT);
+	AddAnchor(IDC_SELECTLABEL, TOP_LEFT);
+	AddAnchor(IDC_CHECKALL, TOP_LEFT);
+	AddAnchor(IDC_CHECKNONE, TOP_LEFT);
+	AddAnchor(IDC_CHECKUNVERSIONED, TOP_LEFT);
+	AddAnchor(IDC_CHECKVERSIONED, TOP_LEFT);
+	AddAnchor(IDC_CHECKADDED, TOP_LEFT);
+	AddAnchor(IDC_CHECKDELETED, TOP_LEFT);
+	AddAnchor(IDC_CHECKMODIFIED, TOP_LEFT);
+	AddAnchor(IDC_CHECKFILES, TOP_LEFT);
+	AddAnchor(IDC_CHECKSUBMODULES, TOP_LEFT);
 	ArrangeLayout();
 	// adjust the minimum size of the dialog to prevent the resizing from
 	// moving the list control too far down.
@@ -2088,6 +2004,7 @@ void CCommitDlg::OnBnClickedCommitAmend()
 
 	OnBnClickedCommitSetDateTime(); // to update the commit date and time
 
+	GetDlgItem(IDC_LOGMESSAGE)->SetFocus();
 	Refresh();
 }
 
@@ -2110,6 +2027,7 @@ void CCommitDlg::OnBnClickedWholeProject()
 			dwShow &= ~GITSLC_SHOWUNVERSIONED;
 
 		m_ListCtrl.Show(dwShow, dwShow & ~(CTGitPath::LOGACTIONS_UNVER), true);
+		UpdateCheckLinks();
 	}
 
 	SetDlgTitle();
@@ -2120,12 +2038,11 @@ void CCommitDlg::OnFocusMessage()
 	m_cLogMessage.SetFocus();
 }
 
-void CCommitDlg::OnScnUpdateUI(NMHDR *pNMHDR, LRESULT *pResult)
+void CCommitDlg::OnScnUpdateUI(NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
-	UNREFERENCED_PARAMETER(pNMHDR);
-	int pos=this->m_cLogMessage.Call(SCI_GETCURRENTPOS);
-	int line=this->m_cLogMessage.Call(SCI_LINEFROMPOSITION,pos);
-	int column=this->m_cLogMessage.Call(SCI_GETCOLUMN,pos);
+	int pos = (int)this->m_cLogMessage.Call(SCI_GETCURRENTPOS);
+	int line = (int)this->m_cLogMessage.Call(SCI_LINEFROMPOSITION,pos);
+	int column = (int)this->m_cLogMessage.Call(SCI_GETCOLUMN,pos);
 
 	CString str;
 	str.Format(_T("%d/%d"),line+1,column+1);
@@ -2296,10 +2213,23 @@ void CCommitDlg::OnBnClickedCheckNewBranch()
 
 void CCommitDlg::RestoreFiles(bool doNotAsk)
 {
-	if (m_ListCtrl.m_restorepaths.size() && (doNotAsk || CMessageBox::Show(m_hWnd, IDS_PROC_COMMIT_RESTOREFILES, IDS_APPNAME, 2, IDI_QUESTION, IDS_PROC_COMMIT_RESTOREFILES_RESTORE, IDS_PROC_COMMIT_RESTOREFILES_KEEP) == 1))
+	if (!m_ListCtrl.m_restorepaths.empty() && (doNotAsk || CMessageBox::Show(m_hWnd, IDS_PROC_COMMIT_RESTOREFILES, IDS_APPNAME, 2, IDI_QUESTION, IDS_PROC_COMMIT_RESTOREFILES_RESTORE, IDS_PROC_COMMIT_RESTOREFILES_KEEP) == 1))
 	{
 		for (std::map<CString, CString>::iterator it = m_ListCtrl.m_restorepaths.begin(); it != m_ListCtrl.m_restorepaths.end(); ++it)
 			CopyFile(it->second, g_Git.m_CurrentDir + _T("\\") + it->first, FALSE);
 		m_ListCtrl.m_restorepaths.clear();
 	}
+}
+
+void CCommitDlg::UpdateCheckLinks()
+{
+	DialogEnableWindow(IDC_CHECKALL, true);
+	DialogEnableWindow(IDC_CHECKNONE, true);
+	DialogEnableWindow(IDC_CHECKUNVERSIONED, m_ListCtrl.GetUnversionedCount() > 0);
+	DialogEnableWindow(IDC_CHECKVERSIONED, m_ListCtrl.GetItemCount() > m_ListCtrl.GetUnversionedCount());
+	DialogEnableWindow(IDC_CHECKADDED, m_ListCtrl.GetAddedCount() > 0);
+	DialogEnableWindow(IDC_CHECKDELETED, m_ListCtrl.GetDeletedCount() > 0);
+	DialogEnableWindow(IDC_CHECKMODIFIED, m_ListCtrl.GetModifiedCount() > 0);
+	DialogEnableWindow(IDC_CHECKFILES, m_ListCtrl.GetFileCount() > 0);
+	DialogEnableWindow(IDC_CHECKSUBMODULES, m_ListCtrl.GetSubmoduleCount() > 0);
 }

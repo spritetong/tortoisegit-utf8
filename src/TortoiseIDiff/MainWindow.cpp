@@ -126,11 +126,11 @@ LRESULT CALLBACK CMainWindow::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
 
             picWindow1.SetOtherPicWindow(&picWindow2);
             picWindow2.SetOtherPicWindow(&picWindow1);
+            CreateToolbar();
             // center the splitter
             RECT rect;
             GetClientRect(hwnd, &rect);
-            nSplitterPos = (rect.right-rect.left-SPLITTER_BORDER)/2;
-            CreateToolbar();
+            nSplitterPos = (rect.right-rect.left)/2;
             PositionChildren(&rect);
             picWindow1.FitImageInWindow();
             picWindow2.FitImageInWindow();
@@ -171,10 +171,10 @@ LRESULT CALLBACK CMainWindow::WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam,
                 RECT tbRect;
                 GetWindowRect(hwndTB, &tbRect);
                 LONG tbHeight = tbRect.bottom-tbRect.top-1;
-                nSplitterPos = (rect.bottom-rect.top-SPLITTER_BORDER+tbHeight)/2;
+                nSplitterPos = (rect.bottom-rect.top+tbHeight)/2;
             }
             else
-                nSplitterPos = (rect.right-rect.left-SPLITTER_BORDER)/2;
+                nSplitterPos = (rect.right-rect.left)/2;
             PositionChildren(&rect);
         }
         break;
@@ -542,11 +542,11 @@ LRESULT CMainWindow::DoCommand(int id)
                 RECT tbRect;
                 GetWindowRect(hwndTB, &tbRect);
                 LONG tbHeight = tbRect.bottom-tbRect.top-1;
-                nSplitterPos = (rect.bottom-rect.top-SPLITTER_BORDER+tbHeight)/2;
+                nSplitterPos = (rect.bottom-rect.top+tbHeight)/2;
             }
             else
             {
-                nSplitterPos = (rect.right-rect.left-SPLITTER_BORDER)/2;
+                nSplitterPos = (rect.right-rect.left)/2;
             }
             HMENU hMenu = GetMenu(*this);
             UINT uCheck = MF_BYCOMMAND;
@@ -810,7 +810,7 @@ BOOL CALLBACK CMainWindow::OpenDlgProc(HWND hwndDlg, UINT message, WPARAM wParam
             centeredrect.bottom = centeredrect.top + (childrect.bottom-childrect.top);
             SetWindowPos(hwndDlg, NULL, centeredrect.left, centeredrect.top, centeredrect.right-centeredrect.left, centeredrect.bottom-centeredrect.top, SWP_SHOWWINDOW);
 
-            if (leftpicpath.size())
+            if (!leftpicpath.empty())
                 SetDlgItemText(hwndDlg, IDC_LEFTIMAGE, leftpicpath.c_str());
             SetFocus(hwndDlg);
         }

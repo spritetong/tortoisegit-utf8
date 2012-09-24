@@ -37,16 +37,18 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SshAskPass.ico">
+    <Image Include="SshAskPass.ico">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SshAskPass.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SshAskPass.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SshAskPass.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

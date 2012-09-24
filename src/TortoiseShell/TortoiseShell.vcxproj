@@ -25,6 +25,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -32,12 +33,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -45,6 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
@@ -66,39 +70,31 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\TortoiseShell\$(Configuration)\</IntDir>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\TortoiseShell\$(Configuration)64\</IntDir>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\TortoiseShell\$(Configuration)\</IntDir>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\TortoiseShell\$(Configuration)64\</IntDir>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TortoiseGit</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TortoiseGit32</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TortoiseGit</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TortoiseGit32</TargetName>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseShell\$(Configuration)\</IntDir>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\bin\Debug64\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseShell\Debug64\</IntDir>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\bin\$(Configuration)\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseShell\$(Configuration)\</IntDir>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\Release64\bin\</OutDir>
+    <IntDir>..\..\obj\TortoiseShell\Release64\</IntDir>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -111,16 +107,20 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\..\ext\libintl\libintl3-win32\inc;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>StackFrameRuntimeCheck</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AssemblerListingLocation>..\..\obj\TortoiseShell\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\obj\TortoiseShell\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\obj\TortoiseShell\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
@@ -130,16 +130,17 @@
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>Crypt32.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)TortoiseGit32.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\ShellExt.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)TortoiseGit.pdb</ProgramDatabaseFile>
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <BaseAddress>0x5960000</BaseAddress>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
+      <DataExecutionPrevention />
+      <ImportLibrary />
       <TargetMachine>MachineX86</TargetMachine>
       <CLRUnmanagedCodeCheck>false</CLRUnmanagedCodeCheck>
     </Link>
@@ -155,16 +156,20 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\..\ext\libintl\libintl3-win32\inc;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>StackFrameRuntimeCheck</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AssemblerListingLocation>..\..\obj\TortoiseShell\Debug64/</AssemblerListingLocation>
+      <ObjectFileName>..\..\obj\TortoiseShell\Debug64/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\obj\TortoiseShell\Debug64/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
@@ -173,13 +178,16 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)TortoiseGit.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ModuleDefinitionFile>.\ShellExt.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)TortoiseGit.pdb</ProgramDatabaseFile>
+      <BaseAddress>0x5960000</BaseAddress>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
+      <DataExecutionPrevention />
+      <ImportLibrary>..\..\obj\TortoiseShell\Debug64/TortoiseGit.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -192,15 +200,20 @@
       <TypeLibraryName>.\Release/TortoiseShell.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\..\ext\libintl\libintl3-win32\inc;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AssemblerListingLocation>..\..\obj\TortoiseShell\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\obj\TortoiseShell\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\obj\TortoiseShell\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;TSVNSHELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -209,14 +222,16 @@
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>Crypt32.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)TortoiseGit32.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\ShellExt.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)TortoiseShell.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <BaseAddress>0x5960000</BaseAddress>
+      <ImportLibrary>..\..\obj\TortoiseShell\Release/TortoiseGit.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -229,15 +244,20 @@
       <TypeLibraryName>.\Release/TortoiseShell.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\..\ext\libintl\libintl3-win32\inc;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gitdll;..\Git;..\Utils;..\TortoiseShell;..\Utils\MiscUI;..\..\ext\libgit2\include;..\..\ext\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AssemblerListingLocation>..\..\obj\TortoiseShell\Release64/</AssemblerListingLocation>
+      <ObjectFileName>..\..\obj\TortoiseShell\Release64/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\obj\TortoiseShell\Release64/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DisableSpecificWarnings>4996;4018;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;TSVNSHELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -245,18 +265,21 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>Crypt32.lib;shfolder.lib;shell32.lib;comctl32.lib;ws2_32.lib;rpcrt4.lib;shlwapi.lib;wininet.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)TortoiseGit.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\ShellExt.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)TortoiseShell.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <BaseAddress>0x5960000</BaseAddress>
+      <ImportLibrary>..\..\obj\TortoiseShell\Release64/TortoiseGit.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\TGitCache\CacheInterface.cpp" />
-    <ClCompile Include="..\Utils\StringUtils.cpp" />
     <ClCompile Include="ColumnProvider.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="..\Git\Git.cpp" />
@@ -277,12 +300,14 @@
     <ClCompile Include="..\Git\SharedMutex.cpp" />
     <ClCompile Include="ShellExt.cpp" />
     <ClCompile Include="ShellExtClassFactory.cpp" />
+    <ClCompile Include="ShellObjects.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\Utils\StringUtils.cpp" />
     <ClCompile Include="..\Utils\SysInfo.cpp" />
     <ClCompile Include="..\Git\TGitPath.cpp" />
     <ClCompile Include="TortoiseGIT.cpp" />
@@ -290,65 +315,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ShellExt.def" />
-    <None Include="..\Resources\checkout.ico" />
-    <None Include="..\Resources\clippaste.ico" />
-    <None Include="..\Resources\copy.ico" />
-    <None Include="..\Resources\menuabout.ico" />
-    <None Include="..\Resources\menuadd.ico" />
-    <None Include="..\Resources\menublame.ico" />
-    <None Include="..\Resources\menucheckout.ico" />
-    <None Include="..\Resources\menucleanup.ico" />
-    <None Include="..\Resources\menucombine.ico" />
-    <None Include="..\Resources\menucommit.ico" />
-    <None Include="..\Resources\menucompare.ico" />
-    <None Include="..\Resources\menuconflict.ico" />
-    <None Include="..\Resources\menucopy.ico" />
-    <None Include="..\Resources\menucreaterepos.ico" />
-    <None Include="..\Resources\menudelete.ico" />
-    <None Include="..\Resources\menudelunversioned.ico" />
-    <None Include="..\Resources\menudiff.ico" />
-    <None Include="..\Resources\menuedit.ico" />
-    <None Include="..\Resources\menuexport.ico" />
-    <None Include="..\Resources\menuhelp.ico" />
-    <None Include="..\Resources\menuignore.ico" />
-    <None Include="..\Resources\menuimport.ico" />
-    <None Include="..\Resources\menulock.ico" />
-    <None Include="..\Resources\menulog.ico" />
-    <None Include="..\Resources\menumerge.ico" />
-    <None Include="..\Resources\menupatch.ico" />
-    <None Include="..\Resources\menupick.ico" />
-    <None Include="..\Resources\menuproperties.ico" />
-    <None Include="..\Resources\menurebase.ico" />
-    <None Include="..\Resources\menurelocate.ico" />
-    <None Include="..\Resources\menurename.ico" />
-    <None Include="..\Resources\menurepobrowse.ico" />
-    <None Include="..\Resources\menuresolve.ico" />
-    <None Include="..\Resources\menurevert.ico" />
-    <None Include="..\Resources\menusendmail.ico" />
-    <None Include="..\Resources\menusettings.ico" />
-    <None Include="..\Resources\menushowchanged.ico" />
-    <None Include="..\Resources\menuskip.ico" />
-    <None Include="..\Resources\menusquash.ico" />
-    <None Include="..\Resources\menuswitch.ico" />
-    <None Include="..\Resources\menusync.ico" />
-    <None Include="..\Resources\menuunlock.ico" />
-    <None Include="..\Resources\menuupdate.ico" />
-    <None Include="..\Resources\pull1.ico" />
-    <None Include="..\Resources\Push.ico" />
     <None Include="resourceshell.rc2" />
-    <None Include="..\Resources\tag.ico" />
-    <None Include="..\Resources\thumb_down.ico" />
-    <None Include="..\Resources\thumb_up.ico" />
-    <None Include="..\Resources\Tortoise.ico" />
-    <None Include="..\Resources\TortoiseSmall.ico" />
-    <None Include="..\Resources\tsvnmenufile.ico" />
-    <None Include="..\Resources\tsvnmenufolder.ico" />
-    <None Include="..\Resources\tsvnmenulink.ico" />
-    <None Include="..\Resources\tsvnmenumultiple.ico" />
-    <None Include="..\Resources\update1.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Utils\StringUtils.h" />
     <ClInclude Include="GITPropertyPage.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Guids.h" />
@@ -362,9 +331,68 @@
     <ClInclude Include="ShellCache.h" />
     <ClInclude Include="ShellExt.h" />
     <ClInclude Include="ShellExtClassFactory.h" />
+    <ClInclude Include="ShellObjects.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\Utils\StringUtils.h" />
     <ClInclude Include="..\Utils\SysInfo.h" />
     <ClInclude Include="..\Utils\UnicodeUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\checkout.ico" />
+    <Image Include="..\Resources\clippaste.ico" />
+    <Image Include="..\Resources\copy.ico" />
+    <Image Include="..\Resources\menuabout.ico" />
+    <Image Include="..\Resources\menuadd.ico" />
+    <Image Include="..\Resources\menublame.ico" />
+    <Image Include="..\Resources\menucheckout.ico" />
+    <Image Include="..\Resources\menucleanup.ico" />
+    <Image Include="..\Resources\menucombine.ico" />
+    <Image Include="..\Resources\menucommit.ico" />
+    <Image Include="..\Resources\menucompare.ico" />
+    <Image Include="..\Resources\menuconflict.ico" />
+    <Image Include="..\Resources\menucopy.ico" />
+    <Image Include="..\Resources\menucreaterepos.ico" />
+    <Image Include="..\Resources\menudelete.ico" />
+    <Image Include="..\Resources\menudelunversioned.ico" />
+    <Image Include="..\Resources\menudiff.ico" />
+    <Image Include="..\Resources\menuedit.ico" />
+    <Image Include="..\Resources\menuexport.ico" />
+    <Image Include="..\Resources\menuhelp.ico" />
+    <Image Include="..\Resources\menuignore.ico" />
+    <Image Include="..\Resources\menuimport.ico" />
+    <Image Include="..\Resources\menulock.ico" />
+    <Image Include="..\Resources\menulog.ico" />
+    <Image Include="..\Resources\menumerge.ico" />
+    <Image Include="..\Resources\menupatch.ico" />
+    <Image Include="..\Resources\menupick.ico" />
+    <Image Include="..\Resources\menuproperties.ico" />
+    <Image Include="..\Resources\menurebase.ico" />
+    <Image Include="..\Resources\menurelocate.ico" />
+    <Image Include="..\Resources\menurename.ico" />
+    <Image Include="..\Resources\menurepobrowse.ico" />
+    <Image Include="..\Resources\menuresolve.ico" />
+    <Image Include="..\Resources\menurevert.ico" />
+    <Image Include="..\Resources\menusendmail.ico" />
+    <Image Include="..\Resources\menusettings.ico" />
+    <Image Include="..\Resources\menushowchanged.ico" />
+    <Image Include="..\Resources\menuskip.ico" />
+    <Image Include="..\Resources\menusquash.ico" />
+    <Image Include="..\Resources\menuswitch.ico" />
+    <Image Include="..\Resources\menusync.ico" />
+    <Image Include="..\Resources\menuunlock.ico" />
+    <Image Include="..\Resources\menuupdate.ico" />
+    <Image Include="..\Resources\pull1.ico" />
+    <Image Include="..\Resources\Push.ico" />
+    <Image Include="..\Resources\tag.ico" />
+    <Image Include="..\Resources\thumb_down.ico" />
+    <Image Include="..\Resources\thumb_up.ico" />
+    <Image Include="..\Resources\Tortoise.ico" />
+    <Image Include="..\Resources\TortoiseSmall.ico" />
+    <Image Include="..\Resources\tsvnmenufile.ico" />
+    <Image Include="..\Resources\tsvnmenufolder.ico" />
+    <Image Include="..\Resources\tsvnmenulink.ico" />
+    <Image Include="..\Resources\tsvnmenumultiple.ico" />
+    <Image Include="..\Resources\update1.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resourceshell.rc" />

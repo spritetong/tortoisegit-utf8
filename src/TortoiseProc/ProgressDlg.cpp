@@ -265,7 +265,7 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 	if(wParam == MSG_PROGRESSDLG_START)
 	{
 		m_BufStart = 0 ;
-		m_Animate.Play(0,-1,-1);
+		m_Animate.Play(0, INT_MAX, INT_MAX);
 		this->DialogEnableWindow(IDOK,FALSE);
 		if (m_pTaskbarList)
 		{
@@ -296,7 +296,7 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 		m_Progress.SetPos(100);
 		this->DialogEnableWindow(IDOK,TRUE);
 
-		m_GitStatus = lParam;
+		m_GitStatus = (DWORD)lParam;
 
 		// detect crashes of perl when performing git svn actions
 		if (m_GitStatus == 0 && m_GitCmd.Find(_T(" svn ")) > 1)
@@ -304,7 +304,7 @@ LRESULT CProgressDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 			CString log;
 			m_Log.GetWindowText(log);
 			if (log.GetLength() > 18 && log.Mid(log.GetLength() - 18) == _T("perl.exe.stackdump"))
-				m_GitStatus = -1;
+				m_GitStatus = (DWORD)-1;
 		}
 
 		if(this->m_GitStatus)
@@ -521,7 +521,7 @@ void CProgressDlg::OnBnClickedOk()
 
 void CProgressDlg::OnBnClickedButton1()
 {
-	this->EndDialog(IDC_PROGRESS_BUTTON1 + this->m_ctrlPostCmd.GetCurrentEntry());
+	this->EndDialog((int)(IDC_PROGRESS_BUTTON1 + this->m_ctrlPostCmd.GetCurrentEntry()));
 }
 
 void CProgressDlg::OnClose()
@@ -557,32 +557,32 @@ void CProgressDlg::OnCancel()
 	CResizableStandAloneDialog::OnCancel();
 }
 
-void CProgressDlg::KillProcessTree(DWORD dwProcessId)
+void CProgressDlg::KillProcessTree(DWORD dwProcessId, unsigned int depth)
 {
 	// recursively kills a process tree
 	// This is not optimized, but works and isn't called very often ;)
+
+	if (!dwProcessId || depth > 20)
+		return;
+
 	PROCESSENTRY32 pe;
 	memset(&pe, 0, sizeof(PROCESSENTRY32));
 	pe.dwSize = sizeof(PROCESSENTRY32);
 
-	HANDLE hSnap = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	CAutoGeneralHandle hSnap = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
 	if (::Process32First(hSnap, &pe))
 	{
 		do
 		{
 			if (pe.th32ParentProcessID == dwProcessId)
-				KillProcessTree(pe.th32ProcessID);
+				KillProcessTree(pe.th32ProcessID, depth + 1);
 		} while (::Process32Next(hSnap, &pe));
 
 		HANDLE hProc = ::OpenProcess(PROCESS_TERMINATE, FALSE, dwProcessId);
 		if (hProc)
-		{
 			::TerminateProcess(hProc, 1);
-			::CloseHandle(hProc);
-		}
 	}
-	::CloseHandle(hSnap);
 }
 
 void CProgressDlg::InsertCRLF()
@@ -637,7 +637,7 @@ CString CCommitProgressDlg::Convert2UnionCode(char *buff, int size)
 
 	start =0;
 	if(size == -1)
-		size=strlen(buff);
+		size = (int)strlen(buff);
 
 	for(int i=0;i<size;i++)
 	{

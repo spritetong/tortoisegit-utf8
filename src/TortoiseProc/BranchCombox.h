@@ -21,7 +21,6 @@
 #include "LogDlg.h"
 #include "BrowseRefsDlg.h"
 #include "HistoryCombo.h"
-#include "HistoryCombo.h"
 #include "LoglistUtils.h"
 #include "UnicodeUtils.h"
 #include "Tooltip.h"
@@ -165,11 +164,12 @@ protected:
 				return;
 			}
 
-			tooltip.Format(_T("%s: %s\n%s: %s\n%s: %s\n%s:\n<b>%s</b>\n%s"),
+			tooltip.Format(_T("%s: %s\n%s: %s <%s>\n%s: %s\n%s:\n%s\n%s"),
 				CString(MAKEINTRESOURCE(IDS_LOG_REVISION)),
 				rev.m_CommitHash.ToString(),
 				CString(MAKEINTRESOURCE(IDS_LOG_AUTHOR)),
 				rev.GetAuthorName(),
+				rev.GetAuthorEmail(),
 				CString(MAKEINTRESOURCE(IDS_LOG_DATE)),
 				CLoglistUtils::FormatDateAndTime(rev.GetAuthorDate(), DATE_LONGDATE),
 				CString(MAKEINTRESOURCE(IDS_LOG_MESSAGE)),
@@ -202,7 +202,7 @@ protected:
 		if(this->m_RegKeyRemoteBranch.IsEmpty())
 		{
 			list.clear();
-			g_Git.GetBranchList(list,&current,CGit::BRANCH_REMOTE);
+			g_Git.GetBranchList(list, NULL, CGit::BRANCH_REMOTE);
 
 			m_ctrlRemoteBranch.AddString(list);
 

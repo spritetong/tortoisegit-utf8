@@ -228,19 +228,28 @@ BEGIN
     PUSHBUTTON      "{BugTraq}",IDC_BUGTRAQBUTTON,265,3,78,14,NOT WS_VISIBLE | WS_DISABLED
     EDITTEXT        IDC_BUGID,294,3,49,14,ES_AUTOHSCROLL
     CONTROL         "Scintilla",IDC_LOGMESSAGE,"Scintilla",WS_TABSTOP,13,32,331,72,WS_EX_STATICEDGE
-    CONTROL         "*Amend &Last Commit",IDC_COMMIT_AMEND,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,14,111,135,10
+    CONTROL         "Amend &Last Commit",IDC_COMMIT_AMEND,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,14,111,135,10
     CONTROL         "Show diff to last commit",IDC_COMMIT_AMENDDIFF,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,212,110,132,10
     CONTROL         "Set commit &date",IDC_COMMIT_SETDATETIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,125,102,10
     CONTROL         "",IDC_COMMIT_DATEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | NOT WS_VISIBLE | WS_TABSTOP,123,123,66,13,WS_EX_RIGHT
     CONTROL         "",IDC_COMMIT_TIMEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | NOT WS_VISIBLE | WS_TABSTOP | 0x8,195,123,48,13
     PUSHBUTTON      "Add &Signed-off-by",IDC_SIGNOFF,258,123,86,14
     CONTROL         "",IDC_SPLITTER,"Static",SS_OWNERDRAW,65,143,287,5,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_FILELIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,161,330,73
+    LTEXT           "Check:",IDC_SELECTLABEL,14,160,41,8
+    LTEXT           "&All",IDC_CHECKALL,55,160,14,8
+    LTEXT           "&None",IDC_CHECKNONE,72,160,18,8
+    LTEXT           "Unversioned",IDC_CHECKUNVERSIONED,92,160,41,8
+    LTEXT           "Versioned",IDC_CHECKVERSIONED,139,160,34,8
+    LTEXT           "Added",IDC_CHECKADDED,175,160,22,8
+    LTEXT           "Deleted",IDC_CHECKDELETED,200,160,26,8
+    LTEXT           "Modified",IDC_CHECKMODIFIED,229,160,28,8
+    LTEXT           "Files",IDC_CHECKFILES,264,160,15,8
+    LTEXT           "Submodules",IDC_CHECKSUBMODULES,285,160,47,8
+    CONTROL         "",IDC_FILELIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,172,330,62
     CONTROL         "Show &Unversioned Files",IDC_SHOWUNVERSIONED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,237,135,10
     LTEXT           "",IDC_STATISTICS,149,235,195,8,0,WS_EX_RIGHT
-    CONTROL         "Select/Deselect &All",IDC_SELECTALL,"Button",BS_AUTO3STATE | WS_TABSTOP,14,248,89,10
     CONTROL         "Do not autoselect submodules",IDC_NOAUTOSELECTSUBMODULES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,248,147,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,248,147,10
     RTEXT           "View Patch>>",IDC_VIEW_PATCH,259,248,76,8
     CONTROL         "&Whole Project",IDC_WHOLE_PROJECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,265,109,10
     ICON            IDI_WARNING_GENERAL,IDC_EXTERNALWARNING,323,245,20,20,SS_NOTIFY | SS_REALSIZEIMAGE | NOT WS_VISIBLE | WS_DISABLED,WS_EX_TRANSPARENT
@@ -360,9 +369,9 @@ BEGIN
     CONTROL         "Ignored",IDC_SHOWIGNOREDOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,67,270,10
     CONTROL         "Unversioned",IDC_SHOWUNVERSIONEDOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,270,10
     CONTROL         "Added",IDC_SHOWADDEDOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,269,10
-    CONTROL         "Locked (not used by TortoiseGit)",IDC_SHOWLOCKEDOVERLAY,
+    CONTROL         "Skip worktree (""Locked"" in TortoiseSVN)",IDC_SHOWLOCKEDOVERLAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,112,270,10
-    CONTROL         "Needs-lock (not used by TortoiseGit)",IDC_SHOWREADONLYOVERLAY,
+    CONTROL         "Assume valid/unchanged (""Needs-lock"" in TortoiseSVN)",IDC_SHOWREADONLYOVERLAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,127,270,10
     CONTROL         "Deleted",IDC_SHOWDELETEDOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,142,270,10
     LTEXT           "",IDC_HANDLERHINT,14,159,270,36
@@ -491,18 +500,22 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,326,58,50,14
 END
 
-IDD_CHECKFORUPDATES DIALOGEX 0, 0, 203, 147
+IDD_CHECKFORUPDATES DIALOGEX 0, 0, 500, 320
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Check For Updates"
+CAPTION "Check For Updates - TortoiseGit"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Checking if a newer version of TortoiseGit is available...",IDC_STATIC,7,7,189,19
-    LTEXT           "Your version is:",IDC_YOURVERSION,7,28,189,8
-    LTEXT           "Current version is:",IDC_CURRENTVERSION,7,40,189,8
-    LTEXT           "",IDC_CHECKRESULT,7,55,189,37,SS_NOTIFY
-    CTEXT           "Click here to go to the website",IDC_LINK,7,116,189,8,SS_CENTERIMAGE | NOT WS_VISIBLE
-    DEFPUSHBUTTON   "OK",IDOK,65,126,50,14
-    CTEXT           "Click here to view change log",IDC_LINK_CHANGE_LOG,14,103,172,8,SS_CENTERIMAGE | NOT WS_VISIBLE
+    LTEXT           "Your version is:",IDC_YOURVERSION,7,7,486,8
+    LTEXT           "Current version is:",IDC_CURRENTVERSION,7,18,486,8
+    LTEXT           "",IDC_CHECKRESULT,7,32,486,28,SS_NOTIFY
+    CTEXT           "Click here to go to the website",IDC_LINK,7,65,486,8,SS_CENTERIMAGE | NOT WS_VISIBLE
+    GROUPBOX        "Change log",IDC_GROUP_CHANGELOG,7,76,486,92
+    CONTROL         "Scintilla",IDC_LOGMESSAGE,"Scintilla",WS_TABSTOP,14,89,470,72,WS_EX_STATICEDGE
+    GROUPBOX        "Download",IDC_GROUP_DOWNLOADS,7,175,486,118
+    CONTROL         "",IDC_LIST_DOWNLOADS,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,14,188,470,76
+    CONTROL         "",IDC_PROGRESSBAR,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,14,272,385,14
+    PUSHBUTTON      "&Download",IDC_BUTTON_UPDATE,409,272,75,14,WS_DISABLED
+    DEFPUSHBUTTON   "&Close",IDOK,220,299,50,14
 END
 
 IDD_REVERT DIALOGEX 0, 0, 279, 232
@@ -994,7 +1007,7 @@ BEGIN
     GROUPBOX        "Options",IDC_GROUP_OPTION,7,89,293,61
 END
 
-IDD_PUSH DIALOGEX 0, 0, 316, 234
+IDD_PUSH DIALOGEX 0, 0, 317, 265
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Push"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -1013,16 +1026,22 @@ BEGIN
     PUSHBUTTON      "Mana&ge",IDC_REMOTE_MANAGE,254,91,40,16
     CONTROL         "Arbitrary &URL:",IDC_RD_URL,"Button",BS_AUTORADIOBUTTON,15,113,57,10
     CONTROL         "",IDC_URL,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,76,111,218,64
-    GROUPBOX        "Options",IDC_OPTION_GROUP,7,142,295,63
+    GROUPBOX        "Options",IDC_OPTION_GROUP,7,142,295,96
     CONTROL         "&Force Overwrite Existing Branch (May discard changes)",IDC_FORCE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,154,279,10
     CONTROL         "Use Thin &Pack (For slow network connections)",IDC_PACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,165,279,10
     CONTROL         "Include &Tags",IDC_TAGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,178,279,10
     CONTROL         "&Autoload Putty Key",IDC_PUTTYKEY_AUTOLOAD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,190,279,10
-    DEFPUSHBUTTON   "OK",IDOK,143,213,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,213,50,14
-    PUSHBUTTON      "Help",IDHELP,258,213,50,14
+    CONTROL         "&Set upstream/track remote branch",IDC_PROC_PUSH_SET_UPSTREAM,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,201,279,10
+    CONTROL         "Always push to the selected remote archive for this local branch",IDC_PROC_PUSH_SET_PUSHREMOTE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,212,279,10
+    CONTROL         "Always push to the selected remote branch for this local branch",IDC_PROC_PUSH_SET_PUSHBRANCH,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,223,279,10
+    DEFPUSHBUTTON   "OK",IDOK,143,244,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,201,244,50,14
+    PUSHBUTTON      "Help",IDHELP,258,244,50,14
 END
 
 IDD_SVNDCOMMITTYPE DIALOGEX 0, 0, 242, 90
@@ -1142,7 +1161,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Output Directory",IDC_GROUP_DIR,7,7,307,34
     LTEXT           "Directory:",IDC_STATIC,18,22,33,8
-    CONTROL         "",IDC_COMBOBOXEX_DIR,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,62,20,218,30
+    CONTROL         "",IDC_COMBOBOXEX_DIR,"ComboBoxEx32",CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,62,20,218,88
     PUSHBUTTON      "...",IDC_BUTTON_DIR,287,20,15,14
     GROUPBOX        "Version",IDC_GROUP_VERSION,7,46,307,96
     CONTROL         "Since",IDC_RADIO_SINCE,"Button",BS_AUTORADIOBUTTON,16,63,70,10
@@ -1443,8 +1462,9 @@ BEGIN
     PUSHBUTTON      "SubModule",IDC_BUTTON_SUBMODULE,166,215,87,14
     PUSHBUTTON      "&Apply Patch",IDC_BUTTON_APPLY,260,215,71,14
     PUSHBUTTON      "&Email Patch",IDC_BUTTON_EMAIL,338,215,50,14
-    PUSHBUTTON      "&Commit",IDC_BUTTON_COMMIT,7,232,73,14
-    LTEXT           "",IDC_STATIC_STATUS,10,247,211,8
+    PUSHBUTTON      "Show &log",IDC_LOG,7,232,73,14
+    PUSHBUTTON      "&Commit",IDC_BUTTON_COMMIT,89,232,70,14
+    LTEXT           "",IDC_STATIC_STATUS,10,248,251,8
     PUSHBUTTON      "OK",IDOK,281,241,50,14
     PUSHBUTTON      "Help",IDHELP,338,241,50,14
 END
@@ -1562,12 +1582,14 @@ BEGIN
     LTEXT           "Submodule",IDC_SUBMODULEDIFFTITLE,7,7,287,8
     GROUPBOX        "From",IDC_FROMGROUP,7,20,288,45
     LTEXT           "Revision:",IDC_STATIC,15,32,33,8
-    EDITTEXT        IDC_FROMHASH,52,32,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_FROMHASH,52,32,168,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    PUSHBUTTON      "Show log",IDC_LOG,226,32,60,12
     LTEXT           "Subject:",IDC_STATIC,15,49,33,8
     EDITTEXT        IDC_FROMSUBJECT,52,49,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     GROUPBOX        "To",IDC_TOGROUP,7,69,288,45
     LTEXT           "Revision:",IDC_STATIC,15,82,33,8
-    EDITTEXT        IDC_TOHASH,52,82,234,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_TOHASH,52,82,168,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    PUSHBUTTON      "Show log",IDC_LOG2,226,82,60,12
     LTEXT           "Subject:",IDC_STATIC,15,96,33,8
     EDITTEXT        IDC_TOSUBJECT,52,96,234,12,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
@@ -1594,18 +1616,19 @@ BEGIN
     PUSHBUTTON      "Help",IDHELP,204,130,50,14,WS_DISABLED
 END
 
-IDD_SUBMODULE_UPDATE DIALOGEX 0, 0, 242, 77
+IDD_SUBMODULE_UPDATE DIALOGEX 0, 0, 242, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Submodule Update"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Submodule Update Options",IDC_GROUP_INFO,7,7,225,41
+    GROUPBOX        "Submodule Update Options",IDC_GROUP_INFO,7,7,225,54
     CONTROL         "&Initialize submodules (--init)",IDC_CHECK_SUBMODULE_INIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,17,210,13
     CONTROL         "&Recursive",IDC_CHECK_SUBMODULE_RECURSIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,31,210,13
-    DEFPUSHBUTTON   "OK",IDOK,69,55,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,125,55,50,14
-    PUSHBUTTON      "Help",IDHELP,182,55,50,14,WS_DISABLED
+    CONTROL         "&Force",IDC_FORCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,44,210,13
+    DEFPUSHBUTTON   "OK",IDOK,69,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,65,50,14
+    PUSHBUTTON      "Help",IDHELP,182,65,50,14,WS_DISABLED
 END
 
 IDD_DIALOG_BROWSE_REFS DIALOGEX 0, 0, 465, 255
@@ -1635,6 +1658,17 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,63,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,178,63,50,14
     PUSHBUTTON      "Help",IDHELP,243,63,50,14
+END
+
+IDD_DELETEREMOTETAG DIALOGEX 0, 0, 189, 102
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Delete remote tag - TortoiseGit"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "&Tags:",IDC_STATIC,7,7,43,13
+    CONTROL         "",IDC_LIST_TAGS,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,53,7,129,67
+    DEFPUSHBUTTON   "&Delete",IDOK,54,81,59,14,WS_DISABLED
+    PUSHBUTTON      "Close",IDCANCEL,123,81,59,14
 END
 
 
@@ -1833,9 +1867,11 @@ BEGIN
     IDD_CHECKFORUPDATES, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 196
+        RIGHTMARGIN, 493
+        VERTGUIDE, 14
+        VERTGUIDE, 484
         TOPMARGIN, 7
-        BOTTOMMARGIN, 140
+        BOTTOMMARGIN, 313
     END
 
     IDD_REVERT, DIALOG
@@ -2116,14 +2152,14 @@ BEGIN
     IDD_PUSH, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 306
+        RIGHTMARGIN, 307
         VERTGUIDE, 15
         VERTGUIDE, 76
         VERTGUIDE, 271
         VERTGUIDE, 294
         VERTGUIDE, 302
         TOPMARGIN, 7
-        BOTTOMMARGIN, 227
+        BOTTOMMARGIN, 258
     END
 
     IDD_SVNDCOMMITTYPE, DIALOG
@@ -2392,7 +2428,7 @@ BEGIN
         RIGHTMARGIN, 232
         VERTGUIDE, 15
         TOPMARGIN, 7
-        BOTTOMMARGIN, 69
+        BOTTOMMARGIN, 79
     END
 
     IDD_DIALOG_BROWSE_REFS, DIALOG
@@ -2413,6 +2449,14 @@ BEGIN
         VERTGUIDE, 44
         TOPMARGIN, 7
         BOTTOMMARGIN, 77
+    END
+
+    IDD_DELETEREMOTETAG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 182
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2565,7 +2609,7 @@ BEGIN
     IDS_PROGRS_TITLE_EXPORT "Export"
     IDS_PROGRS_TITLE_MERGE  "Merge"
     IDS_PROGRS_TITLE_COPY   "Copy"
-    IDS_PROGRS_MIMETYPE     "Mime type"
+    IDS_PROC_DOWNLOAD       "&Download"
     IDS_ERR_MISSINGVALUE    "This field is required and must not be empty."
     IDS_STATUSLIST_GROUP_NOTVERSIONEDFILES "Not Versioned Files"
     IDS_STATUSLIST_GROUP_IGNOREDFILES "Ignored Files"
@@ -2609,7 +2653,7 @@ BEGIN
     IDS_LOG_FILTER_REFNAME  "Refname"
     IDS_ERR_NOTENOUGHMEMORY "Not enough memory to complete operation."
     IDS_ERR_MUSTBEURL       "This is not a valid URL.\nPlease enter an URL here."
-    IDS_ERR_INVALIDREVNOWC  "Invalid revision number! Valid revisions are:\nHEAD\npositive decimal numbers,\ndates in one of the following example forms:\n{2002-02-17}\n{15:30}\n{15:30:00.200000}\n{""2002-02-17 15:30""}\n{""2002-02-17 15:30 +0230""}\n{2002-02-17T15:30}\n{2002-02-17T15:30Z}\n{2002-02-17T15:30-04:00}\n{20020217T1530}\n{20020217T1530Z}\n{20020217T1530-0500}"
+    IDS_CHECKUPDATE_DESTFOLDER "Show destination folder"
     IDS_ERR_MERGEIDENTICALREVISIONS 
                             "Merging requires different revisions or different URLs in 'From:' and 'To:'"
     IDS_ERR_NOHOOKTYPESPECIFIED "Please select a hook type"
@@ -2618,12 +2662,13 @@ BEGIN
     IDS_ERR_NOHOOKCOMMANDPECIFIED "Please enter a hook script to execute."
     IDS_ERR_HOOKFAILED      "The hook script returned an error:\n%s"
     IDS_PROC_BROWSEREFS_DELETETAG "Delete tag"
-    IDS_ERR_INVALIDREVRANGE "Invalid revision range!\nValid revisions are numbers and HEAD, separated by commas.\nA range can be specified with a dash.\nExample: 2-5,7,10,44-70,300-HEAD"
+    IDS_ERR_FAILEDUPDATEDOWNLOAD 
+                            "Not all files could be downloaded and verified."
     IDS_ERR_NOPREVREVISION  "Could not determine the last committed revision!"
     IDS_PROC_CLEANUPFINISHED_FAILED 
                             "Cleanup failed to process the following paths:\n%s"
     IDS_ERR_TWOLOGPARAMS    "Both /logmsg and /logmsgfile were specified!\nOnly one of those can be specified."
-    IDS_ERR_TEXTVIEWSTART   "Could not start text viewer!\n<hr=100%%>\n%s"
+    IDS_ERR_TEXTVIEWSTART   "Could not start text viewer!\n\n%s"
     IDS_ERR_FAILEDISSUETRACKERCOM 
                             "Failed to start the issue tracker COM provider '%s'.\n%s"
 END
@@ -2656,18 +2701,18 @@ BEGIN
     IDS_SETTINGS_RELATIVETIMES_TT 
                             "Check to show relative times in log messages"
     IDS_PROC_BROWSEREFS_DELETEBRANCHES "Delete %d branches"
-    IDS_ERR_EXTDIFFSTART    "Could not start external diff program!\n<hr=100%%>\n%s"
-    IDS_ERR_NOCOMMAND       "No command specified!\n<hr=100%>\nTortoiseProc.exe is used by the Shell extension and should not be called directly!"
+    IDS_ERR_EXTDIFFSTART    "Could not start external diff program!\n\n%s"
+    IDS_ERR_NOCOMMAND       "No command specified!\n\nTortoiseProc.exe is used by the Shell extension and should not be called directly!"
     IDS_ERR_NOCOMMANDVALUE  "No command value specified!"
     IDS_ERR_NOSTATUS        "Could not get the status!"
-    IDS_ERR_CLEANUP         "Subversion reported an error while doing a cleanup!\n<hr=100%%>\n%s"
+    IDS_LOG_SUBMODULE       "Show log of submodule"
     IDS_ERR_NOURLOFFILE     "Could not retrieve URL of the file!\n%s"
-    IDS_ERR_WCCHANGED       "The working tree has changed!\n<hr=100%>\nPlease commit your changes first or revert."
-    IDS_ERR_COPYFILES       "Could not copy the files!\n<hr=100%%>\n%s"
-    IDS_ERR_EXTMERGESTART   "Could not start external merge program!\n<hr=100%%>\n%s"
+    IDS_PROC_INSTALL        "&Install"
+    IDS_ERR_COPYFILES       "Could not copy the files!\n\n%s"
+    IDS_ERR_EXTMERGESTART   "Could not start external merge program!\n\n%s"
     IDS_STATUSLIST_GROUP_DIFFWITHPARENT "Diff with parent %d"
     IDS_ERR_FAILEDIGNOREPROPERTY "Could not add %s to the ignore list!"
-    IDS_ERR_DIFFVIEWSTART   "Could not start diff viewer!\n<hr=100%%>\n%s"
+    IDS_ERR_DIFFVIEWSTART   "Could not start diff viewer!\n\n%s"
     IDS_PROGS_TITLE_CREATETAG "Create Tag"
     IDS_PROC_LOG_FETCHINGFILES "Fetching changed files..."
 END
@@ -2729,8 +2774,7 @@ BEGIN
     IDS_CHSTAT_FILECOL      "File"
     IDS_CHSTAT_WCCOL        "Local status"
     IDS_CHSTAT_REPOCOL      "Remote status"
-    IDS_WARN_CONFIRM_MOVE_SPECIAL_DIRECTORY 
-                            "One of the paths you are attempting to move appears to be a special path\n(one of 'branches', 'tags' or 'trunk').\n\nAre you sure you want to move the selected paths?"
+    IDS_STATUSLIST_SKIPWORKTREE "Skip worktree"
     IDS_SETTINGS_BUGTRAQ_PATHCOL "Path"
     IDS_SETTINGS_BUGTRAQ_PROVIDERCOL "Provider"
     IDS_SETTINGS_BUGTRAQ_PARAMETERSCOL "Parameters"
@@ -2957,7 +3001,7 @@ BEGIN
     IDS_CHECKNEWER_YOURUPTODATE 
                             "You already have the latest version installed."
     IDS_CHECKNEWER_NEWERVERSIONAVAILABLE 
-                            "A newer version is available. Please go to http://code.google.com/p/tortoisegit and download the current version! Click _here_ to go directly to our website."
+                            "A newer version is available. Please download the current version!"
     IDS_CHECKNEWER_NETERROR "Could not check for a newer version!"
 END
 
@@ -3001,8 +3045,8 @@ BEGIN
                             "Clears the stored authentication.\r\nYou will have to enter your username/password again for all repositories."
     IDS_SETTINGS_ICONSETCHANGED 
                             "You've changed the icon set from <i>%s</i> to <i>%s</i>.\nThat change won't take effect until you restart your computer or logoff and logon again!"
-    IDS_SETTINGS_READONLYNAME "readonly"
-    IDS_SETTINGS_LOCKEDNAME "locked"
+    IDS_SETTINGS_READONLYNAME "assume-valid"
+    IDS_SETTINGS_LOCKEDNAME "skip-worktree"
     IDS_SETTINGS_AUTOCOMPLETION_TT 
                             "Auto-complete suggests words (usually class or member names)\r\nfrom the files that you have changed as you type a log message."
     IDS_SETTINGS_AUTOCOMPLETIONTIMEOUT_TT 
@@ -3638,7 +3682,7 @@ BEGIN
                             "If checked --track is passed to git, if unchecked --no-track is passed to git, else neither --track nor --no-track is passed to git (see help)."
     IDS_STATUSLIST_FROM     "(from %s)"
     IDS_LASTAUTHOR          "Last Author"
-    IDS_B_T_NOT_UNIQUE      "The entered source ref is ambiguous. You have to make it unique (e.g. by adding ""refs/heads/"" as a prefix for branches or ""refs/tags/"" for tags)!"
+    IDS_B_T_NOT_UNIQUE      "The entered source ref is ambiguous.\nYou have to make it unique (e.g. by adding ""refs/heads/"" as a prefix for branches or ""refs/tags/"" for tags)!"
     IDS_B_EXISTS            "A branch with this name already exists."
     IDS_T_EXISTS            "A tag with this name already exists."
     IDS_B_DELETEORDIFFERENTNAME 
@@ -3657,6 +3701,18 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PROC_PUSHFETCH_ALLREMOTES "- all -"
+    IDS_PROC_SYNC_NOFASTFORWARD 
+                            "The local branch ""%s"" does not fast-forward to the remote branch ""%s""."
+    IDS_PUSHDLG_PUSHBRANCH_TT 
+                            "Sets the remote branch as the ""pushbranch"" for the selected local branch."
+    IDS_PUSHDLG_PUSHREMOTE_TT 
+                            "Sets the remote as the ""pushremote"" for the selected local branch."
+    IDS_STATUSLIST_COLLASTMODIFIED "Last Modified"
+    IDS_STATUSLIST_COLSIZE  "Size"
+    IDS_DELETEREMOTETAG     "Delete remote tags..."
+    IDS_REVREVERTED         "Revision(s) reverted. All changes are integrated into your working tree now."
+    IDS_DESCRIPTION         "Description"
+    IDS_PROC_BROWSEREFS_EDITDESCRIPTION "Edit description"
 END
 
 #endif    // Englisch (USA) resources

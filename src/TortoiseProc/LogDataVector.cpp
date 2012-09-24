@@ -161,7 +161,7 @@ int CLogDataVector::ParserFromLog(CTGitPath *path ,int count ,int infomask,CStri
 
 		this->push_back(pRev->m_CommitHash);
 
-		m_HashMap[rev.m_CommitHash]=size()-1;
+		m_HashMap[rev.m_CommitHash] = (int)size() - 1;
 
 	}
 
@@ -254,12 +254,12 @@ void CLogDataVector::setLane(CGitHash& sha)
 //	const ShaString& ss = toPersistentSha(sha, ba);
 //	const ShaVect& shaVec(fh->revOrder);
 
-	for (int cnt = size(); i < cnt; ++i) {
+	for (int cnt = (int)size(); i < cnt; ++i) {
 
 		GitRev* r = & this->GetGitRevAt(i);
 		CGitHash curSha=r->m_CommitHash;
 
-		if (r->m_Lanes.size() == 0)
+		if (r->m_Lanes.empty())
 			updateLanes(*r, *l, curSha);
 
 		if (curSha == sha)

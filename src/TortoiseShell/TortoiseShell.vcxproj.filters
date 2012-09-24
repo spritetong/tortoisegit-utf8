@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{6011f37f-3868-4ee7-b01a-4d6cf86ea13a}</UniqueIdentifier>
+      <UniqueIdentifier>{55331b91-e4c2-48ac-a61d-57a6532af11c}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{a735c781-6c06-4aa8-b2d3-166b61a7c975}</UniqueIdentifier>
+      <UniqueIdentifier>{df1b07f7-9da8-44c7-aea5-f69baf69d1d1}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{4d63b24e-364a-497c-a127-015c51d55244}</UniqueIdentifier>
+      <UniqueIdentifier>{caf2aed0-3f77-4f14-b90c-879966ff87f3}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
     </Filter>
   </ItemGroup>
@@ -81,6 +81,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Utils\StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\Utils\SysInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,7 +96,7 @@
     <ClCompile Include="..\Utils\UnicodeUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Utils\StringUtils.cpp">
+    <ClCompile Include="ShellObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,172 +104,7 @@
     <None Include="ShellExt.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\Resources\checkout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\clippaste.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\copy.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuabout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuadd.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menublame.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucheckout.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucleanup.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucombine.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucommit.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucompare.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuconflict.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucopy.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menucreaterepos.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudelete.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudelunversioned.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menudiff.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuedit.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuexport.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuhelp.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuignore.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuimport.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menulock.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menulog.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menumerge.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menupatch.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menupick.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuproperties.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurebase.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurelocate.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurename.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurepobrowse.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuresolve.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menurevert.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menusendmail.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menusettings.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menushowchanged.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuskip.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menusquash.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuswitch.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menusync.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuunlock.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\menuupdate.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\pull1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Push.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="resourceshell.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tag.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\thumb_down.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\thumb_up.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\Tortoise.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\TortoiseSmall.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenufile.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenufolder.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenulink.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\tsvnmenumultiple.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Resources\update1.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -313,15 +151,185 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Utils\StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Utils\SysInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Utils\UnicodeUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\StringUtils.h">
+    <ClInclude Include="ShellObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\checkout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\clippaste.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\copy.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuabout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuadd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menublame.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucheckout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucleanup.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucombine.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucommit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucompare.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuconflict.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucopy.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menucreaterepos.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudelete.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudelunversioned.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menudiff.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuedit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuexport.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuhelp.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuignore.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuimport.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menulock.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menulog.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menumerge.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menupatch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menupick.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuproperties.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurebase.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurelocate.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurename.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurepobrowse.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuresolve.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menurevert.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menusendmail.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menusettings.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menushowchanged.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuskip.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menusquash.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuswitch.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menusync.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuunlock.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\menuupdate.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\pull1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Push.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tag.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\thumb_down.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\thumb_up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\Tortoise.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\TortoiseSmall.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenufile.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenufolder.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenulink.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\tsvnmenumultiple.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Resources\update1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resourceshell.rc">

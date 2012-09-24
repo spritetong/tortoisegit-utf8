@@ -18,7 +18,6 @@
 //
 #include "StdAfx.h"
 #include "BisectCommand.h"
-#include "BisectStartDlg.h"
 #include "AppUtils.h"
 #include "ProgressDlg.h"
 #include "MessageBox.h"
@@ -30,52 +29,17 @@ bool BisectCommand::Execute()
 
 	if (this->parser.HasKey(_T("start")) && !path.IsBisectActive())
 	{
-		if(!g_Git.CheckCleanWorkTree())
-		{
-			if (CMessageBox::Show(NULL, IDS_ERROR_NOCLEAN_STASH, IDS_APPNAME, MB_YESNO|MB_ICONINFORMATION) == IDYES)
-			{
-				CString cmd, out;
-				cmd = _T("git.exe stash");
-				if (g_Git.Run(cmd, &out, CP_UTF8))
-				{
-					CMessageBox::Show(NULL, out, _T("TortoiseGit"), MB_OK);
-					return false;
-				}
-			}
-			else
-				return false;
-		}
+		bool autoClose = false;
+		if (parser.HasVal(_T("closeonend")))
+			autoClose = !!parser.GetLongVal(_T("closeonend"));
 
-		CBisectStartDlg bisectStartDlg;
-		if (bisectStartDlg.DoModal() == IDOK)
-		{
-			CProgressDlg progress;
-			theApp.m_pMainWnd = &progress;
-			if (parser.HasVal(_T("closeonend")))
-				progress.m_bAutoCloseOnSuccess = !!parser.GetLongVal(_T("closeonend"));
-			progress.m_GitCmdList.push_back(_T("git.exe bisect start"));
-			progress.m_GitCmdList.push_back(_T("git.exe bisect good ") + bisectStartDlg.m_LastGoodRevision);
-			progress.m_GitCmdList.push_back(_T("git.exe bisect bad ") + bisectStartDlg.m_FirstBadRevision);
+		CString lastGood, firstBad;
+		if (parser.HasKey(_T("good")))
+			lastGood = parser.GetVal(_T("good"));
+		if (parser.HasKey(_T("bad")))
+			firstBad = parser.GetVal(_T("bad"));
 
-			if (path.HasSubmodules())
-				progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_SUBMODULESUPDATE)));
-
-			int ret = progress.DoModal();
-			if (path.HasSubmodules() && ret == IDC_PROGRESS_BUTTON1)
-			{
-				CString sCmd;
-				sCmd.Format(_T("/command:subupdate /bkpath:\"%s\""), g_Git.m_CurrentDir);
-
-				CAppUtils::RunTortoiseProc(sCmd);
-				return true;
-			}
-			else if (ret == IDOK)
-				return true;	
-		}
-		else
-		{
-			return false;
-		}
+		return CAppUtils::BisectStart(lastGood, firstBad, autoClose);
 	}
 	else if ((this->parser.HasKey(_T("good")) || this->parser.HasKey(_T("bad")) || this->parser.HasKey(_T("reset"))) && path.IsBisectActive())
 	{
@@ -105,9 +69,9 @@ bool BisectCommand::Execute()
 
 		int reset = -1;
 		if (!this->parser.HasKey(_T("reset")))
-			reset = progress.m_PostCmdList.Add(_T("Bisect reset"));
+			reset = (int)progress.m_PostCmdList.Add(_T("Bisect reset"));
 
-		int ret = progress.DoModal();
+		INT_PTR ret = progress.DoModal();
 		if (path.HasSubmodules() && ret == IDC_PROGRESS_BUTTON1)
 		{
 			CString sCmd;

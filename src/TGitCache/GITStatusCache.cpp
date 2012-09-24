@@ -1,7 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
 // External Cache Copyright (C) 2005-2006,2008,2010 - TortoiseSVN
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -107,7 +107,7 @@ void CGitStatusCache::Create()
 							m_pInstance->m_directoryCache[KeyPath] = cacheddir;
 							// only add the path to the watch list if it is versioned
 							if ((cacheddir->GetCurrentFullStatus() != git_wc_status_unversioned)&&(cacheddir->GetCurrentFullStatus() != git_wc_status_none))
-								m_pInstance->watcher.AddPath(KeyPath);
+								m_pInstance->watcher.AddPath(KeyPath, false);
 							// do *not* add the paths for crawling!
 							// because crawled paths will trigger a shell
 							// notification, which makes the desktop flash constantly
@@ -127,17 +127,14 @@ exit:
 	if (pFile)
 		fclose(pFile);
 	DeleteFile(path2);
+	m_pInstance->watcher.ClearInfoMap();
 	ATLTRACE("cache loaded from disk successfully!\n");
 	return;
 error:
 	fclose(pFile);
 	DeleteFile(path2);
-	if (m_pInstance)
-	{
-		m_pInstance->Stop();
-		Sleep(100);
-	}
-	delete m_pInstance;
+	m_pInstance->watcher.ClearInfoMap();
+	Destroy();
 	m_pInstance = new CGitStatusCache;
 	ATLTRACE("cache not loaded from disk\n");
 }
@@ -189,13 +186,7 @@ bool CGitStatusCache::SaveCache()
 	return true;
 error:
 	fclose(pFile);
-	if (m_pInstance)
-	{
-		m_pInstance->Stop();
-		Sleep(100);
-	}
-	delete m_pInstance;
-	m_pInstance = NULL;
+	Destroy();
 	DeleteFile(path);
 	return false;
 }
@@ -206,9 +197,9 @@ void CGitStatusCache::Destroy()
 	{
 		m_pInstance->Stop();
 		Sleep(100);
+		delete m_pInstance;
+		m_pInstance = NULL;
 	}
-	delete m_pInstance;
-	m_pInstance = NULL;
 }
 
 void CGitStatusCache::Stop()
@@ -246,18 +237,15 @@ CGitStatusCache::CGitStatusCache(void)
 
 CGitStatusCache::~CGitStatusCache(void)
 {
-	for (CCachedDirectory::CachedDirMap::iterator I = m_pInstance->m_directoryCache.begin(); I != m_pInstance->m_directoryCache.end(); ++I)
-	{
-		delete I->second;
-		I->second = NULL;
-	}
+	CAutoWriteLock writeLock(m_guard);
+	ClearCache();
 }
 
 void CGitStatusCache::Refresh()
 {
 	m_shellCache.ForceRefresh();
 //	m_pInstance->m_svnHelp.ReloadConfig();
-	if (m_pInstance->m_directoryCache.size())
+	if (!m_pInstance->m_directoryCache.empty())
 	{
 		CCachedDirectory::CachedDirMap::iterator I = m_pInstance->m_directoryCache.begin();
 		for (/* no init */; I != m_pInstance->m_directoryCache.end(); ++I)
@@ -337,7 +325,7 @@ bool CGitStatusCache::RemoveTimedoutBlocks()
 			toRemove.push_back(it->first);
 		}
 	}
-	if (toRemove.size())
+	if (!toRemove.empty())
 	{
 		for (std::vector<CTGitPath>::const_iterator it = toRemove.begin(); it != toRemove.end(); ++it)
 		{
@@ -367,9 +355,9 @@ bool CGitStatusCache::RemoveCacheForDirectory(CCachedDirectory * cdir)
 {
 	if (cdir == NULL)
 		return false;
-	AssertWriting();
+
 	typedef std::map<CTGitPath, git_wc_status_kind>  ChildDirStatus;
-	if (cdir->m_childDirectories.size())
+	if (!cdir->m_childDirectories.empty())
 	{
 		ChildDirStatus::iterator it = cdir->m_childDirectories.begin();
 		for (; it != cdir->m_childDirectories.end(); )
@@ -396,7 +384,6 @@ void CGitStatusCache::RemoveCacheForPath(const CTGitPath& path)
 	CCachedDirectory::ItDir itMap;
 	CCachedDirectory * dirtoremove = NULL;
 
-	AssertWriting();
 	itMap = m_directoryCache.find(path);
 	if ((itMap != m_directoryCache.end())&&(itMap->second))
 		dirtoremove = itMap->second;
@@ -424,22 +411,18 @@ CCachedDirectory * CGitStatusCache::GetDirectoryCacheEntry(const CTGitPath& path
 		// that means that path got invalidated and needs to be treated
 		// as if it never was in our cache. So we remove the last remains
 		// from the cache and start from scratch.
-		AssertLock();
-		if (!IsWriter())
-		{
-			// upgrading our state to writer
-			ATLTRACE("trying to upgrade the state to \"Writer\"\n");
-			Done();
-			ATLTRACE("Returned \"Reader\" state\n");
-			WaitToWrite();
-			ATLTRACE("Got \"Writer\" state now\n");
-		}
+
+		CAutoWriteLock writeLock(m_guard);
 		// Since above there's a small chance that before we can upgrade to
 		// writer state some other thread gained writer state and changed
 		// the data, we have to recreate the iterator here again.
 		itMap = m_directoryCache.find(path);
 		if (itMap!=m_directoryCache.end())
+		{
+			delete itMap->second;
+			itMap->second = NULL;
 			m_directoryCache.erase(itMap);
+		}
 		// We don't know anything about this directory yet - lets add it to our cache
 		// but only if it exists!
 		if (path.Exists() && m_shellCache.IsPathAllowed(path.GetWinPath()) && !g_GitAdminDir.IsAdminDirPath(path.GetWinPath()))
@@ -460,23 +443,9 @@ CCachedDirectory * CGitStatusCache::GetDirectoryCacheEntry(const CTGitPath& path
 					CString gitdir;
 					if ((!path.IsEmpty())&&(path.HasAdminDir(&gitdir))&&isAddToWatch)
 					{
-						bool isVersion = true;
-						CString subpaths;
-						if(subpaths.GetLength() > gitdir.GetLength())
-						{
-							if(subpaths[gitdir.GetLength()] == _T('\\'))
-								subpaths=subpaths.Right(subpaths.GetLength() - gitdir.GetLength()-1);
-							else
-								subpaths=subpaths.Right(subpaths.GetLength() - gitdir.GetLength());
-						}
-						CGitStatusCache::Instance().m_GitStatus.IsUnderVersionControl(gitdir, subpaths, true, &isVersion);
-
 						/* Just watch version path */
-						if(isVersion)
-						{
-							watcher.AddPath(gitdir);
-							watcher.AddPath(path);
-						}
+						watcher.AddPath(gitdir);
+						watcher.AddPath(path);
 					}
 					return cdir;
 				}

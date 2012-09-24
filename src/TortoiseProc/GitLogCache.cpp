@@ -223,7 +223,7 @@ int CLogCache::FetchCacheIndex(CString GitDir)
 
 }
 
-int CLogCache::SaveOneItem(GitRev &Rev,ULONGLONG offset)
+int CLogCache::SaveOneItem(GitRev &Rev, LONG offset)
 {
 	if(!Rev.m_IsDiffFiles)
 		return -1;
@@ -296,21 +296,19 @@ int CLogCache::LoadOneItem(GitRev &Rev,ULONGLONG offset)
 	offset += sizeof(SLogCacheRevItemHeader);
 	fileheader =(SLogCacheRevFileHeader *)(this->m_pCacheData + offset);
 
-	for(int i=0;i<header->m_FileCount;i++)
+	for (DWORD i = 0; i < header->m_FileCount; i++)
 	{
 		CTGitPath path;
-		CString file,oldfile;
+		CString oldfile;
 		path.Reset();
 
 		if(!CheckHeader(fileheader))
 			return -1;
 
-		_tcsncpy(file.GetBufferSetLength(fileheader->m_FileNameSize), fileheader->m_FileName, fileheader->m_FileNameSize);
+		CString file(fileheader->m_FileName, fileheader->m_FileNameSize);
 		if(fileheader->m_OldFileNameSize)
 		{
-			_tcsncpy(oldfile.GetBufferSetLength(fileheader->m_OldFileNameSize),
-					fileheader->m_FileName+fileheader->m_FileNameSize,
-					fileheader->m_OldFileNameSize);
+			oldfile = CString(fileheader->m_FileName + fileheader->m_FileNameSize, fileheader->m_OldFileNameSize);
 		}
 		path.SetFromGit(file,&oldfile);
 
@@ -366,7 +364,7 @@ int CLogCache::SaveCache()
 	int ret =0;
 	BOOL bIsRebuild=false;
 
-	if( this->m_HashMap.size() == 0 ) // is not sufficient, because "working copy changes" are always included
+	if (this->m_HashMap.empty()) // is not sufficient, because "working copy changes" are always included
 		return 0;
 
 	if( this->m_GitDir.IsEmpty())
@@ -469,7 +467,7 @@ int CLogCache::SaveCache()
 					LARGE_INTEGER start;
 					start.QuadPart = 0;
 					SetFilePointerEx(this->m_DataFile,start,&offset,1);
-					if(this->SaveOneItem((*i).second,offset.QuadPart))
+					if (this->SaveOneItem((*i).second, (LONG)offset.QuadPart))
 					{
 						TRACE(_T("Save one item error"));
 						SetFilePointerEx(this->m_DataFile,offset, &offset,0);

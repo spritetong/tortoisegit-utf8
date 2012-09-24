@@ -63,7 +63,7 @@
 
 IMPLEMENT_DYNAMIC(CGitLogList, CHintListCtrl)
 
-int CGitLogList::RevertSelectedCommits()
+int CGitLogList::RevertSelectedCommits(int parent)
 {
 	CSysProgressDlg progress;
 	int ret = -1;
@@ -106,8 +106,10 @@ int CGitLogList::RevertSelectedCommits()
 		if(r1->m_CommitHash.IsEmpty())
 			continue;
 
-		CString cmd, output;
-		cmd.Format(_T("git.exe revert --no-edit --no-commit %s"), r1->m_CommitHash.ToString());
+		CString cmd, output, merge;
+		if (parent)
+			merge.Format(_T("-m %d "), parent);
+		cmd.Format(_T("git.exe revert --no-edit --no-commit %s%s"), merge, r1->m_CommitHash.ToString());
 		if (g_Git.Run(cmd, &output, CP_UTF8))
 		{
 			CString str;
@@ -141,7 +143,7 @@ int CGitLogList::CherryPickFrom(CString from, CString to)
 	if(logs.ParserFromLog(NULL,-1,0,&from,&to))
 		return -1;
 
-	if(logs.size() == 0)
+	if (logs.empty())
 		return 0;
 
 	CSysProgressDlg progress;
@@ -155,7 +157,7 @@ int CGitLogList::CherryPickFrom(CString from, CString to)
 
 	CBlockCacheForPath cacheBlock(g_Git.m_CurrentDir);
 
-	for(int i=logs.size()-1;i>=0;i--)
+	for (int i = (int)logs.size() - 1; i >= 0; i--)
 	{
 		if (progress.IsValid())
 		{
@@ -279,7 +281,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 			{
 				GitRev * r1 = reinterpret_cast<GitRev*>(m_arShownList.GetAt(FirstSelect));
 				GitRev * r2 = reinterpret_cast<GitRev*>(m_arShownList.GetAt(LastSelect));
-				if (m_Path.IsDirectory() || ! m_ShowMask & CGit::LOG_INFO_FOLLOW)
+				if (m_Path.IsDirectory() || !(m_ShowMask & CGit::LOG_INFO_FOLLOW))
 					CGitDiff::DiffCommit(this->m_Path, r1,r2);
 				else
 				{
@@ -313,7 +315,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 				GitRev * r1 = &m_wcRev;
 				GitRev * r2 = pSelLogEntry;
 
-				if (m_Path.IsDirectory() || ! m_ShowMask & CGit::LOG_INFO_FOLLOW)
+				if (m_Path.IsDirectory() || !(m_ShowMask & CGit::LOG_INFO_FOLLOW))
 					CGitDiff::DiffCommit(this->m_Path, r1,r2);
 				else
 				{
@@ -347,7 +349,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 			{
 				CFileDiffDlg dlg;
 
-				if(pSelLogEntry->m_ParentHash.size()>0)
+				if (!pSelLogEntry->m_ParentHash.empty())
 				//if(m_logEntries.m_HashMap[pSelLogEntry->m_ParentHash[0]]>=0)
 				{
 					cmd>>=16;
@@ -356,7 +358,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 					if(cmd == 0)
 						cmd=1;
 
-					if (m_Path.IsDirectory() || ! m_ShowMask & CGit::LOG_INFO_FOLLOW)
+					if (m_Path.IsDirectory() || !(m_ShowMask & CGit::LOG_INFO_FOLLOW))
 						CGitDiff::DiffCommit(m_Path, pSelLogEntry->m_CommitHash.ToString(), pSelLogEntry->m_ParentHash[cmd - 1].ToString());
 					else
 					{
@@ -400,9 +402,17 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 				CopySelectionToClipBoard();
 			}
 			break;
+		case ID_COPYCLIPBOARDMESSAGES:
+			{
+				if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0)
+					CopySelectionToClipBoard(ID_COPY_SUBJECT);
+				else
+					CopySelectionToClipBoard(ID_COPY_MESSAGE);
+			}
+			break;
 		case ID_COPYHASH:
 			{
-				CopySelectionToClipBoard(TRUE);
+				CopySelectionToClipBoard(ID_COPY_HASH);
 			}
 			break;
 		case ID_EXPORT:
@@ -412,17 +422,19 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 			}
 			break;
 		case ID_CREATE_BRANCH:
-			{
-				CString str = pSelLogEntry->m_CommitHash.ToString();
-				CAppUtils::CreateBranchTag(FALSE,&str);
-				ReloadHashMap();
-				Invalidate();
-			}
-			break;
 		case ID_CREATE_TAG:
 			{
 				CString str = pSelLogEntry->m_CommitHash.ToString();
-				CAppUtils::CreateBranchTag(TRUE,&str);
+				// try to guess remote branch in order to enable tracking
+				for (int i = 0; i < m_HashMap[pSelLogEntry->m_CommitHash].size(); i++)
+				{
+					if (m_HashMap[pSelLogEntry->m_CommitHash][i].Find(_T("refs/remotes/")) == 0)
+					{
+						str = m_HashMap[pSelLogEntry->m_CommitHash][i];
+						break;
+					}
+				}
+				CAppUtils::CreateBranchTag((cmd&0xFFFF) == ID_CREATE_TAG, &str);
 				ReloadHashMap();
 				Invalidate();
 				::PostMessage(this->GetParent()->m_hWnd,MSG_REFLOG_CHANGED,0,0);
@@ -431,7 +443,16 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 		case ID_SWITCHTOREV:
 			{
 				CString str = pSelLogEntry->m_CommitHash.ToString();
-				CAppUtils::Switch(&str);
+				// try to guess remote branch in order to recommend good branch name and tracking
+				for (int i = 0; i < m_HashMap[pSelLogEntry->m_CommitHash].size(); i++)
+				{
+					if (m_HashMap[pSelLogEntry->m_CommitHash][i].Find(_T("refs/remotes/")) == 0)
+					{
+						str = m_HashMap[pSelLogEntry->m_CommitHash][i];
+						break;
+					}
+				}
+				CAppUtils::Switch(str);
 			}
 			ReloadHashMap();
 			Invalidate();
@@ -459,9 +480,12 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 		case ID_RESET:
 			{
 				CString str = pSelLogEntry->m_CommitHash.ToString();
-				CAppUtils::GitReset(&str);
-				ReloadHashMap();
-				Invalidate();
+				if (CAppUtils::GitReset(&str))
+				{
+					ResetWcRev(true);
+					ReloadHashMap();
+					Invalidate();
+				}
 			}
 			break;
 		case ID_REBASE_PICK:
@@ -783,6 +807,23 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 				CAppUtils::RunTortoiseProc(cmd);
 			}
 			break;
+		case ID_BISECTSTART:
+			{
+				GitRev * first = reinterpret_cast<GitRev*>(m_arShownList.GetAt(FirstSelect));
+				GitRev * last = reinterpret_cast<GitRev*>(m_arShownList.GetAt(LastSelect));
+				ASSERT(first != NULL && last != NULL);
+
+				CString firstBad = first->m_CommitHash.ToString();
+				if (!m_HashMap[first->m_CommitHash].empty())
+					firstBad = m_HashMap[first->m_CommitHash].at(0);
+				CString lastGood = last->m_CommitHash.ToString();
+				if (!m_HashMap[last->m_CommitHash].empty())
+					lastGood = m_HashMap[last->m_CommitHash].at(0);
+
+				if (CAppUtils::BisectStart(lastGood, firstBad))
+					Refresh();
+			}
+			break;
 		case ID_REPOBROWSE:
 			{
 				CString sCmd;
@@ -793,7 +834,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 		case ID_PUSH:
 			{
 				CString guessAssociatedBranch;
-				if (m_HashMap[pSelLogEntry->m_CommitHash].size() > 0)
+				if (!m_HashMap[pSelLogEntry->m_CommitHash].empty())
 					guessAssociatedBranch = m_HashMap[pSelLogEntry->m_CommitHash].at(0);
 				if (CAppUtils::Push(guessAssociatedBranch))
 					Refresh();
@@ -836,7 +877,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 						if(CAppUtils::IsSSHPutty())
 							CAppUtils::LaunchPAgent(NULL, &remoteName);
 
-						cmd.Format(L"git.exe push \"%s\" :%s", remoteName, shortname);
+						cmd.Format(L"git.exe push \"%s\" :refs/heads/%s", remoteName, shortname);
 					}
 					else if (result == 2)
 						cmd.Format(_T("git.exe branch -r -D -- %s"), shortname);
@@ -901,7 +942,7 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 		case ID_MERGEREV:
 			{
 				CString str = pSelLogEntry->m_CommitHash.ToString();
-				if (m_HashMap[pSelLogEntry->m_CommitHash].size() > 0)
+				if (!m_HashMap[pSelLogEntry->m_CommitHash].empty())
 					str = m_HashMap[pSelLogEntry->m_CommitHash].at(0);
 				// we need an URL to complete this command, so error out if we can't get an URL
 				if(CAppUtils::Merge(&str))
@@ -912,8 +953,32 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 		break;
 		case ID_REVERTREV:
 			{
-				if(!this->RevertSelectedCommits())
+				int parent = 0;
+				if (GetSelectedCount() == 1)
+				{
+					parent = cmd >> 16;
+					if (parent > pSelLogEntry->m_ParentHash.size())
+					{
+						CString str;
+						str.Format(IDS_PROC_NOPARENT, parent);
+						MessageBox(str, _T("TortoiseGit"), MB_OK | MB_ICONERROR);
+						return;
+					}
+				}
+
+				if (!this->RevertSelectedCommits(parent))
+				{
+					if (CMessageBox::Show(m_hWnd, IDS_REVREVERTED, IDS_APPNAME, 1, IDI_QUESTION, IDS_OKBUTTON, IDS_COMMITBUTTON) == 2)
+					{
+						CTGitPathList pathlist;
+						CTGitPathList selectedlist;
+						pathlist.AddPath(this->m_Path);
+						bool bSelectFilesForCommit = !!DWORD(CRegStdDWORD(_T("Software\\TortoiseGit\\SelectFilesForCommit"), TRUE));
+						CString str;
+						CAppUtils::Commit(CString(), false, str, pathlist, selectedlist, bSelectFilesForCommit);
+					}
 					this->Refresh();
+				}
 			}
 			break;
 		case ID_EDITNOTE:
@@ -940,19 +1005,6 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 				}
 				else
 					CAppUtils::StartShowCompare(m_hWnd, m_path, GitRev::REV_BASE, m_path, revSelected, GitRev(), m_LogRevision, false, false, true);
-			}
-			break;
-		case ID_BLAMETWO:
-			{
-				//user clicked on the menu item "compare and blame revisions"
-				if (PromptShown())
-				{
-					GitDiff diff(this, this->m_hWnd, true);
-					diff.SetHEADPeg(m_LogRevision);
-					diff.ShowCompare(CTGitPath(pathURL), revSelected2, CTGitPath(pathURL), revSelected, GitRev(), false, true);
-				}
-				else
-					CAppUtils::StartShowCompare(m_hWnd, CTGitPath(pathURL), revSelected2, CTGitPath(pathURL), revSelected, GitRev(), m_LogRevision, false, false, true);
 			}
 			break;
 		case ID_BLAMEWITHPREVIOUS:
@@ -1047,39 +1099,6 @@ void CGitLogList::ContextMenuAction(int cmd,int FirstSelect, int LastSelect, CMe
 				}
 			}
 			break;
-		case ID_UPDATE:
-			{
-				CString sCmd;
-				CString url = _T("tgit:")+pathURL;
-				sCmd.Format(_T("%s /command:update /path:\"%s\" /rev:%ld"),
-					(LPCTSTR)(CPathUtils::GetAppDirectory()+_T("TortoiseProc.exe")),
-					(LPCTSTR)m_path.GetWinPath(), (LONG)revSelected);
-				CAppUtils::LaunchApplication(sCmd, NULL, false);
-			}
-			break;
-
-		case ID_EDITLOG:
-			{
-				EditLogMessage(selIndex);
-			}
-			break;
-		case ID_EDITAUTHOR:
-			{
-				EditAuthor(selEntries);
-			}
-			break;
-		case ID_REVPROPS:
-			{
-				CEditPropertiesDlg dlg;
-				dlg.SetProjectProperties(&m_ProjectProperties);
-				CTGitPathList escapedlist;
-				dlg.SetPathList(CTGitPathList(CTGitPath(pathURL)));
-				dlg.SetRevision(revSelected);
-				dlg.RevProps(true);
-				dlg.DoModal();
-			}
-			break;
-
 		case ID_EXPORT:
 			{
 				CString sCmd;

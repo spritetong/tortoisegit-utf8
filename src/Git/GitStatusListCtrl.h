@@ -33,30 +33,20 @@
 #define GITSLC_COLFILENAME			0x000000002
 #define GITSLC_COLEXT				0x000000004
 #define GITSLC_COLSTATUS			0x000000008
-//#define SVNSLC_COLTEXTSTATUS		0x000000010
-//#define SVNSLC_COLPROPSTATUS		0x000000020
 //#define SVNSLC_COLAUTHOR			0x000000040
 //#define	SVNSLC_COLREVISION			0x000000080
 //#define	SVNSLC_COLDATE				0x000000100
-//#define	SVNSLC_COLMODIFICATIONDATE	0x000000200
 #define GITSLC_COLADD				0x000000010
 #define GITSLC_COLDEL				0x000000020
-#define GITSLC_NUMCOLUMNS			6
+#define GITSLC_COLMODIFICATIONDATE	0x000000040
+#define	GITSLC_COLSIZE				0x000000080
+#define GITSLC_NUMCOLUMNS			8
 
-//#define SVNSLC_COLREMOTESTATUS		0x000000010
-//#define SVNSLC_COLREMOTETEXT		0x000000080
-//#define SVNSLC_COLREMOTEPROP		0x000000100
 //#define SVNSLC_COLURL				0x000000200
-//#define SVNSLC_COLLOCK				0x000000400
-//#define SVNSLC_COLLOCKCOMMENT		0x000000800
-
-//#define	SVNSLC_COLREMOTEREVISION	0x000004000
-
-//#define SVNSLC_COLSVNNEEDSLOCK		0x000010000
 //#define SVNSLC_COLCOPYFROM			0x000020000
 
 #define GITSLC_SHOWUNVERSIONED	CTGitPath::LOGACTIONS_UNVER
-#define GITSLC_SHOWNORMAL		0x000000000
+#define GITSLC_SHOWNORMAL		0x00000000
 #define GITSLC_SHOWMODIFIED		(CTGitPath::LOGACTIONS_MODIFIED)
 #define GITSLC_SHOWADDED		(CTGitPath::LOGACTIONS_ADDED|CTGitPath::LOGACTIONS_COPY)
 #define GITSLC_SHOWREMOVED		CTGitPath::LOGACTIONS_DELETED
@@ -79,6 +69,9 @@
 
 #define GITSLC_SHOWDIRECTS		(GITSLC_SHOWDIRECTFILES | GITSLC_SHOWDIRECTFOLDER)
 
+#define GITSLC_SHOWFILES		0x01000000
+#define GITSLC_SHOWSUBMODULES	0x02000000
+#define GITSLC_SHOWEVERYTHING	0xffffffff
 
 #define GITSLC_SHOWVERSIONED (CTGitPath::LOGACTIONS_FORWORD|GITSLC_SHOWNORMAL|GITSLC_SHOWMODIFIED|\
 GITSLC_SHOWADDED|GITSLC_SHOWREMOVED|GITSLC_SHOWCONFLICTED|GITSLC_SHOWMISSING|\
@@ -109,8 +102,8 @@ GITSLC_SHOWINCOMPLETE|GITSLC_SHOWEXTERNAL|GITSLC_SHOWINEXTERNALS)
 #define GITSLC_POPCOMPARE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPAREWC)
 #define GITSLC_POPGNUDIFF				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF1)
 #define GITSLC_POPREVERT				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_REVERT)
-#define GITSLC_POPUPDATE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_UPDATE)
 #define GITSLC_POPSHOWLOG				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOG)
+#define GITSLC_POPSHOWLOGSUBMODULE		CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOGSUBMODULE)
 #define GITSLC_POPSHOWLOGOLDNAME		CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOGOLDNAME)
 #define GITSLC_POPOPEN					CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_OPEN)
 #define GITSLC_POPDELETE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_DELETE)
@@ -118,37 +111,22 @@ GITSLC_SHOWINCOMPLETE|GITSLC_SHOWEXTERNAL|GITSLC_SHOWINEXTERNALS)
 #define GITSLC_POPIGNORE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_IGNORE)
 #define GITSLC_POPCONFLICT				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_EDITCONFLICT)
 #define GITSLC_POPRESOLVE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_RESOLVECONFLICT)
-#define GITSLC_POPLOCK					CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_LOCK)
-#define GITSLC_POPUNLOCK				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_UNLOCK)
-#define GITSLC_POPUNLOCKFORCE			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_UNLOCKFORCE)
 #define GITSLC_POPEXPLORE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_EXPLORE)
 #define GITSLC_POPCOMMIT				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMMIT)
-#define GITSLC_POPPROPERTIES			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_PROPERTIES)
-#define GITSLC_POPREPAIRMOVE			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_REPAIRMOVE)
 #define GITSLC_POPCHANGELISTS			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_CHECKGROUP)
 #define GITSLC_POPBLAME					CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_BLAME)
 #define GITSLC_POPSAVEAS				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_SAVEAS)
 #define GITSLC_POPCOMPARETWOFILES		CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)
 #define GITSLC_POPRESTORE				CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_POPRESTORE)
+#define GITSLC_POPASSUMEVALID			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_ASSUMEVALID)
+#define GITSLC_POPSKIPWORKTREE			CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_SKIPWORKTREE)
 
 #define GITSLC_IGNORECHANGELIST			_T("ignore-on-commit")
 
 // This gives up to 64 standard properties and menu entries
-// plus 192 user-defined properties (should be plenty).
-// User-defined properties will start at column SVNSLC_NUMCOLUMNS+1
-// but in the registry, we will record them starting at SVNSLC_USERPROPCOLOFFSET.
-
-#define GITSLC_USERPROPCOLOFFSET        0x40
-#define GITSLC_USERPROPCOLLIMIT         0xff
 #define GITSLC_MAXCOLUMNCOUNT           0xff
 
 #define OVL_RESTORE			1
-
-// Supporting extreamly long user props makes no sense here --
-// especially for binary properties. CString uses a pool allocator
-// that works for up to 256 chars. Make sure we are well below that.
-
-#define GITSLC_MAXUSERPROPLENGTH        0x70
 
 typedef int (__cdecl *GENERICCOMPAREFN)(const void * elem1, const void * elem2);
 typedef CComCritSecLock<CComCriticalSection> Locker;
@@ -163,17 +141,10 @@ class CGitStatusListCtrlDropTarget;
 *
 * It assigns logical index values to the (potential) columns:
 * 0 .. GitSLC_NUMCOLUMNS-1 contain the standard attributes
-* GitSLC_USERPROPCOLOFFSET .. GitSLC_MAXCOLUMNCOUNT are user props.
 *
 * The column vector contains the columns that are actually
 * available in the control.
 *
-* Since the set of userprops may change from one WC to another,
-* we also store the settings (width and order) for those
-* userprops that are not used in this WC.
-*
-* A userprop is considered "in use", if the respective column
-* is not hidden or if at least one item has this property set.
 */
 class ColumnManager
 {
@@ -196,7 +167,6 @@ public:
 	bool IsVisible (int column) const;
 	int GetInvisibleCount() const;
 	bool IsRelevant (int column) const;
-	bool IsUserProp (int column) const;
 	CString GetName (int column) const;
 	int SetNames(UINT * buff, int size);
 	int GetWidth (int column, bool useDefaults = false) const;
@@ -214,13 +184,8 @@ public:
 	/// call these to update the user-prop list
 	/// (will also auto-insert /-remove new list columns)
 
-	//void UpdateUserPropList (const std::vector<FileEntry*>& files);
-	//void UpdateRelevance ( const std::vector<FileEntry*>& files
-	//                    , const std::vector<size_t>& visibleFiles);
-
 	/// don't clutter the context menu with irrelevant prop info
 
-	bool AnyUnusedProperties() const;
 	void RemoveUnusedProps();
 
 	/// bring everything back to its "natural" order
@@ -250,10 +215,9 @@ public:
 			// visible item - otherwise the 'invisible' columns are not at the far left
 			// anymore and we get all kinds of redrawing problems.
 			&& (header->pitem)
-			&& (header->pitem->iOrder > GetInvisibleCount()))
+			&& (header->pitem->iOrder >= GetInvisibleCount()))
 		{
 			ColumnMoved (header->iItem, header->pitem->iOrder);
-			*pResult = FALSE;
 		}
 	}
 
@@ -330,12 +294,6 @@ public:
 			//temp.LoadString(IDS_STATUSLIST_SHOWGROUPS);
 			//popup.AppendMenu(isGroundEnable? uCheckedFlags : uUnCheckedFlags, columnCount, temp);
 
-			if (AnyUnusedProperties())
-			{
-				temp.LoadString(IDS_STATUSLIST_REMOVEUNUSEDPROPS);
-				popup.AppendMenu(uUnCheckedFlags, columnCount+1, temp);
-			}
-
 			temp.LoadString(IDS_STATUSLIST_RESETCOLUMNORDER);
 			popup.AppendMenu(uUnCheckedFlags, columnCount+2, temp);
 			popup.AppendMenu(MF_SEPARATOR);
@@ -347,7 +305,7 @@ public:
 			// find relevant ones and sort 'em
 
 			std::map<CString, int> sortedProps;
-			for (int i = itemName.size(); i < columnCount; ++i)
+			for (int i = (int)itemName.size(); i < columnCount; ++i)
 			if (IsRelevant(i))
 				sortedProps[GetName(i)] = i;
 
@@ -412,8 +370,6 @@ private:
 
 	/// initialization utilities
 
-	void ParseUserPropSettings ( const CString& userPropList
-		, const CString& shownUserProps);
 	void ParseWidths (const CString& widths);
 	void SetStandardColumnVisibility (DWORD visibility);
 	void ParseColumnOrder (const CString& widths);
@@ -427,8 +383,6 @@ private:
 	/// utilities used when writing data to the registry
 
 	DWORD GetSelectedStandardColumns() const;
-	CString GetUserPropList() const;
-	CString GetShownUserProps() const;
 	CString GetWidthString() const;
 	CString GetColumnOrderString() const;
 
@@ -453,16 +407,6 @@ private:
 	std::vector<ColumnInfo> columns;
 
 	/// user-defined properties
-
-	struct UserProp
-	{
-		CString name;       ///< is a user prop when < GitSLC_USERPROPCOLOFFSET
-		int width;
-	};
-
-	std::vector<UserProp> userProps;
-
-	/// stored result from last UpdateUserPropList() call
 
 	std::set<CString> itemProps;
 
@@ -525,33 +469,26 @@ public:
 		IDGITLC_DELETE,
 		IDGITLC_IGNORE,
 		IDGITLC_GNUDIFF1		 ,
-		IDGITLC_UPDATE          ,
 		IDGITLC_LOG              ,
 		IDGITLC_LOGOLDNAME,
+		IDGITLC_LOGSUBMODULE,
 		IDGITLC_EDITCONFLICT     ,
 		IDGITLC_IGNOREMASK	    ,
 		IDGITLC_ADD			    ,
 		IDGITLC_RESOLVECONFLICT ,
-		IDGITLC_LOCK			,
-		IDGITLC_LOCKFORCE		,
-		IDGITLC_UNLOCK			,
-		IDGITLC_UNLOCKFORCE		,
 		IDGITLC_OPENWITH		,
 		IDGITLC_EXPLORE			,
 		IDGITLC_RESOLVETHEIRS	,
 		IDGITLC_RESOLVEMINE		,
 		IDGITLC_REMOVE			,
 		IDGITLC_COMMIT			,
-		IDGITLC_PROPERTIES		,
 		IDGITLC_COPY			,
 		IDGITLC_COPYEXT			,
-		IDGITLC_REPAIRMOVE		,
 		IDGITLC_REMOVEFROMCS	,
 		IDGITLC_CREATECS		,
 		IDGITLC_CREATEIGNORECS	,
 		IDGITLC_CHECKGROUP		,
 		IDGITLC_UNCHECKGROUP	,
-		IDGITLC_ADD_RECURSIVE   ,
 		IDGITLC_COMPAREWC		,
 		IDGITLC_BLAME			,
 		IDGITLC_SAVEAS			,
@@ -564,6 +501,8 @@ public:
 		IDGITLC_POPRESTORE		,
 		IDGITLC_CREATERESTORE	,
 		IDGITLC_RESTOREPATH		,
+		IDGITLC_ASSUMEVALID		,
+		IDGITLC_SKIPWORKTREE	,
 // the IDSVNLC_MOVETOCS *must* be the last index, because it contains a dynamic submenu where
 // the submenu items get command ID's sequent to this number
 		IDGITLC_MOVETOCS		,
@@ -750,7 +689,7 @@ public:
 	 * \param bHasCheckboxes TRUE if the control should show check boxes on the left of each file entry.
 	 * \param bHasWC TRUE if the reporisty is not a bare repository (hides wc related items on the contextmenu)
 	 */
-	void Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus = ((GITSLC_POPALL ^ GITSLC_POPCOMMIT) ^ GITSLC_POPRESTORE), bool bHasCheckboxes = true, bool bHasWC = true);
+	void Init(DWORD dwColumns, const CString& sColumnInfoContainer, unsigned __int64 dwContextMenus = ((GITSLC_POPALL ^ GITSLC_POPCOMMIT) ^ GITSLC_POPRESTORE), bool bHasCheckboxes = true, bool bHasWC = true, DWORD allowedColumns = 0xffffffff);
 	/**
 	 * Sets a background image for the list control.
 	 * The image is shown in the right bottom corner.
@@ -780,8 +719,7 @@ public:
 	BOOL GetStatus ( const CTGitPathList* pathList=NULL
                    , bool bUpdate = false
                    , bool bShowIgnores = false
-				   , bool bShowUnRev=false
-                   , bool bShowUserProps = false);
+				   , bool bShowUnRev=false);
 
 	/**
 	 * Populates the list control with the previously (with GetStatus) gathered status information.
@@ -876,6 +814,13 @@ public:
 	 * \param bSelect TRUE to check, FALSE to uncheck.
 	 */
 	void SelectAll(bool bSelect, bool bIncludeNoCommits = false);
+
+	/**
+	 * Checks or unchecks all specified items
+	 * \param dwCheck GITLC_SHOWxxx defines
+	 * \param check if true matching items will be selected, false unchecks matching items
+	 */
+	void Check(DWORD dwCheck, bool check = true);
 
 	/** Set a checkbox on an entry in the listbox
 	 * Keeps the listctrl checked state and the FileEntry's checked flag in sync
@@ -972,6 +917,14 @@ public:
 
 	void Block(BOOL block, BOOL blockUI) {m_bBlock = block; m_bBlockUI = blockUI;}
 
+	LONG GetUnversionedCount() { return m_nShownUnversioned; }
+	LONG GetModifiedCount() { return m_nShownModified; }
+	LONG GetAddedCount() { return m_nShownAdded; }
+	LONG GetDeletedCount() { return m_nShownDeleted; }
+	LONG GetConflictedCount() { return m_nShownConflicted; }
+	LONG GetFileCount() { return m_nShownFiles; }
+	LONG GetSubmoduleCount() { return m_nShownSubmodules; }
+
 	LONG						m_nTargetCount;		///< number of targets in the file passed to GetStatus()
 
 	CString						m_sURL;				///< the URL of the target or "(multiple targets)"
@@ -1006,9 +959,6 @@ private:
 	};
 	void OpenFile(CTGitPath *path,int mode);
 
-    /// fetch all user properties for all items
-    void FetchUserProperties();
-
 	/// Process one line of the command file supplied to GetStatus
 	bool FetchStatusForSingleTarget(GitConfig& config, GitStatus& status, const CTGitPath& target,
 		bool bFetchStatusFromRepository, CStringA& strCurrentRepositoryUUID, CTGitPathList& arExtPaths,
@@ -1031,16 +981,6 @@ private:
 
 	/// Look up the relevant show flags for a particular Git status value
 	DWORD GetShowFlagsFromGitStatus(git_wc_status_kind status);
-
-	/// Build a FileEntry item and add it to the FileEntry array
-	//const FileEntry* AddNewFileEntry(
-	//	const git_wc_status2_t* pGitStatus,  // The return from the Git GetStatus functions
-	//	const CTGitPath& path,				// The path of the item we're adding
-	//	const CTGitPath& basePath,			// The base directory for this status build
-	//	bool bDirectItem,					// Was this item the first found by GetFirstFileStatus or by a subsequent GetNextFileStatus call
-	//	bool bInExternal,					// Are we in an 'external' folder
-	//	bool bEntryfromDifferentRepo		// if the entry is from a different repository
-	//	);
 
 	/// Adjust the checkbox-state on all descendants of a specific item
 	//void SetCheckOnAllDescendentsOf(const FileEntry* parentEntry, bool bCheck);
@@ -1139,6 +1079,14 @@ private:
 	LONG						m_nLineDeleted;
 	LONG						m_nRenamed;
 
+	LONG						m_nShownUnversioned;
+	LONG						m_nShownModified;
+	LONG						m_nShownAdded;
+	LONG						m_nShownDeleted;
+	LONG						m_nShownConflicted;
+	LONG						m_nShownFiles;
+	LONG						m_nShownSubmodules;
+
 	DWORD						m_dwDefaultColumns;
 	DWORD						m_dwShow;
 	bool						m_bShowFolders;
@@ -1171,7 +1119,7 @@ private:
 
     ColumnManager               m_ColumnManager;
 
-	std::map<CString,bool>		m_mapFilenameToChecked; ///< Remember manually de-/selected items
+	std::map<CString,bool>		m_mapFilenameToChecked; ///< Remember de-/selected items
 	CComCriticalSection			m_critSec;
 
 	friend class CGitStatusListCtrlDropTarget;

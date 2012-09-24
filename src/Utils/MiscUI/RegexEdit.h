@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2003-2008 - TortoiseSVN
+// Copyright (C) 2011 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,30 +20,26 @@
 
 /**
  * \ingroup Utils
- * Implements a reader-writer lock.
+ * edit control for entering regular expressions.
+ * if the entered regex is invalid, the background is drawn in red.
  */
-class CRWSection
+class CRegexEdit : public CEdit
 {
-public:
-	CRWSection();
-	~CRWSection();
+	DECLARE_DYNAMIC(CRegexEdit)
 
-	bool WaitToRead(DWORD waitTime = INFINITE);
-	bool WaitToWrite(DWORD waitTime = INFINITE);
-	void Done();
-	bool IsWriter() {return ((m_nWaitingWriters > 0) || (m_nActive < 0));}
-#if defined (DEBUG) || defined (_DEBUG)
-	void AssertLock() {ATLASSERT(m_nActive);}
-	void AssertWriting() {ATLASSERT((m_nWaitingWriters || (m_nActive < 0)));}
-#else
-	void AssertLock() {;}
-	void AssertWriting() {;}
-#endif
+public:
+	CRegexEdit();
+	virtual ~CRegexEdit();
+
+	bool IsValidRegex() const { return m_bValid; }
+
+protected:
+	DECLARE_MESSAGE_MAP()
+	afx_msg HBRUSH CtlColor(CDC* /*pDC*/, UINT /*nCtlColor*/);
+
 private:
-	int					m_nWaitingReaders;	// Number of readers waiting for access
-	int					m_nWaitingWriters;	// Number of writers waiting for access
-	int					m_nActive;			// Number of threads accessing the section
-	CRITICAL_SECTION	m_cs;
-	HANDLE				m_hReaders;
-	HANDLE				m_hWriters;
+	CBrush  m_invalidBkgnd;
+	bool    m_bValid;
 };
+
+

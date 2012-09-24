@@ -496,6 +496,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\Utils\MiscUI\LinkControl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\Utils\MiscUI\LinkControl.h"
+					>
+				</File>
+				<File
 					RelativePath="..\Utils\MiscUI\SciEdit.cpp"
 					>
 				</File>
@@ -2088,6 +2096,14 @@
 					RelativePath=".\Commands\UpdateCheckCommand.h"
 					>
 				</File>
+				<File
+					RelativePath=".\UpdateListCtrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UpdateListCtrl.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Paste"
@@ -2199,6 +2215,14 @@
 			</File>
 			<File
 				RelativePath=".\ChooseVersion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DeleteRemoteTagDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DeleteRemoteTagDlg.h"
 				>
 			</File>
 			<File

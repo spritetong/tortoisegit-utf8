@@ -61,6 +61,7 @@
 #include "IgnoreDlg.h"
 #include "FormatMessageWrapper.h"
 #include "SmartHandle.h"
+#include "BisectStartDlg.h"
 
 CAppUtils::CAppUtils(void)
 {
@@ -626,7 +627,8 @@ bool CAppUtils::LaunchPAgent(CString *keyfile,CString * pRemote)
 	proc += tempfile;
 	proc += _T("\"");
 
-	bool b = LaunchApplication(proc, IDS_ERR_PAGEANT, true, &CPathUtils::GetAppDirectory());
+	CString appDir = CPathUtils::GetAppDirectory();
+	bool b = LaunchApplication(proc, IDS_ERR_PAGEANT, true, &appDir);
 	if(!b)
 		return b;
 
@@ -837,6 +839,10 @@ bool CAppUtils::StartShowUnifiedDiff(HWND /*hWnd*/, const CTGitPath& url1, const
 	{
 		cmd.Format(_T("git.exe diff --stat -p %s "), rev1);
 	}
+	else if (rev1 == GitRev::GetWorkingCopy())
+	{
+		cmd.Format(_T("git.exe diff -R --stat -p %s "), rev2);
+	}
 	else
 	{
 		CString merge;
@@ -921,7 +927,7 @@ bool CAppUtils::CreateBranchTag(bool IsTag,CString *CommitHash, bool switch_new_
 	dlg.m_bSwitch=switch_new_brach;
 
 	if(CommitHash)
-		dlg.m_Base = *CommitHash;
+		dlg.m_initialRefName = *CommitHash;
 
 	if(dlg.DoModal()==IDOK)
 	{
@@ -969,6 +975,7 @@ bool CAppUtils::CreateBranchTag(bool IsTag,CString *CommitHash, bool switch_new_
 		if(g_Git.Run(cmd,&out,CP_UTF8))
 		{
 			CMessageBox::Show(NULL,out,_T("TortoiseGit"),MB_OK);
+			return FALSE;
 		}
 		if( !IsTag  &&  dlg.m_bSwitch )
 		{
@@ -983,11 +990,9 @@ bool CAppUtils::CreateBranchTag(bool IsTag,CString *CommitHash, bool switch_new_
 	return FALSE;
 }
 
-bool CAppUtils::Switch(CString *CommitHash, CString initialRefName, bool autoclose)
+bool CAppUtils::Switch(CString initialRefName, bool autoclose)
 {
 	CGitSwitchDlg dlg;
-	if(CommitHash)
-		dlg.m_Base=*CommitHash;
 	if(!initialRefName.IsEmpty())
 		dlg.m_initialRefName = initialRefName;
 
@@ -1043,7 +1048,7 @@ bool CAppUtils::PerformSwitch(CString ref, bool bForce /* false */, CString sNew
 	if (gitPath.HasSubmodules())
 		progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_SUBMODULESUPDATE)));
 
-	int ret = progress.DoModal();
+	INT_PTR ret = progress.DoModal();
 	if (gitPath.HasSubmodules() && ret == IDC_PROGRESS_BUTTON1)
 	{
 		CString sCmd;
@@ -1095,7 +1100,8 @@ bool CAppUtils::IgnoreFile(CTGitPathList &path,bool IsMask)
 				ignorefile += _T(".gitignore");
 				break;
 			case 2:
-				ignorefile += _T(".git/info/exclude");
+				g_GitAdminDir.GetAdminDirPath(g_Git.m_CurrentDir, ignorefile);
+				ignorefile += _T("info/exclude");
 				break;
 		}
 
@@ -1130,7 +1136,15 @@ bool CAppUtils::IgnoreFile(CTGitPathList &path,bool IsMask)
 				{
 					ignorePattern += path[i].GetFileOrDirectoryName();
 				}
-				file.WriteString(ignorePattern + _T("\n"));
+
+				// escape [ and ] so that files get ignored correctly
+				ignorePattern.Replace(_T("["), _T("\\["));
+				ignorePattern.Replace(_T("]"), _T("\\]"));
+
+				ignorePattern += _T("\n");
+				CStringA ignorePatternA = CUnicodeUtils::GetUTF8(ignorePattern);
+				file.Write(ignorePatternA.GetBuffer(), ignorePatternA.GetLength());
+				ignorePatternA.ReleaseBuffer();
 
 				if (ignoreDlg.m_IgnoreFile == 1)
 					file.Close();
@@ -1184,7 +1198,7 @@ bool CAppUtils::GitReset(CString *CommitHash,int type)
 		if (gitPath.HasSubmodules() && dlg.m_ResetType == 2)
 			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_SUBMODULESUPDATE)));
 
-		int ret = progress.DoModal();
+		INT_PTR ret = progress.DoModal();
 		if (gitPath.HasSubmodules() && dlg.m_ResetType == 2 && ret == IDC_PROGRESS_BUTTON1)
 		{
 			CString sCmd;
@@ -1960,7 +1974,7 @@ bool CAppUtils::Fetch(CString remoteName, bool allowRebase, bool autoClose)
 		}
 
 		progress.m_GitCmd=cmd;
-		int userResponse=progress.DoModal();
+		INT_PTR userResponse = progress.DoModal();
 
 		if (userResponse == IDC_PROGRESS_BUTTON1)
 		{
@@ -1976,7 +1990,7 @@ bool CAppUtils::Fetch(CString remoteName, bool allowRebase, bool autoClose)
 				CRebaseDlg dlg;
 				dlg.m_PostButtonTexts.Add(CString(MAKEINTRESOURCE(IDS_MENUDESSENDMAIL)));
 				dlg.m_PostButtonTexts.Add(CString(MAKEINTRESOURCE(IDS_MENUREBASE)));
-				int response = dlg.DoModal();
+				INT_PTR response = dlg.DoModal();
 				if(response == IDOK)
 				{
 					return TRUE;
@@ -2047,6 +2061,8 @@ bool CAppUtils::Push(CString selectLocalBranch, bool autoClose)
 			arg += _T("--tags ");
 		if(dlg.m_bForce)
 			arg += _T("--force ");
+		if (dlg.m_bSetUpstream)
+			arg += _T("--set-upstream ");
 
 		int ver = CAppUtils::GetMsysgitVersion();
 
@@ -2087,7 +2103,7 @@ bool CAppUtils::Push(CString selectLocalBranch, bool autoClose)
 
 		progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_REQUESTPULL)));
 		progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_MENUPUSH)));
-		int ret = progress.DoModal();
+		INT_PTR ret = progress.DoModal();
 
 		if(!progress.m_GitStatus)
 		{
@@ -2410,11 +2426,16 @@ BOOL CAppUtils::Merge(CString *commit)
 		else if (dlg.m_bIsBranch)
 			Prodlg.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_REMOVEBRANCH)));
 
-		int ret = Prodlg.DoModal();
+		INT_PTR ret = Prodlg.DoModal();
 
 		if (ret == IDC_PROGRESS_BUTTON1)
 			if (dlg.m_bNoCommit)
-				return Commit(_T(""), TRUE, CString(), CTGitPathList(), CTGitPathList(), true);
+			{
+				CString sLogMsg;
+				CTGitPathList pathList;
+				CTGitPathList selectedList;
+				return Commit(_T(""), TRUE, sLogMsg, pathList, selectedList, true);
+			}
 			else if (dlg.m_bIsBranch)
 			{
 				CString msg;
@@ -2579,4 +2600,59 @@ void CAppUtils::SetWindowTitle(HWND hWnd, const CString& urlorpath, const CStrin
 	wcscat_s(pathbuf, L" - ");
 	wcscat_s(pathbuf, CString(MAKEINTRESOURCE(IDS_APPNAME)));
 	SetWindowText(hWnd, pathbuf);
+}
+
+bool CAppUtils::BisectStart(CString lastGood, CString firstBad, bool autoClose)
+{
+	if (!g_Git.CheckCleanWorkTree())
+	{
+		if (CMessageBox::Show(NULL, IDS_ERROR_NOCLEAN_STASH, IDS_APPNAME, MB_YESNO|MB_ICONINFORMATION) == IDYES)
+		{
+			CString cmd, out;
+			cmd = _T("git.exe stash");
+			if (g_Git.Run(cmd, &out, CP_UTF8))
+			{
+				CMessageBox::Show(NULL, out, _T("TortoiseGit"), MB_OK);
+				return false;
+			}
+		}
+		else
+			return false;
+	}
+
+	CBisectStartDlg bisectStartDlg;
+
+	if (!lastGood.IsEmpty())
+		bisectStartDlg.m_sLastGood = lastGood;
+	if (!firstBad.IsEmpty())
+		bisectStartDlg.m_sFirstBad = firstBad;
+
+	if (bisectStartDlg.DoModal() == IDOK)
+	{
+		CProgressDlg progress;
+		theApp.m_pMainWnd = &progress;
+		progress.m_bAutoCloseOnSuccess = autoClose;
+		progress.m_GitCmdList.push_back(_T("git.exe bisect start"));
+		progress.m_GitCmdList.push_back(_T("git.exe bisect good ") + bisectStartDlg.m_LastGoodRevision);
+		progress.m_GitCmdList.push_back(_T("git.exe bisect bad ") + bisectStartDlg.m_FirstBadRevision);
+
+		CTGitPath path(g_Git.m_CurrentDir);
+
+		if (path.HasSubmodules())
+			progress.m_PostCmdList.Add(CString(MAKEINTRESOURCE(IDS_PROC_SUBMODULESUPDATE)));
+
+		INT_PTR ret = progress.DoModal();
+		if (path.HasSubmodules() && ret == IDC_PROGRESS_BUTTON1)
+		{
+			CString sCmd;
+			sCmd.Format(_T("/command:subupdate /bkpath:\"%s\""), g_Git.m_CurrentDir);
+
+			CAppUtils::RunTortoiseProc(sCmd);
+			return true;
+		}
+		else if (ret == IDOK)
+			return true;
+	}
+
+	return false;
 }

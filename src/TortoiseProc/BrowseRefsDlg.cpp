@@ -31,6 +31,10 @@
 #include "RefLogDlg.h"
 #include "IconMenu.h"
 #include "FileDiffDlg.h"
+#include "DeleteRemoteTagDlg.h"
+#include "git2.h"
+#include "UnicodeUtils.h"
+#include "InputDlg.h"
 
 void SetSortArrow(CListCtrl * control, int nColumn, bool bAscending)
 {
@@ -54,6 +58,61 @@ void SetSortArrow(CListCtrl * control, int nColumn, bool bAscending)
 	}
 }
 
+class CRefLeafListCompareFunc
+{
+public:
+	CRefLeafListCompareFunc(CListCtrl* pList, int col, bool desc):m_col(col),m_desc(desc),m_pList(pList){
+		m_bSortLogical = !CRegDWORD(L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoStrCmpLogical", 0, false, HKEY_CURRENT_USER);
+		if (m_bSortLogical)
+			m_bSortLogical = !CRegDWORD(L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoStrCmpLogical", 0, false, HKEY_LOCAL_MACHINE);
+	}
+
+	static int CALLBACK StaticCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+	{
+		return ((CRefLeafListCompareFunc*)lParamSort)->Compare(lParam1,lParam2);
+	}
+
+	int Compare(LPARAM lParam1, LPARAM lParam2)
+	{
+		return Compare(
+			(CShadowTree*)m_pList->GetItemData((int)lParam1),
+			(CShadowTree*)m_pList->GetItemData((int)lParam2));
+	}
+
+	int Compare(CShadowTree* pLeft, CShadowTree* pRight)
+	{
+		int result=CompareNoDesc(pLeft,pRight);
+		if(m_desc)
+			return -result;
+		return result;
+	}
+
+	int CompareNoDesc(CShadowTree* pLeft, CShadowTree* pRight)
+	{
+		switch(m_col)
+		{
+		case CBrowseRefsDlg::eCol_Name:	return SortStrCmp(pLeft->GetRefName(), pRight->GetRefName());
+		case CBrowseRefsDlg::eCol_Date:	return pLeft->m_csDate_Iso8601.CompareNoCase(pRight->m_csDate_Iso8601);
+		case CBrowseRefsDlg::eCol_Msg:	return SortStrCmp(pLeft->m_csSubject, pRight->m_csSubject);
+		case CBrowseRefsDlg::eCol_LastAuthor: return SortStrCmp(pLeft->m_csAuthor, pRight->m_csAuthor);
+		case CBrowseRefsDlg::eCol_Hash:	return pLeft->m_csRefHash.CompareNoCase(pRight->m_csRefHash);
+		case CBrowseRefsDlg::eCol_Description: return SortStrCmp(pLeft->m_csDescription, pRight->m_csDescription);
+		}
+		return 0;
+	}
+	int SortStrCmp(CString left, CString right)
+	{
+		if (m_bSortLogical)
+			return StrCmpLogicalW(left, right);
+		return StrCmpI(left, right);
+	}
+
+	int m_col;
+	bool m_desc;
+	CListCtrl* m_pList;
+	bool m_bSortLogical;
+};
+
 // CBrowseRefsDlg dialog
 
 IMPLEMENT_DYNAMIC(CBrowseRefsDlg, CResizableStandAloneDialog)
@@ -61,13 +120,14 @@ IMPLEMENT_DYNAMIC(CBrowseRefsDlg, CResizableStandAloneDialog)
 CBrowseRefsDlg::CBrowseRefsDlg(CString cmdPath, CWnd* pParent /*=NULL*/)
 :	CResizableStandAloneDialog(CBrowseRefsDlg::IDD, pParent),
 	m_cmdPath(cmdPath),
-	m_currSortCol(-1),
+	m_currSortCol(0),
 	m_currSortDesc(false),
 	m_initialRef(L"HEAD"),
 	m_pickRef_Kind(gPickRef_All),
 	m_pListCtrlRoot(NULL),
 	m_bHasWC(true),
-	m_SelectedFilters(LOGFILTER_ALL)
+	m_SelectedFilters(LOGFILTER_ALL),
+	m_bPickOne(false)
 {
 
 }
@@ -135,6 +195,8 @@ BOOL CBrowseRefsDlg::OnInitDialog()
 	m_ListRefLeafs.InsertColumn(eCol_LastAuthor, temp, 0, 100);
 	temp.LoadString(IDS_HASH);
 	m_ListRefLeafs.InsertColumn(eCol_Hash, temp, 0, 80);
+	temp.LoadString(IDS_DESCRIPTION);
+	m_ListRefLeafs.InsertColumn(eCol_Description, temp, 0, 80);
 
 	AddAnchor(IDOK,BOTTOM_RIGHT);
 	AddAnchor(IDCANCEL,BOTTOM_RIGHT);
@@ -148,6 +210,9 @@ BOOL CBrowseRefsDlg::OnInitDialog()
 	CAppUtils::SetWindowTitle(m_hWnd, g_Git.m_CurrentDir, sWindowTitle);
 
 	m_bHasWC = !g_GitAdminDir.IsBareRepo(g_Git.m_CurrentDir);
+
+	if (m_bPickOne)
+		m_ListRefLeafs.ModifyStyle(0, LVS_SINGLESEL);
 
 	m_ListRefLeafs.SetFocus();
 	return FALSE;
@@ -233,6 +298,28 @@ CString CBrowseRefsDlg::GetSelectedRef(bool onlyIfLeaf, bool pickFirstSelIfMulti
 	return CString();//None
 }
 
+static int GetBranchDescriptionsCallback(const char *var_name, const char *value, void *data)
+{
+	MAP_STRING_STRING *descriptions = (MAP_STRING_STRING *) data;
+	CString key = CUnicodeUtils::GetUnicode(var_name, CP_UTF8);
+	CString val = CUnicodeUtils::GetUnicode(value, CP_UTF8);
+	descriptions->insert(make_pair(key.Mid(7, key.GetLength() - 7 - 12), val)); // 7: branch., 12: .description
+	return 0;
+}
+
+MAP_STRING_STRING GetBranchDescriptions()
+{
+	MAP_STRING_STRING descriptions;
+	git_config * config;
+	git_config_new(&config);
+	CStringA projectConfigA = CUnicodeUtils::GetMulti(g_Git.m_CurrentDir + _T("\\.git\\config"), CP_UTF8);
+	git_config_add_file_ondisk(config, projectConfigA.GetBuffer(), 3);
+	projectConfigA.ReleaseBuffer();
+	git_config_foreach_match(config, "branch\\..*\\.description", GetBranchDescriptionsCallback, &descriptions);
+	git_config_free(config);
+	return descriptions;
+}
+
 void CBrowseRefsDlg::Refresh(CString selectRef)
 {
 //	m_RefMap.clear();
@@ -294,7 +381,7 @@ void CBrowseRefsDlg::Refresh(CString selectRef)
 		refMap[refName] = refRest; //Use
 	}
 
-
+	MAP_STRING_STRING descriptions = GetBranchDescriptions();
 
 	//Populate ref tree
 	for(MAP_STRING_STRING::iterator iterRefMap=refMap.begin();iterRefMap!=refMap.end();++iterRefMap)
@@ -309,6 +396,9 @@ void CBrowseRefsDlg::Refresh(CString selectRef)
 		treeLeaf.m_csSubject=		values.Tokenize(L"\04",valuePos); if(valuePos < 0) continue;
 		treeLeaf.m_csAuthor=		values.Tokenize(L"\04",valuePos); if(valuePos < 0) continue;
 		treeLeaf.m_csDate_Iso8601=	values.Tokenize(L"\04",valuePos);
+
+		if (wcsncmp(iterRefMap->first, L"refs/heads", 10) == 0)
+			treeLeaf.m_csDescription = descriptions[treeLeaf.m_csRefName];
 	}
 
 
@@ -403,9 +493,6 @@ void CBrowseRefsDlg::OnTvnSelchangedTreeRef(NMHDR *pNMHDR, LRESULT *pResult)
 void CBrowseRefsDlg::FillListCtrlForTreeNode(HTREEITEM treeNode)
 {
 	m_ListRefLeafs.DeleteAllItems();
-	m_currSortCol = -1;
-	m_currSortDesc = false;
-	SetSortArrow(&m_ListRefLeafs,-1,false);
 
 	CShadowTree* pTree=(CShadowTree*)(m_RefTreeCtrl.GetItemData(treeNode));
 	if(pTree==NULL)
@@ -434,6 +521,8 @@ void CBrowseRefsDlg::FillListCtrlForShadowTree(CShadowTree* pTree, CString refNa
 			m_ListRefLeafs.SetItemText(indexItem,eCol_Msg, pTree->m_csSubject);
 			m_ListRefLeafs.SetItemText(indexItem,eCol_LastAuthor, pTree->m_csAuthor);
 			m_ListRefLeafs.SetItemText(indexItem,eCol_Hash, pTree->m_csRefHash);
+			int pos = 0;
+			m_ListRefLeafs.SetItemText(indexItem,eCol_Description, pTree->m_csDescription.Tokenize(_T("\n"), pos));
 		}
 	}
 	else
@@ -448,6 +537,13 @@ void CBrowseRefsDlg::FillListCtrlForShadowTree(CShadowTree* pTree, CString refNa
 		{
 			FillListCtrlForShadowTree(&itSubTree->second,csThisName,false);
 		}
+	}
+	if (isFirstLevel)
+	{
+		CRefLeafListCompareFunc compareFunc(&m_ListRefLeafs, m_currSortCol, m_currSortDesc);
+		m_ListRefLeafs.SortItemsEx(&CRefLeafListCompareFunc::StaticCompare, (DWORD_PTR)&compareFunc);
+
+		SetSortArrow(&m_ListRefLeafs,m_currSortCol,!m_currSortDesc);
 	}
 }
 
@@ -511,16 +607,7 @@ bool CBrowseRefsDlg::ConfirmDeleteRef(VectorPShadowTree& leafs)
 			csMessage.Format(IDS_PROC_DELETEBRANCHTAG, branchToDelete);
 
 			//Check if branch is fully merged in HEAD
-			CGitHash branchHash = g_Git.GetHash(leafs[0]->GetRefName());
-			CGitHash commonAncestor;
-			CString commonAncestorstr;
-			CString cmd;
-			cmd.Format(L"git.exe merge-base HEAD %s", leafs[0]->GetRefName());
-			g_Git.Run(cmd, &commonAncestorstr, NULL, CP_UTF8);
-
-			commonAncestor=commonAncestorstr;
-
-			if(commonAncestor != branchHash)
+			if (!g_Git.IsFastForward(leafs[0]->GetRefName(), _T("HEAD")))
 			{
 				csMessage += L"\r\n\r\n";
 				csMessage += CString(MAKEINTRESOURCE(IDS_PROC_BROWSEREFS_WARNINGUNMERGED));
@@ -600,7 +687,7 @@ bool CBrowseRefsDlg::DoDeleteRef(CString completeRefName, bool bForce)
 				CAppUtils::LaunchPAgent(NULL, &remoteName);
 			}
 
-			cmd.Format(L"git.exe push \"%s\" :%s", remoteName, remoteBranchToDelete);
+			cmd.Format(L"git.exe push \"%s\" :refs/heads/%s", remoteName, remoteBranchToDelete);
 		}
 		else
 			cmd.Format(L"git.exe branch -%c -- %s",bForce?L'D':L'd',branchToDelete);
@@ -687,6 +774,7 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 		bool bShowSwitchOption				= false;
 		bool bShowRenameOption				= false;
 		bool bShowCreateBranchOption		= false;
+		bool bShowEditBranchDescriptionOption = false;
 
 		CString fetchFromCmd;
 
@@ -695,6 +783,7 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 			bShowReflogOption = true;
 			bShowSwitchOption = true;
 			bShowRenameOption = true;
+			bShowEditBranchDescriptionOption = true;
 		}
 		else if(selectedLeafs[0]->IsFrom(L"refs/remotes"))
 		{
@@ -748,6 +837,11 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 			popupMenu.AppendMenuIcon(eCmd_CreateBranch, temp, IDI_COPY);
 		}
 
+		if (bShowEditBranchDescriptionOption)
+		{
+			bAddSeparator = true;
+			popupMenu.AppendMenuIcon(eCmd_EditBranchDescription, CString(MAKEINTRESOURCE(IDS_PROC_BROWSEREFS_EDITDESCRIPTION)), IDI_RENAME);
+		}
 		if(bShowRenameOption)
 		{
 			bAddSeparator = true;
@@ -821,9 +915,12 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 				remoteName = remoteName.Tokenize(L"/", dummy);
 				if(!remoteName.IsEmpty())
 				{
-					CString fetchFromCmd;
-					fetchFromCmd.Format(IDS_PROC_BROWSEREFS_FETCHFROM, remoteName);
-					popupMenu.AppendMenuIcon(eCmd_Fetch, fetchFromCmd, IDI_PULL);
+					CString temp;
+					temp.Format(IDS_PROC_BROWSEREFS_FETCHFROM, remoteName);
+					popupMenu.AppendMenuIcon(eCmd_Fetch, temp, IDI_PULL);
+
+					temp.LoadString(IDS_DELETEREMOTETAG);
+					popupMenu.AppendMenuIcon(eCmd_DeleteRemoteTag, temp, IDI_DELETE);
 				}
 			}
 		}
@@ -887,9 +984,16 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 			Refresh();
 		}
 		break;
+	case eCmd_DeleteRemoteTag:
+		{
+			CDeleteRemoteTagDlg deleteRemoteTagDlg;
+			deleteRemoteTagDlg.m_sRemote = remoteName;
+			deleteRemoteTagDlg.DoModal();
+		}
+		break;
 	case eCmd_Switch:
 		{
-			CAppUtils::Switch(NULL, selectedLeafs[0]->GetRefName());
+			CAppUtils::Switch(selectedLeafs[0]->GetRefName());
 		}
 		break;
 	case eCmd_Rename:
@@ -936,6 +1040,27 @@ void CBrowseRefsDlg::ShowContextMenu(CPoint point, HTREEITEM hTreePos, VectorPSh
 				selectedLeafs[0]->m_csRefHash,
 				selectedLeafs[1]->m_csRefHash);
 			dlg.DoModal();
+		}
+		break;
+	case eCmd_EditBranchDescription:
+		{
+			CInputDlg dlg;
+			dlg.m_sHintText = CString(MAKEINTRESOURCE(IDS_PROC_BROWSEREFS_EDITDESCRIPTION));
+			dlg.m_sInputText = selectedLeafs[0]->m_csDescription;
+			dlg.m_sTitle = CString(MAKEINTRESOURCE(IDS_PROC_BROWSEREFS_EDITDESCRIPTION));
+			dlg.m_bUseLogWidth = true;
+			if(dlg.DoModal() == IDOK)
+			{
+				CString key;
+				key.Format(_T("branch.%s.description"), selectedLeafs[0]->m_csRefName);
+				dlg.m_sInputText.Replace(_T("\r"), _T(""));
+				dlg.m_sInputText.Trim();
+				if (dlg.m_sInputText.IsEmpty())
+					g_Git.UnsetConfigValue(key);
+				else
+					g_Git.SetConfigValue(key, dlg.m_sInputText);
+				Refresh();
+			}
 		}
 		break;
 	}
@@ -990,52 +1115,6 @@ BOOL CBrowseRefsDlg::PreTranslateMessage(MSG* pMsg)
 	return CResizableStandAloneDialog::PreTranslateMessage(pMsg);
 }
 
-class CRefLeafListCompareFunc
-{
-public:
-	CRefLeafListCompareFunc(CListCtrl* pList, int col, bool desc):m_col(col),m_desc(desc),m_pList(pList){}
-
-	static int CALLBACK StaticCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
-	{
-		return ((CRefLeafListCompareFunc*)lParamSort)->Compare(lParam1,lParam2);
-	}
-
-	int Compare(LPARAM lParam1, LPARAM lParam2)
-	{
-		return Compare(
-			(CShadowTree*)m_pList->GetItemData(lParam1),
-			(CShadowTree*)m_pList->GetItemData(lParam2));
-	}
-
-	int Compare(CShadowTree* pLeft, CShadowTree* pRight)
-	{
-		int result=CompareNoDesc(pLeft,pRight);
-		if(m_desc)
-			return -result;
-		return result;
-	}
-
-	int CompareNoDesc(CShadowTree* pLeft, CShadowTree* pRight)
-	{
-		switch(m_col)
-		{
-		case CBrowseRefsDlg::eCol_Name:	return pLeft->GetRefName().CompareNoCase(pRight->GetRefName());
-		case CBrowseRefsDlg::eCol_Date:	return pLeft->m_csDate_Iso8601.CompareNoCase(pRight->m_csDate_Iso8601);
-		case CBrowseRefsDlg::eCol_Msg:	return pLeft->m_csSubject.CompareNoCase(pRight->m_csSubject);
-		case CBrowseRefsDlg::eCol_LastAuthor: return pLeft->m_csAuthor.CompareNoCase(pRight->m_csAuthor);
-		case CBrowseRefsDlg::eCol_Hash:	return pLeft->m_csRefHash.CompareNoCase(pRight->m_csRefHash);
-		}
-		return 0;
-	}
-
-	int m_col;
-	bool m_desc;
-	CListCtrl* m_pList;
-
-
-};
-
-
 void CBrowseRefsDlg::OnLvnColumnclickListRefLeafs(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
@@ -1078,6 +1157,7 @@ CString CBrowseRefsDlg::PickRef(bool /*returnAsHash*/, CString initialRef, int p
 		initialRef = L"HEAD";
 	dlg.m_initialRef = initialRef;
 	dlg.m_pickRef_Kind = pickRef_Kind;
+	dlg.m_bPickOne = true;
 
 	if(dlg.DoModal() != IDOK)
 		return CString();

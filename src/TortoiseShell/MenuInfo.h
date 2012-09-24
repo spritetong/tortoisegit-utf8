@@ -8,10 +8,8 @@ enum GitCommands
 		ShellSubMenuFile,
 		ShellSubMenuLink,
 		ShellSubMenuMultiple,
-		ShellMenuUpdate,
 		ShellMenuCommit,
 		ShellMenuAdd,
-		ShellMenuAddAsReplacement,
 		ShellMenuRevert,
 		ShellMenuCleanup,
 		ShellMenuResolve,
@@ -55,7 +53,6 @@ enum GitCommands
 		ShellMenuUnIgnoreSub,
 		ShellMenuUnIgnoreCaseSensitive,
 		ShellMenuUnIgnore,
-		ShellMenuProperties,
 		ShellMenuClipPaste,
 		ShellMenuPull,
 		ShellMenuPush,
@@ -64,7 +61,6 @@ enum GitCommands
 		ShellMenuTag,
 		ShellMenuFormatPatch,
 		ShellMenuImportPatch,
-		ShellMenuCherryPick,
 		ShellMenuFetch,
 		ShellMenuRebase,
 		ShellMenuStashSave,
@@ -84,10 +80,16 @@ enum GitCommands
 		ShellMenuBisectBad,
 		ShellMenuBisectReset,
 		ShellMenuRepoBrowse,
+		ShellMenuLogSubmoduleFolder,
 		ShellMenuLastEntry			// used to mark the menu array end
 };
 
 	// helper struct for context menu entries
+struct YesNoPair
+{
+		DWORD				yes;
+		DWORD				no;
+};
 struct MenuInfo
 {
 		GitCommands			command;		///< the command which gets executed for this menu entry
@@ -99,12 +101,8 @@ struct MenuInfo
 		/// be added automatically, based on states of the selected item(s).
 		/// The 'yes' states must be set, the 'no' states must not be set
 		/// the four pairs are OR'ed together, the 'yes'/'no' states are AND'ed together.
-		DWORD				firstyes;
-		DWORD				firstno;
-		DWORD				secondyes;
-		DWORD				secondno;
-		DWORD				thirdyes;
-		DWORD				thirdno;
-		DWORD				fourthyes;
-		DWORD				fourthno;
+		YesNoPair			first;
+		YesNoPair			second;
+		YesNoPair			third;
+		YesNoPair			fourth;
 };

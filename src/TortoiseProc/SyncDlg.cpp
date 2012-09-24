@@ -82,6 +82,8 @@ BEGIN_MESSAGE_MAP(CSyncDlg, CResizableStandAloneDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SUBMODULE, &CSyncDlg::OnBnClickedButtonSubmodule)
 	ON_WM_TIMER()
 	ON_REGISTERED_MESSAGE(WM_TASKBARBTNCREATED, OnTaskbarBtnCreated)
+	ON_BN_CLICKED(IDC_CHECK_FORCE, &CSyncDlg::OnBnClickedCheckForce)
+	ON_BN_CLICKED(IDC_LOG, &CSyncDlg::OnBnClickedLog)
 END_MESSAGE_MAP()
 
 
@@ -99,11 +101,13 @@ void CSyncDlg::EnableControlButton(bool bEnabled)
 void CSyncDlg::OnBnClickedButtonPull()
 {
 	int CurrentEntry;
-	CurrentEntry = this->m_ctrlPull.GetCurrentEntry();
+	CurrentEntry = (int)this->m_ctrlPull.GetCurrentEntry();
 	this->m_regPullButton = CurrentEntry;
 
 	this->m_bAbort=false;
 	this->m_GitCmdList.clear();
+	m_ctrlCmdOut.SetWindowTextW(_T(""));
+	m_LogText = "";
 
 	this->UpdateData();
 	UpdateCombox();
@@ -143,8 +147,6 @@ void CSyncDlg::OnBnClickedButtonPull()
 	this->m_ctrlTabCtrl.ShowTab(IDC_IN_LOGLIST-1,false);
 	this->m_ctrlTabCtrl.ShowTab(IDC_IN_CHANGELIST-1,false);
 	this->m_ctrlTabCtrl.ShowTab(IDC_IN_CONFLICT-1,false);
-
-	this->GetDlgItem(IDC_BUTTON_COMMIT)->ShowWindow(SW_HIDE);
 
 	///Pull
 	if(CurrentEntry == 0) //Pull
@@ -312,8 +314,6 @@ void CSyncDlg::PullComplete()
 											CTGitPath::LOGACTIONS_UNMERGED);
 
 			this->ShowTab(IDC_IN_CONFLICT);
-
-			this->GetDlgItem(IDC_BUTTON_COMMIT)->ShowWindow(SW_NORMAL);
 		}
 		else
 			this->ShowTab(IDC_CMD_LOG);
@@ -353,7 +353,7 @@ void CSyncDlg::FetchComplete()
 	{
 		CRebaseDlg dlg;
 		dlg.m_PostButtonTexts.Add(_T("Email &Patch..."));
-		int response = dlg.DoModal();
+		INT_PTR response = dlg.DoModal();
 		if(response == IDOK)
 		{
 			return ;
@@ -381,6 +381,8 @@ void CSyncDlg::OnBnClickedButtonPush()
 {
 	this->UpdateData();
 	UpdateCombox();
+	m_ctrlCmdOut.SetWindowTextW(_T(""));
+	m_LogText = "";
 
 	if(this->m_strURL.IsEmpty())
 	{
@@ -411,7 +413,7 @@ void CSyncDlg::OnBnClickedButtonPush()
 	}
 #endif // __TGIT_XUTF8_LEGACY__
 
-	this->m_regPushButton=this->m_ctrlPush.GetCurrentEntry();
+	this->m_regPushButton=(DWORD)this->m_ctrlPush.GetCurrentEntry();
 	this->SwitchToRun();
 	this->m_bAbort=false;
 	this->m_GitCmdList.clear();
@@ -580,7 +582,7 @@ void CSyncDlg::ShowProgressCtrl(bool bShow)
 	this->m_ctrlProgress.ShowWindow(b);
 	this->m_ctrlAnimate.Open(IDR_DOWNLOAD);
 	if(b == SW_NORMAL)
-		this->m_ctrlAnimate.Play(0,-1,-1);
+		this->m_ctrlAnimate.Play(0, UINT_MAX, UINT_MAX);
 	else
 		this->m_ctrlAnimate.Stop();
 }
@@ -686,9 +688,9 @@ BOOL CSyncDlg::OnInitDialog()
 	}
 	m_ctrlTabCtrl.InsertTab(&m_InChangeFileList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_INCHANGELIST)), -1);
 
-	m_InChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("OutSyncDlg"),
+	m_InChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("InSyncDlg"),
 							(CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)|
-							CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF2)),false);
+							CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF2)), false, true, GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD| GITSLC_COLDEL);
 
 
 	//---------- Create Conflict List Ctrl -----------------
@@ -701,7 +703,7 @@ BOOL CSyncDlg::OnInitDialog()
 	}
 	m_ctrlTabCtrl.InsertTab(&m_ConflictFileList,_T("Conflict"),-1);
 
-	m_ConflictFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("OutSyncDlg"),
+	m_ConflictFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("ConflictSyncDlg"),
 							(CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)|
 							CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF2)|
 							GITSLC_POPCONFLICT|GITSLC_POPRESOLVE),false);
@@ -734,9 +736,9 @@ BOOL CSyncDlg::OnInitDialog()
 	}
 	m_ctrlTabCtrl.InsertTab(&m_OutChangeFileList, CString(MAKEINTRESOURCE(IDS_PROC_SYNC_OUTCHANGELIST)), -1);
 
-	m_OutChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("OutSyncDlg"),
+	m_OutChangeFileList.Init(GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD | GITSLC_COLDEL, _T("OutSyncDlg"),
 							(CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_COMPARETWO)|
-							CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF2)),false);
+							CGitStatusListCtrl::GetContextMenuBit(CGitStatusListCtrl::IDGITLC_GNUDIFF2)), false, true, GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD| GITSLC_COLDEL);
 
 	this->m_tooltips.Create(this);
 
@@ -753,9 +755,10 @@ BOOL CSyncDlg::OnInitDialog()
 	AddAnchor(IDC_PROGRESS_SYNC,TOP_LEFT,TOP_RIGHT);
 	AddAnchor(IDOK,BOTTOM_RIGHT);
 	AddAnchor(IDHELP,BOTTOM_RIGHT);
-	AddAnchor(IDC_STATIC_STATUS,BOTTOM_LEFT);
+	AddAnchor(IDC_STATIC_STATUS, BOTTOM_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_ANIMATE_SYNC,TOP_LEFT);
 	AddAnchor(IDC_BUTTON_COMMIT,BOTTOM_LEFT);
+	AddAnchor(IDC_LOG, BOTTOM_LEFT);
 
 	// do not use BRANCH_COMBOX_ADD_ANCHOR here, we want to have different stylings
 	AddAnchor(IDC_COMBOBOXEX_LOCAL_BRANCH, TOP_LEFT,TOP_CENTER);
@@ -763,8 +766,6 @@ BOOL CSyncDlg::OnInitDialog()
 	AddAnchor(IDC_BUTTON_LOCAL_BRANCH, TOP_CENTER);
 	AddAnchor(IDC_BUTTON_REMOTE_BRANCH, TOP_RIGHT);
 	AddAnchor(IDC_STATIC_REMOTE_BRANCH, TOP_CENTER);
-
-	this->GetDlgItem(IDC_BUTTON_COMMIT)->ShowWindow(SW_HIDE);
 
 	AdjustControlSize(IDC_CHECK_PUTTY_KEY);
 	AdjustControlSize(IDC_CHECK_FORCE);
@@ -982,27 +983,47 @@ void CSyncDlg::FetchOutList(bool force)
 		if(localbranch != m_OutLocalBranch || m_OutRemoteBranch != remotebranch || force)
 		{
 			m_OutLogList.ClearText();
-			m_OutLogList.FillGitLog(NULL,CGit::	LOG_INFO_STAT| CGit::LOG_INFO_FILESTATE | CGit::LOG_INFO_SHOW_MERGEDFILE,
-				&remotebranch,&localbranch);
 
-			CString str;
-			if(m_OutLogList.GetItemCount() == 0)
+			CGitHash base, remotehash;
+			bool isFastForward = g_Git.IsFastForward(remotebranch, localbranch, &base);
+
+			remotehash = g_Git.GetHash(remotebranch);
+			if (remotehash == g_Git.GetHash(localbranch))
 			{
+				CString str;
 				str.Format(IDS_PROC_SYNC_COMMITSAHEAD, 0, remotebranch);
 				m_OutLogList.ShowText(str);
 				this->m_ctrlStatus.SetWindowText(str);
 				this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID()-1,FALSE);
 				this->GetDlgItem(IDC_BUTTON_EMAIL)->EnableWindow(FALSE);
 			}
-			else
+			else if (isFastForward || m_bForce)
 			{
+				//fast forward
+				m_OutLogList.FillGitLog(NULL, CGit::LOG_INFO_STAT | CGit::LOG_INFO_FILESTATE | CGit::LOG_INFO_SHOW_MERGEDFILE, &remotebranch, &localbranch);
+				CString str;
 				str.Format(IDS_PROC_SYNC_COMMITSAHEAD, m_OutLogList.GetItemCount(), remotebranch);
 				this->m_ctrlStatus.SetWindowText(str);
 
-				AddDiffFileList(&m_OutChangeFileList,&m_arOutChangeList,localbranch,remotebranch);
+				if (isFastForward)
+					AddDiffFileList(&m_OutChangeFileList, &m_arOutChangeList, localbranch, remotebranch);
+				else
+				{
+					CString baseString = base.ToString();
+					AddDiffFileList(&m_OutChangeFileList, &m_arOutChangeList, localbranch, baseString);
+				}
 
 				this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID()-1,TRUE);
 				this->GetDlgItem(IDC_BUTTON_EMAIL)->EnableWindow(TRUE);
+			}
+			else
+			{
+				CString str;
+				str.Format(IDS_PROC_SYNC_NOFASTFORWARD, localbranch, remotebranch);
+				m_OutLogList.ShowText(str);
+				this->m_ctrlStatus.SetWindowText(str);
+				this->m_ctrlTabCtrl.ShowTab(m_OutChangeFileList.GetDlgCtrlID() - 1, FALSE);
+				this->GetDlgItem(IDC_BUTTON_EMAIL)->EnableWindow(FALSE);
 			}
 		}
 		this->m_OutLocalBranch=localbranch;
@@ -1040,7 +1061,7 @@ LRESULT CSyncDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 {
 	if(wParam == MSG_PROGRESSDLG_START)
 	{
-		m_ctrlAnimate.Play(0,-1,-1);
+		m_ctrlAnimate.Play(0, UINT_MAX, UINT_MAX);
 		this->m_ctrlProgress.SetPos(0);
 		if (m_pTaskbarList)
 		{
@@ -1055,8 +1076,31 @@ LRESULT CSyncDlg::OnProgressUpdateUI(WPARAM wParam,LPARAM lParam)
 		m_ctrlAnimate.Stop();
 		m_ctrlProgress.SetPos(100);
 		//this->DialogEnableWindow(IDOK,TRUE);
-		if (m_pTaskbarList)
-			m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NOPROGRESS);
+
+		DWORD exitCode = (DWORD)lParam;
+		if (exitCode)
+		{
+			if (m_pTaskbarList)
+			{
+				m_pTaskbarList->SetProgressState(m_hWnd, TBPF_ERROR);
+				m_pTaskbarList->SetProgressValue(m_hWnd, 100, 100);
+			}
+			CString log;
+			log.Format(IDS_PROC_PROGRESS_GITUNCLEANEXIT, exitCode);
+			CString err;
+			err.Format(_T("\r\n\r\n%s\r\n"), log);
+			CProgressDlg::InsertColorText(this->m_ctrlCmdOut, err, RGB(255,0,0));
+		}
+		else
+		{
+			if (m_pTaskbarList)
+				m_pTaskbarList->SetProgressState(m_hWnd, TBPF_NOPROGRESS);
+			CString temp;
+			temp.LoadString(IDS_SUCCESS);
+			CString log;
+			log.Format(_T("\r\n%s\r\n"), temp);
+			CProgressDlg::InsertColorText(this->m_ctrlCmdOut, log, RGB(0,0,255));
+		}
 
 		//if(wParam == MSG_PROGRESSDLG_END)
 		if(this->m_CurrentCmd == GIT_COMMAND_PUSH )
@@ -1143,8 +1187,10 @@ void CSyncDlg::OnBnClickedButtonSubmodule()
 {
 	this->UpdateData();
 	UpdateCombox();
+	m_ctrlCmdOut.SetWindowTextW(_T(""));
+	m_LogText = "";
 
-	this->m_regSubmoduleButton = this->m_ctrlSubmodule.GetCurrentEntry();
+	this->m_regSubmoduleButton = (DWORD)this->m_ctrlSubmodule.GetCurrentEntry();
 
 	this->SwitchToRun();
 
@@ -1194,7 +1240,7 @@ void CSyncDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void CSyncDlg::OnLvnInLogListColumnClick(NMHDR *pNMHDR, LRESULT *pResult)
+void CSyncDlg::OnLvnInLogListColumnClick(NMHDR * /* pNMHDR */, LRESULT *pResult)
 {
 	*pResult = 0;
 }
@@ -1204,4 +1250,19 @@ LRESULT CSyncDlg::OnTaskbarBtnCreated(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	m_pTaskbarList.Release();
 	m_pTaskbarList.CoCreateInstance(CLSID_TaskbarList);
 	return 0;
+}
+
+void CSyncDlg::OnBnClickedCheckForce()
+{
+	UpdateData();
+}
+
+void CSyncDlg::OnBnClickedLog()
+{
+	CString cmd = _T("/command:log");
+	cmd += _T(" /path:\"");
+	cmd += g_Git.m_CurrentDir;
+	cmd += _T("\"");
+
+	CAppUtils::RunTortoiseProc(cmd);
 }

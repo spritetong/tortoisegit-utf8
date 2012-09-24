@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -112,49 +112,77 @@ protected:
 
 	BOOL CheckHeader(SLogCacheIndexHeader *header)
 	{
-		if(header->m_Magic != LOG_INDEX_MAGIC)
-			return FALSE;
+		__try
+		{
+			if(header->m_Magic != LOG_INDEX_MAGIC)
+				return FALSE;
 
-		if(header->m_Version != LOG_INDEX_VERSION)
-			return FALSE;
+			if(header->m_Version != LOG_INDEX_VERSION)
+				return FALSE;
 
-		return TRUE;
+			return TRUE;
+		}
+		__finally
+		{
+		}
+		return FALSE;
 	}
 
 	BOOL CheckHeader(SLogCacheRevFileHeader *header)
 	{
-		if(header->m_Magic != LOG_DATA_FILE_MAGIC)
-			return FALSE;
+		__try
+		{
+			if(header->m_Magic != LOG_DATA_FILE_MAGIC)
+				return FALSE;
 
-		if(header->m_Version != LOG_INDEX_VERSION)
-			return FALSE;
+			if(header->m_Version != LOG_INDEX_VERSION)
+				return FALSE;
 
-		return TRUE;
+			return TRUE;
+		}
+		__finally
+		{
+		}
+		return FALSE;
 	}
 
 	BOOL CheckHeader(SLogCacheRevItemHeader *header)
 	{
-		if(header->m_Magic != LOG_DATA_ITEM_MAGIC)
-			return FALSE;
+		__try
+		{
+			if(header->m_Magic != LOG_DATA_ITEM_MAGIC)
+				return FALSE;
 
-		if(header->m_Version != LOG_INDEX_VERSION)
-			return FALSE;
+			if(header->m_Version != LOG_INDEX_VERSION)
+				return FALSE;
 
-		return TRUE;
+			return TRUE;
+		}
+		__finally
+		{
+		}
+		return FALSE;
 	}
 
 	BOOL CheckHeader(SLogCacheDataFileHeader *header)
 	{
-		if(header->m_Magic != LOG_DATA_MAGIC)
-			return FALSE;
+		__try
+		{
+			if(header->m_Magic != LOG_DATA_MAGIC)
+				return FALSE;
 
-		if(header->m_Version != LOG_INDEX_VERSION)
-			return FALSE;
+			if(header->m_Version != LOG_INDEX_VERSION)
+				return FALSE;
 
-		return TRUE;
+			return TRUE;
+		}
+		__finally
+		{
+		}
+		return FALSE;
 	}
 
-	int SaveOneItem(GitRev &Rev,ULONGLONG offset);
+	int SaveOneItem(GitRev &Rev, LONG offset);
 
 	CString m_GitDir;
 	int RebuildCacheFile();
