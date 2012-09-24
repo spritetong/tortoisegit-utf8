@@ -147,7 +147,7 @@ public:
 
 	static bool Export(CString *BashHash=NULL);
 	static bool CreateBranchTag(bool IsTag=TRUE,CString *CommitHash=NULL, bool switch_new_brach=false);
-	static bool Switch(CString *CommitHash, CString initialRefName = CString(), bool autoClose = false);
+	static bool Switch(CString initialRefName = CString(), bool autoClose = false);
 	static bool PerformSwitch(CString ref, bool bForce = false, CString sNewBranch = CString(), bool bBranchOverride = false, bool bTrack = false, bool autoClose = false);
 
 	static bool IgnoreFile(CTGitPathList &filelist,bool IsMask);
@@ -197,6 +197,8 @@ public:
 	static void EditNote(GitRev *hash);
 	static int GetMsysgitVersion(CString *versionstring=NULL);
 	static void MarkWindowAsUnpinnable(HWND hWnd);
+
+	static bool BisectStart(CString lastGood, CString firstBad, bool autoClose = false);
 
 private:
 	static CString PickDiffTool(const CTGitPath& file1, const CTGitPath& file2);

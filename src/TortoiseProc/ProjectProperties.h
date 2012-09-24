@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2003-2008 - TortoiseSVN
+// Copyright (C) 2003-2008,2011-2012 - TortoiseSVN
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include <set>
 #include "TGitPath.h"
 using namespace std;
+#include <regex>
 
 #define BUGTRAQPROPNAME_LABEL             _T("bugtraq.label")
 #define BUGTRAQPROPNAME_MESSAGE           _T("bugtraq.message")
@@ -36,17 +37,12 @@ using namespace std;
 #define PROJECTPROPNAME_LOGMINSIZE		  _T("tsvn.logminsize")
 #define PROJECTPROPNAME_LOCKMSGMINSIZE	  _T("tsvn.lockmsgminsize")
 #define PROJECTPROPNAME_LOGFILELISTLANG	  _T("tsvn.logfilelistenglish")
-#define PROJECTPROPNAME_LOGSUMMARY		  _T("tsvn.logsummary")
 #define PROJECTPROPNAME_PROJECTLANGUAGE   _T("tsvn.projectlanguage")
 #define PROJECTPROPNAME_USERFILEPROPERTY  _T("tsvn.userfileproperties")
 #define PROJECTPROPNAME_USERDIRPROPERTY   _T("tsvn.userdirproperties")
-#define PROJECTPROPNAME_AUTOPROPS		  _T("tsvn.autoprops")
 
 #define PROJECTPROPNAME_WEBVIEWER_REV     _T("webviewer.revision")
 #define PROJECTPROPNAME_WEBVIEWER_PATHREV _T("webviewer.pathrevision")
-
-class CTSVNPathList;
-struct svn_config_t;
 
 /**
  * \ingroup TortoiseProc
@@ -82,10 +78,21 @@ public:
 	 * \param msg the log message
 	 * \param pWnd Pointer to a rich edit control
 	 */
+#ifdef _RICHEDIT_
+	std::vector<CHARRANGE> FindBugIDPositions(const CString& msg);
+#endif
 	BOOL FindBugID(const CString& msg, CWnd * pWnd);
 
 	CString FindBugID(const CString& msg);
 	std::set<CString> FindBugIDs(const CString& msg);
+
+	/**
+	 * Check whether calling \ref FindBugID or \ref FindBugIDPositions
+	 * is worthwhile. If the result is @a false, those functions would
+	 * return empty strings or sets, respectively.
+	 */
+	bool MightContainABugID();
+
 	/**
 	 * Searches for the BugID inside a log message. If one is found,
 	 * that BugID is returned. If none is found, an empty string is returned.
@@ -112,34 +119,15 @@ public:
 	 */
 	CString GetBugIDUrl(const CString& sBugID);
 
-	/**
-	 * Inserts the tGit:autoprops into the Subversion config section.
-	 * Call this before an import or an add operation.
-	 */
-	//void InsertAutoProps(git_config_t *cfg);
+	/** replaces bNumer: a regular expression string to check the validity of
+	  * the entered bug ID. */
+	const CString& GetCheckRe() const {return sCheckRe;}
+	void SetCheckRe(const CString& s) {sCheckRe = s;regExNeedUpdate=true;AutoUpdateRegex();}
 
-	/**
-	 * Adds all the project properties to the specified entry
-	 */
-	bool AddAutoProps(const CTGitPath& path);
+	/** used to extract the bug ID from the string matched by sCheckRe */
+	const CString& GetBugIDRe() const {return sBugIDRe;}
+	void SetBugIDRe(const CString& s) {sBugIDRe = s;regExNeedUpdate=true;AutoUpdateRegex();}
 
-	/**
-	 * Returns the log message summary if the tGit:logsummaryregex property is
-	 * set and there are actually some matches.
-	 * Otherwise, an empty string is returned.
-	 */
-	CString GetLogSummary(const CString& sMessage);
-
-	/**
-	 * Transform the log message using \ref GetLogSummary and post-process it
-	 * to be suitable for 1-line controls.
-	 */
-	CString MakeShortMessage(const CString& message);
-
-	/**
-	 * Returns the path from which the properties were read.
-	 */
-	CTGitPath GetPropsPath() {return propsPath;}
 public:
 	/** The label to show in the commit dialog where the issue number/bug id
 	 * is entered. Example: "Bug-ID: " or "Issue-No.:". Default is "Bug-ID :" */
@@ -217,18 +205,25 @@ public:
 	CString		sWebViewerPathRev;
 
 	/**
-	 * The regex string to extract a summary from a log message. The summary
-	 * is the first matching regex group.
-	 */
-	CString		sLogSummaryRe;
-
-	/**
 	 * A regex string to extract revisions from a log message.
 	 */
 	CString		sLogRevRegex;
 private:
-	CString		sAutoProps;
 	CTGitPath	propsPath;
+
+	/**
+	 * Constructing regex objects is expensive. Therefore, cache them here.
+	 */
+	void AutoUpdateRegex();
+
+	bool CheckStringProp(CString& s, const std::string& propname, const CString& propval, LPCSTR prop);
+
+	bool regExNeedUpdate;
+	std::tr1::wregex regCheck;
+	std::tr1::wregex regBugID;
+
+	int			nBugIdPos;				///< result	of sMessage.Find(L"%BUGID%");
+
 #ifdef DEBUG
 	friend class PropTest;
 #endif

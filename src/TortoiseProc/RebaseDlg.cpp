@@ -195,7 +195,7 @@ BOOL CRebaseDlg::OnInitDialog()
 
 
 
-	m_FileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("RebaseDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT|GITSLC_POPRESTORE)),false);
+	m_FileListCtrl.Init(GITSLC_COLEXT | GITSLC_COLSTATUS |GITSLC_COLADD|GITSLC_COLDEL , _T("RebaseDlg"),(GITSLC_POPALL ^ (GITSLC_POPCOMMIT|GITSLC_POPRESTORE)), false, true, GITSLC_COLEXT | GITSLC_COLSTATUS | GITSLC_COLADD| GITSLC_COLDEL);
 
 	m_ctrlTabCtrl.AddTab(&m_FileListCtrl, CString(MAKEINTRESOURCE(IDS_PROC_REVISIONFILES)));
 	m_ctrlTabCtrl.AddTab(&m_LogMessageCtrl, CString(MAKEINTRESOURCE(IDS_PROC_COMMITMESSAGE)), 1);
@@ -247,6 +247,7 @@ BOOL CRebaseDlg::OnInitDialog()
 	m_CommitList.m_IsIDReplaceAction = TRUE;
 //	m_CommitList.m_IsOldFirst = TRUE;
 	m_CommitList.m_IsRebaseReplaceGraph = TRUE;
+	m_CommitList.m_bNoHightlightHead = TRUE;
 
 	m_CommitList.InsertGitColumn();
 
@@ -290,7 +291,7 @@ BOOL CRebaseDlg::OnInitDialog()
 	if(m_CommitList.m_IsOldFirst)
 		this->m_CurrentRebaseIndex = -1;
 	else
-		this->m_CurrentRebaseIndex = m_CommitList.m_logEntries.size();
+		this->m_CurrentRebaseIndex = (int)m_CommitList.m_logEntries.size();
 
 
 	if(this->CheckRebaseCondition())
@@ -445,11 +446,10 @@ void CRebaseDlg::LoadBranchInfo()
 	int current;
 	g_Git.GetBranchList(list,&current,CGit::BRANCH_ALL);
 	m_BranchCtrl.AddString(list);
-	list.clear();
-	g_Git.GetBranchList(list,&current,CGit::BRANCH_ALL_F);
-	m_UpstreamCtrl.AddString(list);
-
 	m_BranchCtrl.SetCurSel(current);
+	list.clear();
+	g_Git.GetBranchList(list, NULL, CGit::BRANCH_ALL_F);
+	m_UpstreamCtrl.AddString(list);
 
 	AddBranchToolTips(&m_BranchCtrl);
 	AddBranchToolTips(&m_UpstreamCtrl);
@@ -492,14 +492,7 @@ void CRebaseDlg::OnCbnSelchangeUpstream()
 void CRebaseDlg::FetchLogList()
 {
 	CGitHash base,hash;
-	CString basestr, err;
-	CString cmd;
 	m_IsFastForward=FALSE;
-	cmd.Format(_T("git.exe merge-base %s %s"), g_Git.FixBranchName(m_UpstreamCtrl.GetString()),
-											   g_Git.FixBranchName(m_BranchCtrl.GetString()));
-	g_Git.Run(cmd, &basestr, &err, CP_UTF8);
-
-	base=basestr;
 
 	hash=g_Git.GetHash(m_BranchCtrl.GetString());
 
@@ -515,7 +508,7 @@ void CRebaseDlg::FetchLogList()
 		return;
 	}
 
-	if(hash == base )
+	if (g_Git.IsFastForward(m_BranchCtrl.GetString(), m_UpstreamCtrl.GetString(), &base))
 	{
 		//fast forword
 		this->m_IsFastForward=TRUE;
@@ -588,7 +581,7 @@ void CRebaseDlg::FetchLogList()
 	if(m_CommitList.m_IsOldFirst)
 		this->m_CurrentRebaseIndex = -1;
 	else
-		this->m_CurrentRebaseIndex = m_CommitList.m_logEntries.size();
+		this->m_CurrentRebaseIndex = (int)m_CommitList.m_logEntries.size();
 
 	this->GetDlgItem(IDC_REBASE_CONTINUE)->EnableWindow(m_CommitList.GetItemCount());
 	SetContinueButtonText();
@@ -604,11 +597,12 @@ void CRebaseDlg::AddBranchToolTips(CHistoryCombo *pBranch)
 		GitRev rev;
 		rev.GetCommit(text);
 
-		tooltip.Format(_T("%s: %s\n%s: %s\n%s: %s\n%s:\n<b>%s</b>\n%s"),
+		tooltip.Format(_T("%s: %s\n%s: %s <%s>\n%s: %s\n%s:\n%s\n%s"),
 			CString(MAKEINTRESOURCE(IDS_LOG_REVISION)),
 			rev.m_CommitHash.ToString(),
 			CString(MAKEINTRESOURCE(IDS_LOG_AUTHOR)),
 			rev.GetAuthorName(),
+			rev.GetAuthorEmail(),
 			CString(MAKEINTRESOURCE(IDS_LOG_DATE)),
 			CLoglistUtils::FormatDateAndTime(rev.GetAuthorDate(), DATE_LONGDATE),
 			CString(MAKEINTRESOURCE(IDS_LOG_MESSAGE)),
@@ -863,6 +857,7 @@ int CRebaseDlg::FinishRebase()
 
 	m_ctrlTabCtrl.RemoveTab(0);
 	m_ctrlTabCtrl.RemoveTab(0);
+	m_LogMessageCtrl.ShowWindow(SW_HIDE);
 	m_CtrlStatusText.SetWindowText(CString(MAKEINTRESOURCE(IDS_PROC_REBASEFINISHED)));
 
 	return 0;
@@ -1231,7 +1226,7 @@ void CRebaseDlg::UpdateProgress()
 	else
 		index = m_CommitList.GetItemCount()-m_CurrentRebaseIndex;
 
-	m_ProgressBar.SetRange(1,m_CommitList.GetItemCount());
+	m_ProgressBar.SetRange32(1, m_CommitList.GetItemCount());
 	m_ProgressBar.SetPos(index);
 	if (m_pTaskbarList)
 	{
@@ -1640,7 +1635,7 @@ void CRebaseDlg::OnBnClickedRebasePostButton()
 	this->m_Upstream=this->m_UpstreamCtrl.GetString();
 	this->m_Branch=this->m_BranchCtrl.GetString();
 
-	this->EndDialog(IDC_REBASE_POST_BUTTON+this->m_PostButton.GetCurrentEntry());
+	this->EndDialog((int)(IDC_REBASE_POST_BUTTON+this->m_PostButton.GetCurrentEntry()));
 }
 
 void CRebaseDlg::Refresh()

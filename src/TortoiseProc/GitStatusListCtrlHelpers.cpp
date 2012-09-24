@@ -1,7 +1,7 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
 // Copyright (C) 2008 - TortoiseSVN
-// Copyright (C) 2008-2011 - TortoiseGit
+// Copyright (C) 2008-2012 - TortoiseGit
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 #include <iterator>
 
 // registry version number of column-settings of GitLogListBase
-#define BLAME_COLUMN_VERSION 4
+#define GITSLC_COL_VERSION 5
 
 #ifndef assert
 #define assert(x) ATLASSERT(x)
@@ -136,19 +136,12 @@ void ColumnManager::ReadSettings
 	registryPrefix = _T("Software\\TortoiseGit\\StatusColumns\\") + containerName;
 
 	// we accept settings of current version only
-	bool valid = (DWORD)CRegDWORD (registryPrefix + _T("Version"), 0xff) == BLAME_COLUMN_VERSION;
+	bool valid = (DWORD)CRegDWORD (registryPrefix + _T("Version"), 0xff) == GITSLC_COL_VERSION;
 	if (valid)
 	{
 		// read (possibly different) column selection
 
 		selectedStandardColumns = CRegDWORD (registryPrefix, selectedStandardColumns) & ~hideColumns;
-
-		// read user-prop lists
-
-		CString userPropList = CRegString (registryPrefix + _T("UserProps"));
-		CString shownUserProps = CRegString (registryPrefix + _T("ShownUserProps"));
-
-		ParseUserPropSettings (userPropList, shownUserProps);
 
 		// read column widths
 
@@ -192,20 +185,12 @@ void ColumnManager::ReadSettings
 void ColumnManager::WriteSettings() const
 {
 	CRegDWORD regVersion (registryPrefix + _T("Version"), 0, TRUE);
-	regVersion = BLAME_COLUMN_VERSION;
+	regVersion = GITSLC_COL_VERSION;
 
 	// write (possibly different) column selection
 
 	CRegDWORD regStandardColumns (registryPrefix, 0, TRUE);
 	regStandardColumns = GetSelectedStandardColumns();
-
-	// write user-prop lists
-
-	CRegString regUserProps (registryPrefix + _T("UserProps"), CString(), TRUE);
-	regUserProps = GetUserPropList();
-
-	CRegString regShownUserProps (registryPrefix + _T("ShownUserProps"), CString(), TRUE);
-	regShownUserProps = GetShownUserProps();
 
 	// write column widths
 
@@ -252,14 +237,6 @@ bool ColumnManager::IsRelevant (int column) const
 	return columns[index].relevant;
 }
 
-bool ColumnManager::IsUserProp (int column) const
-{
-	size_t index = static_cast<size_t>(column);
-	assert (columns.size() > index);
-
-	return columns[index].index >= GITSLC_USERPROPCOLOFFSET;
-}
-
 int ColumnManager::SetNames(UINT* buffer, int size)
 {
 	itemName.clear();
@@ -296,7 +273,7 @@ int ColumnManager::GetWidth (int column, bool useDefaults) const
 
 	int width = columns[index].width;
 	if ((width == 0) && useDefaults)
-		width = LVSCW_AUTOSIZE_USEHEADER;
+		width = LVSCW_AUTOSIZE;
 
 	return width;
 }
@@ -344,15 +321,11 @@ void ColumnManager::ColumnMoved (int column, int position)
 	size_t visiblePosition = static_cast<size_t>(position);
 	size_t columnCount = gridColumnOrder.size();
 
-	for (; (visiblePosition < columnCount)
-			&& !columns[gridColumnOrder[visiblePosition]].visible
-			; ++visiblePosition )
-	{
-	}
-
 	int next = -1;
-	if (visiblePosition != columnCount)
+	if (visiblePosition < columnCount - 1)
 	{
+		// the new position (visiblePosition) is the column id w/o the moved column
+		gridColumnOrder.erase(std::find(gridColumnOrder.begin(), gridColumnOrder.end(), index));
 		next = gridColumnOrder[visiblePosition];
 	}
 
@@ -375,149 +348,7 @@ void ColumnManager::ColumnResized (int column)
 	int width = control->GetColumnWidth (column);
 	columns[index].width = width;
 
-	int propertyIndex = columns[index].index;
-	if (propertyIndex >= GITSLC_USERPROPCOLOFFSET)
-		userProps[propertyIndex - GITSLC_USERPROPCOLOFFSET].width = width;
-
 	control->Invalidate  (FALSE);
-}
-
-// call these to update the user-prop list
-// (will also auto-insert /-remove new list columns)
-#if 0
-void ColumnManager::UpdateUserPropList
-	(const std::vector<FileEntry*>& files)
-{
-	// collect all user-defined props
-
-	std::set<CString> aggregatedProps;
-	for (size_t i = 0, count = files.size(); i < count; ++i)
-		files[i]->present_props.GetPropertyNames (aggregatedProps);
-
-	aggregatedProps.erase (_T("svn:needs-lock"));
-	itemProps = aggregatedProps;
-
-	// add new ones to the internal list
-
-	std::set<CString> newProps = aggregatedProps;
-	for (size_t i = 0, count = userProps.size(); i < count; ++i)
-		newProps.erase (userProps[i].name);
-
-	while (newProps.size() + userProps.size()
-			> SVNSLC_MAXCOLUMNCOUNT - SVNSLC_USERPROPCOLOFFSET)
-		newProps.erase (--newProps.end());
-
-	typedef std::set<CString>::const_iterator CIT;
-	for ( CIT iter = newProps.begin(), end = newProps.end()
-		; iter != end
-		; ++iter)
-	{
-		int index = static_cast<int>(userProps.size())
-				  + SVNSLC_USERPROPCOLOFFSET;
-		columnOrder.push_back (index);
-
-		UserProp userProp;
-		userProp.name = *iter;
-		userProp.width = 0;
-
-		userProps.push_back (userProp);
-	}
-
-	// remove unused columns from control.
-	// remove used ones from the set of aggregatedProps.
-
-	for (size_t i = columns.size(); i > 0; --i)
-		if ((columns[i-1].index >= SVNSLC_USERPROPCOLOFFSET)
-			&& (aggregatedProps.erase (GetName ((int)i-1)) == 0))
-		{
-			// this user-prop has not been set on any item
-
-			if (!columns[i-1].visible)
-			{
-				control->DeleteColumn (static_cast<int>(i-1));
-				columns.erase (columns.begin() + i-1);
-			}
-		}
-
-	// aggregatedProps now contains new columns only.
-	// we can't use newProps here because some props may have been used
-	// earlier but were not in the recent list of used props.
-	// -> they are neither in columns[] nor in newProps.
-
-	for ( CIT iter = aggregatedProps.begin(), end = aggregatedProps.end()
-		; iter != end
-		; ++iter)
-	{
-		// get the logical column index / ID
-
-		int index = -1;
-		int width = 0;
-		for (size_t i = 0, count = userProps.size(); i < count; ++i)
-			if (userProps[i].name == *iter)
-			{
-				index = static_cast<int>(i) + SVNSLC_USERPROPCOLOFFSET;
-				width = userProps[i].width;
-				break;
-			}
-
-		assert (index != -1);
-
-		// find insertion position
-
-		std::vector<ColumnInfo>::iterator columnIter = columns.begin();
-		std::vector<ColumnInfo>::iterator end = columns.end();
-		for (; (columnIter != end) && columnIter->index < index; ++columnIter);
-		int pos = static_cast<int>(columnIter - columns.begin());
-
-		ColumnInfo column;
-		column.index = index;
-		column.width = width;
-		column.visible = false;
-
-		columns.insert (columnIter, column);
-
-		// update control
-
-		int result = control->InsertColumn (pos, *iter, LVCFMT_LEFT, GetVisibleWidth(pos, false));
-		assert (result != -1);
-		UNREFERENCED_PARAMETER(result);
-	}
-
-	// update column order
-
-	ApplyColumnOrder();
-}
-#endif
-#if 0
-void ColumnManager::UpdateRelevance
-	( const std::vector<FileEntry*>& files
-	, const std::vector<size_t>& visibleFiles)
-{
-	// collect all user-defined props that belong to shown files
-
-	std::set<CString> aggregatedProps;
-	for (size_t i = 0, count = visibleFiles.size(); i < count; ++i)
-		files[visibleFiles[i]]->present_props.GetPropertyNames (aggregatedProps);
-
-	aggregatedProps.erase (_T("svn:needs-lock"));
-	itemProps = aggregatedProps;
-
-	// invisible columns for unused props are not relevant
-
-	for (int i = 0, count = GetColumnCount(); i < count; ++i)
-		if (IsUserProp(i) && !IsVisible(i))
-		{
-			columns[i].relevant
-				= aggregatedProps.find (GetName(i)) != aggregatedProps.end();
-		}
-
-}
-#endif
-// don't clutter the context menu with irrelevant prop info
-
-bool ColumnManager::AnyUnusedProperties() const
-{
-	return columns.size() < userProps.size() + itemName.size();
 }
 
 void ColumnManager::RemoveUnusedProps()
@@ -526,19 +357,15 @@ void ColumnManager::RemoveUnusedProps()
 	// map them onto new IDs (we may delete some IDs in between)
 
 	std::map<int, int> validIndices;
-	int userPropID = GITSLC_USERPROPCOLOFFSET;
 
 	for (size_t i = 0, count = columns.size(); i < count; ++i)
 	{
 		int index = columns[i].index;
 
 		if (itemProps.find (GetName((int)i)) != itemProps.end()
-			|| columns[i].visible
-			|| index < GITSLC_USERPROPCOLOFFSET)
+			|| columns[i].visible)
 		{
-			validIndices[index] = index < GITSLC_USERPROPCOLOFFSET
-								? index
-								: userPropID++;
+			validIndices[index] = index;
 		}
 	}
 
@@ -561,15 +388,6 @@ void ColumnManager::RemoveUnusedProps()
 		{
 			columns[i-1].index = iter->second;
 		}
-	}
-
-	// remove from user props
-
-	for (size_t i = userProps.size(); i > 0; --i)
-	{
-		int index = static_cast<int>(i)-1 + GITSLC_USERPROPCOLOFFSET;
-		if (validIndices.find (index) == validIndices.end())
-			userProps.erase (userProps.begin() + i-1);
 	}
 
 	// remove from and update column order
@@ -600,9 +418,6 @@ void ColumnManager::ResetColumns (DWORD defaultColumns)
 		columns[i].visible = (i < 32) && (((defaultColumns >> i) & 1) != 0);
 	}
 
-	for (size_t i = 0, count = userProps.size(); i < count; ++i)
-		userProps[i].width = 0;
-
 	// update UI
 
 	for (int i = 0, count = GetColumnCount(); i < count; ++i)
@@ -615,57 +430,6 @@ void ColumnManager::ResetColumns (DWORD defaultColumns)
 
 // initialization utilities
 
-void ColumnManager::ParseUserPropSettings(const CString& userPropList, const CString& shownUserProps)
-{
-	assert (userProps.empty());
-
-	static CString delimiters (_T(" "));
-
-	// parse list of visible user-props
-
-	std::set<CString> visibles;
-
-	int pos = 0;
-	CString name = shownUserProps.Tokenize (delimiters, pos);
-	while (!name.IsEmpty())
-	{
-		visibles.insert (name);
-		name = shownUserProps.Tokenize (delimiters, pos);
-	}
-
-	// create list of all user-props
-
-	pos = 0;
-	name = userPropList.Tokenize (delimiters, pos);
-	while (!name.IsEmpty())
-	{
-		bool visible = visibles.find (name) != visibles.end();
-
-		UserProp newEntry;
-		newEntry.name = name;
-		newEntry.width = 0;
-
-		userProps.push_back (newEntry);
-
-		// auto-create columns for visible user-props
-		// (others may be added later)
-
-		if (visible)
-		{
-			ColumnInfo newColumn;
-			newColumn.width = 0;
-			newColumn.visible = true;
-			newColumn.relevant = true;
-			newColumn.index = static_cast<int>(userProps.size())
-							+ GITSLC_USERPROPCOLOFFSET - 1;
-
-			columns.push_back (newColumn);
-		}
-
-		name = userPropList.Tokenize (delimiters, pos);
-	}
-}
-
 void ColumnManager::ParseWidths (const CString& widths)
 {
 	for (int i = 0, count = widths.GetLength() / 8; i < count; ++i)
@@ -676,18 +440,6 @@ void ColumnManager::ParseWidths (const CString& widths)
 			// a standard column
 
 			columns[i].width = width;
-		}
-		else if (i >= GITSLC_USERPROPCOLOFFSET)
-		{
-			// a user-prop column
-
-			size_t index = static_cast<size_t>(i - GITSLC_USERPROPCOLOFFSET);
-			assert (index < userProps.size());
-			userProps[index].width = width;
-
-			for (size_t k = 0, count = columns.size(); k < count; ++k)
-				if (columns[k].index == i)
-					columns[k].width = width;
 		}
 		else
 		{
@@ -716,12 +468,10 @@ void ColumnManager::ParseColumnOrder
 
 	// place columns according to valid entries in orderString
 
-	int limit = static_cast<int>(GITSLC_USERPROPCOLOFFSET + userProps.size());
 	for (int i = 0, count = widths.GetLength() / 2; i < count; ++i)
 	{
 		int index = _tcstol (widths.Mid (i*2, 2), NULL, 16);
-		if ((index < itemName.size())
-			|| ((index >= GITSLC_USERPROPCOLOFFSET) && (index < limit)))
+		if ((index < itemName.size()))
 		{
 			alreadyPlaced.insert (index);
 			columnOrder.push_back (index);
@@ -731,10 +481,6 @@ void ColumnManager::ParseColumnOrder
 	// place the remaining colums behind it
 
 	for (int i = 0; i < itemName.size(); ++i)
-		if (alreadyPlaced.find (i) == alreadyPlaced.end())
-			columnOrder.push_back (i);
-
-	for (int i = GITSLC_USERPROPCOLOFFSET; i < limit; ++i)
 		if (alreadyPlaced.find (i) == alreadyPlaced.end())
 			columnOrder.push_back (i);
 }
@@ -805,31 +551,6 @@ DWORD ColumnManager::GetSelectedStandardColumns() const
 	return result;
 }
 
-CString ColumnManager::GetUserPropList() const
-{
-	CString result;
-
-	for (size_t i = 0, count = userProps.size(); i < count; ++i)
-		result += userProps[i].name + _T(' ');
-
-	return result;
-}
-
-CString ColumnManager::GetShownUserProps() const
-{
-	CString result;
-
-	for (size_t i = 0, count = columns.size(); i < count; ++i)
-	{
-		size_t index = static_cast<size_t>(columns[i].index);
-		if (columns[i].visible && (index >= GITSLC_USERPROPCOLOFFSET))
-			result += userProps[index - GITSLC_USERPROPCOLOFFSET].name
-					+ _T(' ');
-	}
-
-	return result;
-}
-
 CString ColumnManager::GetWidthString() const
 {
 	CString result;
@@ -840,18 +561,6 @@ CString ColumnManager::GetWidthString() const
 	for (size_t i = 0; i < itemName.size(); ++i)
 	{
 		_stprintf_s (buf, 10, _T("%08X"), columns[i].width);
-		result += buf;
-	}
-
-	// range with no column IDs
-
-	result += CString ('0', 8 * (GITSLC_USERPROPCOLOFFSET - itemName.size()));
-
-	// user-prop columns
-
-	for (size_t i = 0, count = userProps.size(); i < count; ++i)
-	{
-		_stprintf_s (buf, 10, _T("%08X"), userProps[i].width);
 		result += buf;
 	}
 
@@ -890,6 +599,29 @@ bool CSorter::operator() (const CTGitPath* entry1 , const CTGitPath* entry2) con
 	int result = 0;
 	switch (sortedColumn)
 	{
+	case 7: // File size
+		{
+			if (result == 0)
+			{
+				__int64 fileSize1 = entry1->IsDirectory() ? 0 : entry1->GetFileSize();
+				__int64 fileSize2 = entry2->IsDirectory() ? 0 : entry2->GetFileSize();
+				
+				result = int(fileSize1 - fileSize2);
+			}
+		}
+	case 6: //Last Modification Date
+		{
+			if (result == 0)
+			{
+				__int64 writetime1 = entry1->GetLastWriteTime();
+				__int64 writetime2 = entry2->GetLastWriteTime();
+
+				FILETIME* filetime1 = (FILETIME*)(__int64*)&writetime1;
+				FILETIME* filetime2 = (FILETIME*)(__int64*)&writetime2;
+
+				result = CompareFileTime(filetime1, filetime2);
+			}
+		}
 	case 5: //Del Number
 		{
 			if (result == 0)
@@ -934,28 +666,6 @@ bool CSorter::operator() (const CTGitPath* entry1 , const CTGitPath* entry2) con
 			{
 				result = CTGitPath::Compare(entry1->GetGitPathString(), entry2->GetGitPathString());
 			}
-		}
-	default:
-		if ((result == 0) && (sortedColumn > 0))
-		{
-			// N/A props are "less than" empty props
-
-//			const CString& propName = columnManager->GetName (sortedColumn);
-
-//			bool entry1HasProp = entry1->present_props.HasProperty (propName);
-//			bool entry2HasProp = entry2->present_props.HasProperty (propName);
-
-//			if (entry1HasProp)
-//			{
-//				result = entry2HasProp
-//					? entry1->present_props[propName].Compare
-//					(entry2->present_props[propName])
-//					: 1;
-//			}
-//			else
-//			{
-//				result = entry2HasProp ? -1 : 0;
-//			}
 		}
 	} // switch (m_nSortedColumn)
 	if (!ascending)

@@ -88,6 +88,8 @@ GitFolderStatus::GitFolderStatus(void)
 	invalidstatus.askedcounter = -1;
 	invalidstatus.status = git_wc_status_none;
 	invalidstatus.url = emptyString;
+	invalidstatus.assumeValid = FALSE;
+	invalidstatus.skipWorktree = FALSE;
 //	invalidstatus.rev = -1;
 	m_nCounter = 0;
 	dirstatus = NULL;
@@ -101,7 +103,7 @@ GitFolderStatus::~GitFolderStatus(void)
 {
 }
 
-const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepath, const CString& sProjectRoot, BOOL bIsFolder, BOOL bDirectFolder)
+const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepath, const CString& /*sProjectRoot*/, BOOL bIsFolder, BOOL bDirectFolder)
 {
 	//dont' build the cache if an instance of TortoiseProc is running
 	//since this could interfere with svn commands running (concurrent
@@ -135,6 +137,8 @@ const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepa
 			dirstat.author = authors.GetString(NULL);
 			dirstat.url = urls.GetString(NULL);
 			dirstat.askedcounter = GITFOLDERSTATUS_CACHETIMES;
+			dirstat.assumeValid = FALSE;
+			dirstat.skipWorktree = FALSE;
 
 			dirstatus = NULL;
 //			git_revnum_t youngest = GIT_INVALID_REVNUM;
@@ -161,6 +165,8 @@ const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepa
 	m_nCounter = 0;
 
 	git_wc_status_kind status;
+	bool assumeValid = false;
+	bool skipWorktree = false;
 	int t1,t2;
 	t2=t1=0;
 	try
@@ -173,11 +179,12 @@ const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepa
 		}
 
 		t1 = ::GetCurrentTime();
-		status = m_GitStatus.GetAllStatus(filepath, depth);
+		status = m_GitStatus.GetAllStatus(filepath, depth, &assumeValid, &skipWorktree);
 		t2 = ::GetCurrentTime();
 	}
 	catch ( ... )
 	{
+		status = git_wc_status_unknown;
 	}
 
 	ATLTRACE2(_T("building cache for %s - time %d\n"), filepath.GetWinPath(), t2 -t1);
@@ -191,6 +198,8 @@ const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepa
 		ret = &m_cache[filepath.GetWinPath()];
 
 	ret->status = status;
+	ret->assumeValid = assumeValid;
+	ret->skipWorktree = skipWorktree;
 
 	m_mostRecentPath = filepath;
 	m_mostRecentStatus = ret;
@@ -203,7 +212,7 @@ const FileStatusCacheEntry * GitFolderStatus::BuildCache(const CTGitPath& filepa
 DWORD GitFolderStatus::GetTimeoutValue()
 {
 	DWORD timeout = GITFOLDERSTATUS_CACHETIMEOUT;
-	DWORD factor = m_cache.size()/200;
+	DWORD factor = (DWORD)m_cache.size() / 200;
 	if (factor==0)
 		factor = 1;
 	return factor*timeout;

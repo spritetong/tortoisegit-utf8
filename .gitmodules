@@ -1,18 +1,18 @@
 [submodule "ext/apr-util"]
 	path = ext/apr-util
-	url = https://git.tch.25u.com/git/opensource/net/apr-util.git
+	url = http://git.apache.org/apr-util.git
 [submodule "ext/apr"]
 	path = ext/apr
-	url = https://git.tch.25u.com/git/opensource/net/apr.git
+	url = http://git.apache.org/apr.git
 [submodule "ext/tgit"]
 	path = ext/tgit
-	url = https://git.tch.25u.com/git/opensource/git/tortoisegit.tgit.git
+	url = git://github.com/spritetong/tortoisegit-tgit-utf8.git
 [submodule "ext/zlib"]
 	path = ext/zlib
-	url = https://git.tch.25u.com/git/opensource/git/tortoisegit.zlib.git
+	url = https://code.google.com/p/tortoisegit.zlib/
 [submodule "ext/libcurl"]
 	path = ext/libcurl
-	url = https://git.tch.25u.com/git/opensource/net/curl.git
+	url = git://github.com/bagder/curl.git
 [submodule "ext/libgit2"]
 	path = ext/libgit2
-	url = https://git.tch.25u.com/git/opensource/git/libgit2.git
+	url = git://github.com/spritetong/tortoisegit-libgit2-utf8.git

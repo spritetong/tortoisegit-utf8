@@ -25,22 +25,22 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>type apu.hw &gt;..\apr-util\include\apu.hw </Command>
+      <Command>fc apu.hw ..\apr-util\include\apu.hw &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type apu.hw &gt;..\apr-util\include\apu.hw&#x0D;&#x0A;</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -141,7 +141,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>type apu.hw &gt;..\apr-util\include\apu.hw </Command>
+      <Command>fc apu.hw ..\apr-util\include\apu.hw &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type apu.hw &gt;..\apr-util\include\apu.hw&#x0D;&#x0A;</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -195,7 +195,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
-      <Command>type apu.hw &gt;..\apr-util\include\apu.hw </Command>
+      <Command>fc apu.hw ..\apr-util\include\apu.hw &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type apu.hw &gt;..\apr-util\include\apu.hw&#x0D;&#x0A;</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -248,7 +248,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
-      <Command>type apu.hw &gt;..\apr-util\include\apu.hw </Command>
+      <Command>fc apu.hw ..\apr-util\include\apu.hw &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type apu.hw &gt;..\apr-util\include\apu.hw&#x0D;&#x0A;</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -420,19 +420,19 @@
     <None Include="..\apr-util\include\apr_ldap.hnw" />
     <CustomBuild Include="..\apr-util\include\apr_ldap.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apr_ldap.h from apr_ldap.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fc ..\apr-util\include\apr_ldap.hw ..\apr-util\include\apr_ldap.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr-util\include\apr_ldap.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apr_ldap.h from apr_ldap.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fc ..\apr-util\include\apr_ldap.hw ..\apr-util\include\apr_ldap.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr-util\include\apr_ldap.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apr_ldap.h from apr_ldap.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fc ..\apr-util\include\apr_ldap.hw ..\apr-util\include\apr_ldap.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr-util\include\apr_ldap.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apr_ldap.h from apr_ldap.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fc ..\apr-util\include\apr_ldap.hw ..\apr-util\include\apr_ldap.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apr_ldap.hw &gt; ..\apr-util\include\apr_ldap.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr-util\include\apr_ldap.h;%(Outputs)</Outputs>
     </CustomBuild>
@@ -440,57 +440,57 @@
     <None Include="..\apr-util\include\apu.hnw" />
     <CustomBuild Include="..\apr-util\include\apu.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apu.h from apu.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fc ..\apr-util\include\apu.hw ..\apr-util\include\apu.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr-util\include\apu.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apu.h from apu.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fc ..\apr-util\include\apu.hw ..\apr-util\include\apu.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr-util\include\apu.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apu.h from apu.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fc ..\apr-util\include\apu.hw ..\apr-util\include\apu.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr-util\include\apu.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apu.h from apu.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fc ..\apr-util\include\apu.hw ..\apr-util\include\apu.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu.hw &gt; ..\apr-util\include\apu.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr-util\include\apu.h;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="..\apr-util\include\private\apu_config.h.in" />
     <CustomBuild Include="..\apr-util\include\private\apu_config.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apu_config.h from apu_config.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fc ..\apr-util\include\private\apu_config.hw ..\apr-util\include\private\apu_config.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr-util\include\private\apu_config.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apu_config.h from apu_config.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fc ..\apr-util\include\private\apu_config.hw ..\apr-util\include\private\apu_config.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr-util\include\private\apu_config.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apu_config.h from apu_config.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fc ..\apr-util\include\private\apu_config.hw ..\apr-util\include\private\apu_config.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr-util\include\private\apu_config.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apu_config.h from apu_config.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fc ..\apr-util\include\private\apu_config.hw ..\apr-util\include\private\apu_config.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\private\apu_config.hw &gt; ..\apr-util\include\private\apu_config.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr-util\include\private\apu_config.h;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="..\apr-util\include\private\apu_select_dbm.h.in" />
     <CustomBuild Include="..\apr-util\include\private\apu_select_dbm.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apu_select_dbm.h from apu_select_dbm.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr-util\include\private\apu_select_dbm.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apu_select_dbm.h from apu_select_dbm.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr-util\include\private\apu_select_dbm.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apu_select_dbm.h from apu_select_dbm.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr-util\include\private\apu_select_dbm.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apu_select_dbm.h from apu_select_dbm.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\private\apu_select_dbm.hw &gt; ..\apr-util\include\private\apu_select_dbm.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr-util\include\private\apu_select_dbm.h;%(Outputs)</Outputs>
     </CustomBuild>
@@ -498,19 +498,19 @@
     <None Include="..\apr-util\include\apu_want.hnw" />
     <CustomBuild Include="..\apr-util\include\apu_want.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apu_want.h from apu_want.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fc ..\apr-util\include\apu_want.hw ..\apr-util\include\apu_want.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr-util\include\apu_want.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apu_want.h from apu_want.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fc ..\apr-util\include\apu_want.hw ..\apr-util\include\apu_want.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr-util\include\apu_want.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apu_want.h from apu_want.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fc ..\apr-util\include\apu_want.hw ..\apr-util\include\apu_want.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr-util\include\apu_want.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apu_want.h from apu_want.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fc ..\apr-util\include\apu_want.hw ..\apr-util\include\apu_want.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr-util\include\apu_want.hw &gt; ..\apr-util\include\apu_want.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr-util\include\apu_want.h;%(Outputs)</Outputs>
     </CustomBuild>

@@ -313,6 +313,10 @@ msgstr ""
 msgid "&Advanced..."
 msgstr ""
 
+#. Resource IDs: (1701)
+msgid "&All"
+msgstr ""
+
 #. Resource IDs: (3936)
 msgid "&All Branches"
 msgstr ""
@@ -533,6 +537,10 @@ msgstr ""
 msgid "&Down"
 msgstr ""
 
+#. Resource IDs: (78, 1710)
+msgid "&Download"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "&Edit"
 msgstr ""
@@ -698,6 +706,10 @@ msgstr ""
 msgid "&Inline diff word-wise"
 msgstr ""
 
+#. Resource IDs: (81)
+msgid "&Install"
+msgstr ""
+
 #. Resource IDs: (1016)
 msgid "&Jump to first difference when loading"
 msgstr ""
@@ -813,6 +825,10 @@ msgstr ""
 
 #. Resource IDs: (16632)
 msgid "&No double-click event"
+msgstr ""
+
+#. Resource IDs: (1702)
+msgid "&None"
 msgstr ""
 
 #. Resource IDs: (1661)
@@ -991,6 +1007,10 @@ msgstr ""
 msgid "&Set MSysGit path"
 msgstr ""
 
+#. Resource IDs: (1486)
+msgid "&Set upstream/track remote branch"
+msgstr ""
+
 #. Resource IDs: (9)
 msgid "&Settings"
 msgstr ""
@@ -1057,6 +1077,10 @@ msgstr ""
 
 #. Resource IDs: (1513)
 msgid "&Tags"
+msgstr ""
+
+#. Resource IDs: (65535)
+msgid "&Tags:"
 msgstr ""
 
 #. Resource IDs: (16915)
@@ -1198,23 +1222,6 @@ msgstr ""
 
 #. Resource IDs: (245)
 msgid "(unknown)"
-msgstr ""
-
-#. Resource IDs: (1555)
-msgid "*Amend &Last Commit"
-msgstr ""
-
-#. Resource IDs: (1255)
-msgid "*Combine to one commit"
-msgstr ""
-
-#. Resource IDs: (1254)
-#, c-format
-msgid "*Rebase \"%s\" onto this..."
-msgstr ""
-
-#. Resource IDs: (20)
-msgid "*Rebase..."
 msgstr ""
 
 #. Resource IDs: (188)
@@ -1364,7 +1371,7 @@ msgid "A branch with this name already exists."
 msgstr ""
 
 #. Resource IDs: (201)
-msgid "A newer version is available. Please go to http://code.google.com/p/tortoisegit and download the current version! Click _here_ to go directly to our website."
+msgid "A newer version is available. Please download the current version!"
 msgstr ""
 
 #. Resource IDs: (195)
@@ -1468,10 +1475,6 @@ msgstr ""
 #. Resource IDs: (1253)
 #, c-format
 msgid "Add '%s' to dictionary"
-msgstr ""
-
-#. Resource IDs: (16)
-msgid "Add (as replacement)..."
 msgstr ""
 
 #. Resource IDs: (323)
@@ -1589,12 +1592,24 @@ msgstr ""
 msgid "Already up to date."
 msgstr ""
 
+#. Resource IDs: (1482)
+msgid "Always push to the selected remote archive for this local branch"
+msgstr ""
+
+#. Resource IDs: (1485)
+msgid "Always push to the selected remote branch for this local branch"
+msgstr ""
+
 #. Resource IDs: (197)
 msgid "Always use the system locale settings to show times and dates"
 msgstr ""
 
 #. Resource IDs: (67)
 msgid "Amend"
+msgstr ""
+
+#. Resource IDs: (1555)
+msgid "Amend &Last Commit"
 msgstr ""
 
 #. Resource IDs: (80)
@@ -1690,6 +1705,18 @@ msgstr ""
 
 #. Resource IDs: (16528)
 msgid "Assigned to:"
+msgstr ""
+
+#. Resource IDs: (10)
+msgid "Assume Unchanged"
+msgstr ""
+
+#. Resource IDs: (1550)
+msgid "Assume valid/unchanged"
+msgstr ""
+
+#. Resource IDs: (1550)
+msgid "Assume valid/unchanged (\"Needs-lock\" in TortoiseSVN)"
 msgstr ""
 
 #. Resource IDs: (77)
@@ -1981,10 +2008,6 @@ msgstr ""
 msgid "Bug-IDs"
 msgstr ""
 
-#. Resource IDs: (1269)
-msgid "Build"
-msgstr ""
-
 #. Resource IDs: (16132)
 msgid "Button Appearance"
 msgstr ""
@@ -2091,6 +2114,10 @@ msgstr ""
 msgid "Central European"
 msgstr ""
 
+#. Resource IDs: (1697)
+msgid "Change log"
+msgstr ""
+
 #. Resource IDs: (3601)
 msgid "Change the printer and printing options\nPrint Setup"
 msgstr ""
@@ -2135,7 +2162,7 @@ msgid "Check"
 msgstr ""
 
 #. Resource IDs: (174)
-msgid "Check For Updates"
+msgid "Check For Updates - TortoiseGit"
 msgstr ""
 
 #. Resource IDs: (1031)
@@ -2166,8 +2193,8 @@ msgstr ""
 msgid "Check to use a less verbose date and time format in log messages"
 msgstr ""
 
-#. Resource IDs: (65535)
-msgid "Checking if a newer version of TortoiseGit is available..."
+#. Resource IDs: (1700)
+msgid "Check:"
 msgstr ""
 
 #. Resource IDs: (77)
@@ -2193,10 +2220,6 @@ msgstr ""
 
 #. Resource IDs: (1255)
 msgid "Cherry Pick this commit..."
-msgstr ""
-
-#. Resource IDs: (20)
-msgid "Cherry Pick..."
 msgstr ""
 
 #. Resource IDs: (65535)
@@ -2282,10 +2305,6 @@ msgstr ""
 msgid "Click here to select a recently typed message"
 msgstr ""
 
-#. Resource IDs: (1467)
-msgid "Click here to view change log"
-msgstr ""
-
 #. Resource IDs: (65535)
 msgid "Click on \"Advanced\" to specify alternate diff programs based on file extension"
 msgstr ""
@@ -2364,6 +2383,10 @@ msgstr ""
 
 #. Resource IDs: (1481)
 msgid "Combine One Mail"
+msgstr ""
+
+#. Resource IDs: (1255)
+msgid "Combine to one commit"
 msgstr ""
 
 #. Resource IDs: (65535)
@@ -2582,6 +2605,10 @@ msgstr ""
 msgid "Copy and rename"
 msgstr ""
 
+#. Resource IDs: (1252)
+msgid "Copy log messages to clipboard"
+msgstr ""
+
 #. Resource IDs: (32777)
 msgid "Copy log to clipboard"
 msgstr ""
@@ -2617,7 +2644,7 @@ msgid "Copying..."
 msgstr ""
 
 #. Resource IDs: (1001)
-msgid "Copyright (C) 2009-2011 TortoiseGit"
+msgid "Copyright (C) 2009-2012 TortoiseGit"
 msgstr ""
 
 #. Resource IDs: (1254)
@@ -2635,7 +2662,7 @@ msgstr ""
 
 #. Resource IDs: (81)
 #, c-format
-msgid "Could not copy the files!\n<hr=100%%>\n%s"
+msgid "Could not copy the files!\n\n%s"
 msgstr ""
 
 #. Resource IDs: (3867)
@@ -2708,17 +2735,17 @@ msgstr ""
 
 #. Resource IDs: (81)
 #, c-format
-msgid "Could not start diff viewer!\n<hr=100%%>\n%s"
+msgid "Could not start diff viewer!\n\n%s"
 msgstr ""
 
 #. Resource IDs: (81)
 #, c-format
-msgid "Could not start external diff program!\n<hr=100%%>\n%s"
+msgid "Could not start external diff program!\n\n%s"
 msgstr ""
 
 #. Resource IDs: (81)
 #, c-format
-msgid "Could not start external merge program!\n<hr=100%%>\n%s"
+msgid "Could not start external merge program!\n\n%s"
 msgstr ""
 
 #. Resource IDs: (3857)
@@ -2727,7 +2754,7 @@ msgstr ""
 
 #. Resource IDs: (83)
 #, c-format
-msgid "Could not start text viewer!\n<hr=100%%>\n%s"
+msgid "Could not start text viewer!\n\n%s"
 msgstr ""
 
 #. Resource IDs: (603)
@@ -2834,10 +2861,6 @@ msgstr ""
 msgid "Cu&t"
 msgstr ""
 
-#. Resource IDs: (57635)
-msgid "Cu&t\tCtrl+X"
-msgstr ""
-
 #. Resource IDs: (65535)
 msgid "Current"
 msgstr ""
@@ -2920,10 +2943,6 @@ msgstr ""
 msgid "Date Last Commit"
 msgstr ""
 
-#. Resource IDs: (1269)
-msgid "Debug"
-msgstr ""
-
 #. Resource IDs: (1008)
 msgid "Default"
 msgstr ""
@@ -2991,6 +3010,14 @@ msgstr ""
 
 #. Resource IDs: (80)
 msgid "Delete remote branch"
+msgstr ""
+
+#. Resource IDs: (4579)
+msgid "Delete remote tag - TortoiseGit"
+msgstr ""
+
+#. Resource IDs: (86)
+msgid "Delete remote tags..."
 msgstr ""
 
 #. Resource IDs: (83)
@@ -3235,6 +3262,10 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
+#. Resource IDs: (1698)
+msgid "Download"
+msgstr ""
+
 #. Resource IDs: (1002)
 msgid "Drag to make this menu float"
 msgstr ""
@@ -3309,6 +3340,10 @@ msgstr ""
 
 #. Resource IDs: (115)
 msgid "Edit author name"
+msgstr ""
+
+#. Resource IDs: (86)
+msgid "Edit description"
 msgstr ""
 
 #. Resource IDs: (110)
@@ -3498,6 +3533,10 @@ msgstr ""
 
 #. Resource IDs: (1002)
 msgid "Executable (*.exe)|*.exe|Command (*.com)|*.com|Information (*.pdf)|*.pdf|Batch (*.bat)|*.bat|All Files (*.*)|*.*||"
+msgstr ""
+
+#. Resource IDs: (11028)
+msgid "Executable (+x)"
 msgstr ""
 
 #. Resource IDs: (1002)
@@ -3760,6 +3799,10 @@ msgstr ""
 
 #. Resource IDs: (208)
 msgid "Filename"
+msgstr ""
+
+#. Resource IDs: (1707)
+msgid "Files"
 msgstr ""
 
 #. Resource IDs: (1057)
@@ -4573,14 +4616,6 @@ msgstr ""
 msgid "Invalid revision number!"
 msgstr ""
 
-#. Resource IDs: (83)
-msgid "Invalid revision number! Valid revisions are:\nHEAD\npositive decimal numbers,\ndates in one of the following example forms:\n{2002-02-17}\n{15:30}\n{15:30:00.200000}\n{\"2002-02-17 15:30\"}\n{\"2002-02-17 15:30 +0230\"}\n{2002-02-17T15:30}\n{2002-02-17T15:30Z}\n{2002-02-17T15:30-04:00}\n{20020217T1530}\n{20020217T1530Z}\n{20020217T1530-0500}"
-msgstr ""
-
-#. Resource IDs: (83)
-msgid "Invalid revision range!\nValid revisions are numbers and HEAD, separated by commas.\nA range can be specified with a dash.\nExample: 2-5,7,10,44-70,300-HEAD"
-msgstr ""
-
 #. Resource IDs: (145)
 msgid "It is not possible to rename a file by changing the case of its name alone.\nFor example, you can't make MyFile.txt become MYFILE.txt.\nPlease consult the documentation for a way to work around this limitation."
 msgstr ""
@@ -4659,6 +4694,10 @@ msgstr ""
 
 #. Resource IDs: (68)
 msgid "Last Commit"
+msgstr ""
+
+#. Resource IDs: (86)
+msgid "Last Modified"
 msgstr ""
 
 #. Resource IDs: (65535)
@@ -4762,10 +4801,6 @@ msgstr ""
 msgid "Locator Bar"
 msgstr ""
 
-#. Resource IDs: (1529)
-msgid "Locked (not used by TortoiseGit)"
-msgstr ""
-
 #. Resource IDs: (65)
 msgid "Log"
 msgstr ""
@@ -4865,7 +4900,7 @@ msgid "Mark as resolved"
 msgstr ""
 
 #. Resource IDs: (2051)
-msgid "Marks a file as resolved in Subversion\nMark as resolved"
+msgid "Marks a file as resolved in Git\nMark as resolved"
 msgstr ""
 
 #. Resource IDs: (13)
@@ -4965,10 +5000,6 @@ msgstr ""
 
 #. Resource IDs: (116)
 msgid "Messages"
-msgstr ""
-
-#. Resource IDs: (78)
-msgid "Mime type"
 msgstr ""
 
 #. Resource IDs: (1158)
@@ -5113,10 +5144,6 @@ msgstr ""
 msgid "Navigation Pane Options..."
 msgstr ""
 
-#. Resource IDs: (1550)
-msgid "Needs-lock (not used by TortoiseGit)"
-msgstr ""
-
 #. Resource IDs: (213)
 msgid "Nested"
 msgstr ""
@@ -5179,8 +5206,7 @@ msgid "No HEAD found"
 msgstr ""
 
 #. Resource IDs: (81)
-#, c-format
-msgid "No command specified!\n<hr=100%>\nTortoiseProc.exe is used by the Shell extension and should not be called directly!"
+msgid "No command specified!\n\nTortoiseProc.exe is used by the Shell extension and should not be called directly!"
 msgstr ""
 
 #. Resource IDs: (81)
@@ -5262,6 +5288,10 @@ msgstr ""
 
 #. Resource IDs: (78)
 msgid "Not Versioned Files"
+msgstr ""
+
+#. Resource IDs: (83)
+msgid "Not all files could be downloaded and verified."
 msgstr ""
 
 #. Resource IDs: (3857)
@@ -5432,10 +5462,6 @@ msgstr ""
 
 #. Resource IDs: (65535)
 msgid "Older lines"
-msgstr ""
-
-#. Resource IDs: (63)
-msgid "One of the paths you are attempting to move appears to be a special path\n(one of 'branches', 'tags' or 'trunk').\n\nAre you sure you want to move the selected paths?"
 msgstr ""
 
 #. Resource IDs: (219)
@@ -5979,6 +6005,15 @@ msgstr ""
 msgid "Rebase"
 msgstr ""
 
+#. Resource IDs: (1254)
+#, c-format
+msgid "Rebase \"%s\" onto this..."
+msgstr ""
+
+#. Resource IDs: (20)
+msgid "Rebase..."
+msgstr ""
+
 #. Resource IDs: (67)
 #, c-format
 msgid "Rebasing... (%d/%d)"
@@ -6406,6 +6441,10 @@ msgstr ""
 msgid "Revision graph"
 msgstr ""
 
+#. Resource IDs: (86)
+msgid "Revision(s) reverted. All changes are integrated into your working tree now."
+msgstr ""
+
 #. Resource IDs: (1579, 65535)
 msgid "Revision:"
 msgstr ""
@@ -6692,10 +6731,6 @@ msgid "Select viewer for diff-files"
 msgstr ""
 
 #. Resource IDs: (1067)
-msgid "Select/Deselect &All"
-msgstr ""
-
-#. Resource IDs: (1067)
 msgid "Select/deselect &all"
 msgstr ""
 
@@ -6753,6 +6788,14 @@ msgstr ""
 
 #. Resource IDs: (1580)
 msgid "Set up SMTP Server"
+msgstr ""
+
+#. Resource IDs: (86)
+msgid "Sets the remote as the \"pushremote\" for the selected local branch."
+msgstr ""
+
+#. Resource IDs: (86)
+msgid "Sets the remote branch as the \"pushbranch\" for the selected local branch."
 msgstr ""
 
 #. Resource IDs: (13)
@@ -6899,12 +6942,12 @@ msgstr ""
 msgid "Show changes as &unified diff"
 msgstr ""
 
-#. Resource IDs: (1556)
-msgid "Show diff to last commit"
+#. Resource IDs: (83)
+msgid "Show destination folder"
 msgstr ""
 
-#. Resource IDs: (1252)
-msgid "Show differences as &unified diff"
+#. Resource IDs: (1556)
+msgid "Show diff to last commit"
 msgstr ""
 
 #. Resource IDs: (1126)
@@ -6929,6 +6972,14 @@ msgstr ""
 
 #. Resource IDs: (65)
 msgid "Show log &before rename/copy"
+msgstr ""
+
+#. Resource IDs: (81)
+msgid "Show log of submodule"
+msgstr ""
+
+#. Resource IDs: (14)
+msgid "Show log of this folder"
 msgstr ""
 
 #. Resource IDs: (1256)
@@ -7044,6 +7095,14 @@ msgstr ""
 #. Resource IDs: (66)
 #, c-format
 msgid "Skip Patch: %s"
+msgstr ""
+
+#. Resource IDs: (11029)
+msgid "Skip worktree"
+msgstr ""
+
+#. Resource IDs: (1529)
+msgid "Skip worktree (\"Locked\" in TortoiseSVN)"
 msgstr ""
 
 #. Resource IDs: (74)
@@ -7234,9 +7293,8 @@ msgstr ""
 msgid "Submodule Update Options"
 msgstr ""
 
-#. Resource IDs: (81)
-#, c-format
-msgid "Subversion reported an error while doing a cleanup!\n<hr=100%%>\n%s"
+#. Resource IDs: (1708)
+msgid "Submodules"
 msgstr ""
 
 #. Resource IDs: (65)
@@ -7401,7 +7459,7 @@ msgid "The diffing engine aborted because of an error:\n%s"
 msgstr ""
 
 #. Resource IDs: (85)
-msgid "The entered source ref is ambiguous. You have to make it unique (e.g. by adding \"refs/heads/\" as a prefix for branches or \"refs/tags/\" for tags)!"
+msgid "The entered source ref is ambiguous.\nYou have to make it unique (e.g. by adding \"refs/heads/\" as a prefix for branches or \"refs/tags/\" for tags)!"
 msgstr ""
 
 #. Resource IDs: (64)
@@ -7488,6 +7546,11 @@ msgstr ""
 msgid "The line indicating the old file was expected in line %d !"
 msgstr ""
 
+#. Resource IDs: (86)
+#, c-format
+msgid "The local branch \"%s\" does not fast-forward to the remote branch \"%s\"."
+msgstr ""
+
 #. Resource IDs: (64)
 msgid "The local branch name and the remote branch name are empty.\nContinue?"
 msgstr ""
@@ -7564,11 +7627,6 @@ msgstr ""
 
 #. Resource IDs: (16)
 msgid "The user who did the last commit"
-msgstr ""
-
-#. Resource IDs: (81)
-#, c-format
-msgid "The working tree has changed!\n<hr=100%>\nPlease commit your changes first or revert."
 msgstr ""
 
 #. Resource IDs: (65535)
@@ -8505,6 +8563,10 @@ msgstr ""
 msgid "apply --topo-order"
 msgstr ""
 
+#. Resource IDs: (195)
+msgid "assume-valid"
+msgstr ""
+
 #. Resource IDs: (245)
 msgid "author"
 msgstr ""
@@ -8614,10 +8676,6 @@ msgstr ""
 msgid "line: %d(+) %d(-) files: %s = %d\n%s = %d\n%s = %d\n%s = %d\n%s = %d\n%s = %d"
 msgstr ""
 
-#. Resource IDs: (195)
-msgid "locked"
-msgstr ""
-
 #. Resource IDs: (1494)
 msgid "master"
 msgstr ""
@@ -8695,12 +8753,12 @@ msgstr ""
 msgid "quarter of year"
 msgstr ""
 
-#. Resource IDs: (195)
-msgid "readonly"
-msgstr ""
-
 #. Resource IDs: (10)
 msgid "replaced"
+msgstr ""
+
+#. Resource IDs: (195)
+msgid "skip-worktree"
 msgstr ""
 
 #. Resource IDs: (208)

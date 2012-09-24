@@ -1,6 +1,6 @@
 // TortoiseGit - a Windows shell extension for easy version control
 
-// Copyright (C) 2011 Sven Strickroth, <email@cs-ware.de>
+// Copyright (C) 2011-2012 Sven Strickroth, <email@cs-ware.de>
 
 // with code of PullFetchDlg.cpp
 
@@ -51,6 +51,8 @@ BEGIN_MESSAGE_MAP(CBisectStartDlg, CHorizontalResizableStandAloneDialog)
 	ON_BN_CLICKED(IDC_BUTTON_BAD, &CBisectStartDlg::OnBnClickedButtonBad)
 	ON_CBN_SELCHANGE(IDC_COMBOBOXEX_GOOD, &CBisectStartDlg::OnChangedRevision)
 	ON_CBN_SELCHANGE(IDC_COMBOBOXEX_BAD, &CBisectStartDlg::OnChangedRevision)
+	ON_CBN_EDITCHANGE(IDC_COMBOBOXEX_GOOD, &CBisectStartDlg::OnChangedRevision)
+	ON_CBN_EDITCHANGE(IDC_COMBOBOXEX_BAD, &CBisectStartDlg::OnChangedRevision)
 END_MESSAGE_MAP()
 
 BOOL CBisectStartDlg::OnInitDialog()
@@ -91,17 +93,26 @@ BOOL CBisectStartDlg::OnInitDialog()
 		m_cFirstBadRevision.AddString(list[i]);
 	}
 
-	m_cLastGoodRevision.SetWindowTextW(L"");
-	m_cFirstBadRevision.SetWindowTextW(g_Git.GetCurrentBranch());
+	if (m_sLastGood.IsEmpty())
+		m_cLastGoodRevision.SetCurSel(-1);
+	else
+		m_cLastGoodRevision.SetWindowTextW(m_sLastGood);
+	if (m_sFirstBad.IsEmpty())
+		m_cFirstBadRevision.SetCurSel(current);
+	else
+		m_cFirstBadRevision.SetWindowTextW(m_sFirstBad);
 
 	this->UpdateData(FALSE);
+
+	// EnDisable OK Button
+	OnChangedRevision();
 
 	return TRUE;
 }
 
 void CBisectStartDlg::OnChangedRevision()
 {
-	this->GetDlgItem(IDOK)->EnableWindow(!(m_cLastGoodRevision.GetString().Trim().IsEmpty() && m_cFirstBadRevision.GetString().Trim().IsEmpty()));
+	this->GetDlgItem(IDOK)->EnableWindow(!(m_cLastGoodRevision.GetString().Trim().IsEmpty() || m_cFirstBadRevision.GetString().Trim().IsEmpty()));
 }
 
 void CBisectStartDlg::OnBnClickedOk()

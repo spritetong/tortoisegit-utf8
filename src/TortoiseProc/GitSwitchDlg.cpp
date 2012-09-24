@@ -61,13 +61,19 @@ void CGitSwitchDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CGitSwitchDlg, CHorizontalResizableStandAloneDialog)
 
 	CHOOSE_VERSION_EVENT
-	ON_BN_CLICKED(IDC_CHECK_BRANCH, &CGitSwitchDlg::OnBnClickedCheckBranch)
 	ON_BN_CLICKED(IDOK, &CGitSwitchDlg::OnBnClickedOk)
 	ON_CBN_SELCHANGE(IDC_COMBOBOXEX_BRANCH, &CGitSwitchDlg::OnCbnEditchangeComboboxexVersion)
 	ON_CBN_SELCHANGE(IDC_COMBOBOXEX_TAGS, &CGitSwitchDlg::OnCbnEditchangeComboboxexVersion)
 	ON_WM_DESTROY()
 	ON_CBN_EDITCHANGE(IDC_COMBOBOXEX_VERSION, &CGitSwitchDlg::OnCbnEditchangeComboboxexVersion)
 END_MESSAGE_MAP()
+
+BOOL CGitSwitchDlg::PreTranslateMessage(MSG* pMsg)
+{
+	m_ToolTip.RelayEvent(pMsg);
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
 
 BOOL CGitSwitchDlg::OnInitDialog()
 {
@@ -101,16 +107,21 @@ BOOL CGitSwitchDlg::OnInitDialog()
 
 	Init();
 
-	if(m_Base.IsEmpty())
-		SetDefaultChoose(IDC_RADIO_BRANCH);
+	SetDefaultChoose(IDC_RADIO_BRANCH);
+
+	this->GetDlgItem(IDC_CHECK_TRACK)->EnableWindow(FALSE);
+
+	//Create the ToolTip control
+	if (!m_ToolTip.Create(this))
+	{
+		TRACE0("Unable to create the ToolTip!");
+	}
 	else
 	{
-		this->GetDlgItem(IDC_COMBOBOXEX_VERSION)->SetWindowTextW(m_Base);
-		SetDefaultChoose(IDC_RADIO_VERSION);
+		m_ToolTip.AddTool(GetDlgItem(IDC_CHECK_FORCE), CString(MAKEINTRESOURCE(IDS_PROC_NEWBRANCHTAG_FORCE_TT)));
+		m_ToolTip.AddTool(GetDlgItem(IDC_CHECK_TRACK), CString(MAKEINTRESOURCE(IDS_PROC_NEWBRANCHTAG_TRACK_TT)));
+		m_ToolTip.Activate(TRUE);
 	}
-
-	SetDefaultName(TRUE);
-	this->GetDlgItem(IDC_CHECK_TRACK)->EnableWindow(FALSE);
 
 	return TRUE;
 }
@@ -146,7 +157,7 @@ void CGitSwitchDlg::OnBnClickedOk()
 			// branch already exists
 			CString msg;
 			msg.LoadString(IDS_B_EXISTS);
-			ShowEditBalloon(IDC_NEWBRANCH, msg + _T(" ") + CString(MAKEINTRESOURCE(IDS_B_DIFFERENTNAMEOROVERRIDE)), CString(MAKEINTRESOURCE(IDS_WARN_WARNING)));
+			ShowEditBalloon(IDC_EDIT_BRANCH, msg + _T(" ") + CString(MAKEINTRESOURCE(IDS_B_DIFFERENTNAMEOROVERRIDE)), CString(MAKEINTRESOURCE(IDS_WARN_WARNING)));
 			return;
 		}
 		else if (g_Git.BranchTagExists(m_NewBranch, false))
@@ -224,10 +235,10 @@ void CGitSwitchDlg::OnDestroy()
 
 void CGitSwitchDlg::OnCbnEditchangeComboboxexVersion()
 {
-	SetDefaultName(TRUE);
+	OnVersionChanged();
 }
 
-void CGitSwitchDlg::OnBnClickedCheckBranch()
+void CGitSwitchDlg::OnVersionChanged()
 {
-	SetDefaultName(FALSE);
+	SetDefaultName(TRUE);
 }

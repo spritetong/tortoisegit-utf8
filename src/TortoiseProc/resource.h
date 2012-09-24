@@ -155,7 +155,7 @@
 #define IDS_CHSTAT_WCCOL                1001
 #define IDS_CHSTAT_REPOCOL              1002
 #define IDC_LOGLIST                     1003
-#define IDS_WARN_CONFIRM_MOVE_SPECIAL_DIRECTORY 1003
+#define IDS_STATUSLIST_SKIPWORKTREE     1003
 #define IDC_PASSEDIT                    1004
 #define IDS_SETTINGS_BUGTRAQ_PATHCOL    1004
 #define IDC_INFOTEXT                    1005
@@ -569,7 +569,7 @@
 #define IDS_PROGRS_TITLE_EXPORT         1233
 #define IDS_PROGRS_TITLE_MERGE          1234
 #define IDS_PROGRS_TITLE_COPY           1235
-#define IDS_PROGRS_MIMETYPE             1236
+#define IDS_PROC_DOWNLOAD               1236
 #define IDS_ERR_MISSINGVALUE            1237
 #define IDC_EXTERNALWARNING             1238
 #define IDS_STATUSLIST_GROUP_NOTVERSIONEDFILES 1238
@@ -665,9 +665,9 @@
 #define IDS_ERR_NOCOMMAND               1283
 #define IDS_ERR_NOCOMMANDVALUE          1284
 #define IDS_ERR_NOSTATUS                1285
-#define IDS_ERR_CLEANUP                 1286
+#define IDS_LOG_SUBMODULE               1286
 #define IDS_ERR_NOURLOFFILE             1287
-#define IDS_ERR_WCCHANGED               1288
+#define IDS_PROC_INSTALL                1288
 #define IDS_ERR_COPYFILES               1289
 #define IDS_ERR_EXTMERGESTART           1290
 #define IDS_STATUSLIST_GROUP_DIFFWITHPARENT 1291
@@ -707,8 +707,8 @@
 #define IDS_ERR_NOTENOUGHMEMORY         1313
 #define IDC_UNVERSIONEDASMODIFIED       1313
 #define IDS_ERR_MUSTBEURL               1314
-#define IDS_ERR_INVALIDREVNOWC          1315
 #define IDC_FLOPPY                      1315
+#define IDS_CHECKUPDATE_DESTFOLDER      1315
 #define IDS_ERR_MERGEIDENTICALREVISIONS 1316
 #define IDC_REOPENCOMMIT                1316
 #define IDC_MAXHISTORYLABEL             1317
@@ -717,7 +717,7 @@
 #define IDS_ERR_NOHOOKCOMMANDPECIFIED   1319
 #define IDS_ERR_HOOKFAILED              1320
 #define IDS_PROC_BROWSEREFS_DELETETAG   1321
-#define IDS_ERR_INVALIDREVRANGE         1322
+#define IDS_ERR_FAILEDUPDATEDOWNLOAD    1322
 #define IDC_HOOKPATH                    1323
 #define IDS_ERR_NOPREVREVISION          1323
 #define IDC_HOOKBROWSE                  1324
@@ -777,10 +777,19 @@
 #define IDS_SETTINGS_ABBREVIATERENAMINGS_TT 1359
 #define IDS_PROC_PUSHFETCH_ALLREMOTES   1360
 #define IDC_CHECKOUTPATH                1361
+#define IDS_PROC_SYNC_NOFASTFORWARD     1361
 #define IDC_BROWSECHECKOUTPATH          1362
+#define IDS_PUSHDLG_PUSHBRANCH_TT       1362
 #define IDC_CHECKOUTURL                 1363
+#define IDS_PUSHDLG_PUSHREMOTE_TT       1363
+#define IDS_STATUSLIST_COLLASTMODIFIED  1364
+#define IDS_STATUSLIST_COLSIZE          1365
+#define IDS_DELETEREMOTETAG             1366
 #define IDC_HOOKCOPYBUTTON              1367
+#define IDS_REVREVERTED                 1367
 #define IDC_INFOLABEL                   1368
+#define IDS_DESCRIPTION                 1368
+#define IDS_PROC_BROWSEREFS_EDITDESCRIPTION 1369
 #define IDC_REPOTREE                    1371
 #define IDC_REPOLIST                    1372
 #define IDC_LIST1                       1372
@@ -886,6 +895,7 @@
 #define IDC_SIGNOFF                     1482
 #define IDC_CHECK_NOCOMMIT              1482
 #define IDC_SENDMAIL_MAPI               1482
+#define IDC_PROC_PUSH_SET_PUSHREMOTE    1482
 #define IDC_BUTTON_BROWSE               1483
 #define IDC_BUTTON_BROWSE_SOURCE_BRANCH 1483
 #define IDC_BUTTON_BROWSE_REF           1483
@@ -897,7 +907,9 @@
 #define IDC_CHECK_FFONLY                1484
 #define IDC_TITLE_ANIMATE               1485
 #define IDC_CHECK_FETCHTAGS             1485
+#define IDC_PROC_PUSH_SET_PUSHBRANCH    1485
 #define IDC_RUN_PROGRESS                1486
+#define IDC_PROC_PUSH_SET_UPSTREAM      1486
 #define IDC_CURRENT                     1487
 #define IDC_COMBOBOXEX1                 1489
 #define IDC_REMOTE_COMBO                1489
@@ -1147,8 +1159,24 @@
 #define IDC_GROUP_IGNORE_FILE           1692
 #define IDC_CHECK_SUBMODULE_INIT        1693
 #define IDC_CHECK_SUBMODULE_RECURSIVE   1694
+#define IDC_LOG2                        1695
+#define IDC_LIST_TAGS                   1696
+#define IDC_GROUP_CHANGELOG             1697
+#define IDC_GROUP_DOWNLOADS             1698
+#define IDC_SELECTLABEL                 1700
 #define IDS_ABOUTVERSION                1700
+#define IDC_CHECKALL                    1701
 #define IDS_ABOUTVERSIONBOX             1701
+#define IDC_CHECKNONE                   1702
+#define IDC_CHECKUNVERSIONED            1703
+#define IDC_CHECKVERSIONED              1704
+#define IDC_CHECKADDED                  1705
+#define IDC_CHECKMODIFIED               1706
+#define IDC_CHECKFILES                  1707
+#define IDC_CHECKSUBMODULES             1708
+#define IDC_CHECKDELETED                1709
+#define IDC_BUTTON_UPDATE               1710
+#define IDC_LIST_DOWNLOADS              1711
 #define IDS_DLGTITLE_ADD_DIFF_TOOL      1750
 #define IDS_DLGTITLE_ADD_MERGE_TOOL     1751
 #define IDS_DLGTITLE_EDIT_DIFF_TOOL     1752
@@ -1421,6 +1449,7 @@
 #define IDD_DIFFSUBMODULE               4576
 #define IDD_IGNORE                      4577
 #define IDD_SUBMODULE_UPDATE            4578
+#define IDD_DELETEREMOTETAG             4579
 #define IDC_COMBOBOXEX_LOCAL_BRANCH     5000
 #define IDC_COMBOBOXEX_REMOTE_BRANCH    5001
 #define IDC_COMBOBOXEX_BAD              5001
@@ -1525,7 +1554,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        343
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1694
+#define _APS_NEXT_CONTROL_VALUE         1712
 #define _APS_NEXT_SYMED_VALUE           201
 #endif
 #endif

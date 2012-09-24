@@ -26,24 +26,24 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -175,8 +175,11 @@
     <ClCompile Include="..\libgit2\src\attr.c" />
     <ClCompile Include="..\libgit2\src\attr_file.c" />
     <ClCompile Include="..\libgit2\src\blob.c" />
+    <ClCompile Include="..\libgit2\src\branch.c" />
     <ClCompile Include="..\libgit2\src\buffer.c" />
     <ClCompile Include="..\libgit2\src\cache.c" />
+    <ClCompile Include="..\libgit2\src\checkout.c" />
+    <ClCompile Include="..\libgit2\src\clone.c" />
     <ClCompile Include="..\libgit2\src\commit.c" />
     <ClCompile Include="..\libgit2\src\config.c" />
     <ClCompile Include="..\libgit2\src\config_cache.c" />
@@ -269,7 +272,6 @@
     <ClInclude Include="..\libgit2\src\filter.h" />
     <ClInclude Include="..\libgit2\src\global.h" />
     <ClInclude Include="..\libgit2\src\hash.h" />
-    <ClInclude Include="..\libgit2\src\hashtable.h" />
     <ClInclude Include="..\libgit2\src\ignore.h" />
     <ClInclude Include="..\libgit2\src\index.h" />
     <ClInclude Include="..\libgit2\src\iterator.h" />
@@ -291,9 +293,11 @@
     <ClInclude Include="..\libgit2\src\refspec.h" />
     <ClInclude Include="..\libgit2\src\remote.h" />
     <ClInclude Include="..\libgit2\src\repository.h" />
+    <ClInclude Include="..\libgit2\src\repo_template.h" />
     <ClInclude Include="..\libgit2\src\sha1.h" />
     <ClInclude Include="..\libgit2\src\sha1_lookup.h" />
     <ClInclude Include="..\libgit2\src\signature.h" />
+    <ClInclude Include="..\libgit2\src\submodule.h" />
     <ClInclude Include="..\libgit2\src\tag.h" />
     <ClInclude Include="..\libgit2\src\thread-utils.h" />
     <ClInclude Include="..\libgit2\src\transport.h" />

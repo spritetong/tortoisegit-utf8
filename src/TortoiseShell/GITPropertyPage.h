@@ -80,17 +80,11 @@ protected:
 	virtual void InitWorkfileView();
 	void Time64ToTimeString(__time64_t time, TCHAR * buf, size_t buflen);
 	void PageProcOnCommand(WPARAM wParam);
+	void RunCommand(const tstring& command);
 
-	struct listproperty
-	{
-		stdstring name;
-		std::string value;
-		int		  count;
-	};
 	HWND m_hwnd;
 	std::vector<stdstring> filenames;
-	std::map<stdstring, std::string> propmap;
-	TCHAR stringtablebuffer[255];
+	bool m_bChanged;
 };
 
 

@@ -203,6 +203,10 @@ STDMETHODIMP CShellExt::IsMemberOf_Wrap(LPCWSTR pwszPath, DWORD /*dwAttrib*/)
 				SecureZeroMemory(&itemStatus, sizeof(itemStatus));
 				if (m_remoteCacheLink.GetStatusFromRemoteCache(tpath, &itemStatus, true))
 				{
+					if (itemStatus.m_bAssumeValid)
+						readonlyoverlay = true;
+					if (itemStatus.m_bSkipWorktree)
+						lockedoverlay = true;
 					status = GitStatus::GetMoreImportant(itemStatus.m_status.text_status, itemStatus.m_status.prop_status);
 				}
 			}
@@ -215,6 +219,10 @@ STDMETHODIMP CShellExt::IsMemberOf_Wrap(LPCWSTR pwszPath, DWORD /*dwAttrib*/)
 				if (s)
 				{
 					status = s->status;
+					if (s->assumeValid)
+						readonlyoverlay = true;
+					if (s->skipWorktree)
+						lockedoverlay = true;
 				}
 				else
 				{
@@ -246,6 +254,10 @@ STDMETHODIMP CShellExt::IsMemberOf_Wrap(LPCWSTR pwszPath, DWORD /*dwAttrib*/)
 					{
 						const FileStatusCacheEntry * s = m_CachedStatus.GetFullStatus(CTGitPath(pPath), FALSE);
 						status = s->status;
+						if (s->assumeValid)
+							readonlyoverlay = true;
+						if (s->skipWorktree)
+							lockedoverlay = true;
 					}
 				}
 			}
@@ -311,9 +323,10 @@ STDMETHODIMP CShellExt::IsMemberOf_Wrap(LPCWSTR pwszPath, DWORD /*dwAttrib*/)
 		case git_wc_status_normal:
 		case git_wc_status_external:
 		case git_wc_status_incomplete:
-			if ((readonlyoverlay)&&(g_readonlyovlloaded))
+			// skip-worktree aka locked has higher priority than assume-valid
+			if ((lockedoverlay)&&(g_lockedovlloaded))
 			{
-				if (m_State == FileStateReadOnly)
+				if (m_State == FileStateLockedOverlay)
 				{
 					g_filepath.clear();
 					return S_OK;
@@ -321,9 +334,9 @@ STDMETHODIMP CShellExt::IsMemberOf_Wrap(LPCWSTR pwszPath, DWORD /*dwAttrib*/)
 				else
 					return S_FALSE;
 			}
-			else if ((lockedoverlay)&&(g_lockedovlloaded))
+			else if ((readonlyoverlay)&&(g_readonlyovlloaded))
 			{
-				if (m_State == FileStateLockedOverlay)
+				if (m_State == FileStateReadOnly)
 				{
 					g_filepath.clear();
 					return S_OK;

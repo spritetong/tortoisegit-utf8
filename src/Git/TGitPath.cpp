@@ -43,7 +43,6 @@ extern CGit g_Git;
 CTGitPath::CTGitPath(void)
 	: m_bDirectoryKnown(false)
 	, m_bIsDirectory(false)
-	, m_bIsURL(false)
 	, m_bURLKnown(false)
 	, m_bHasAdminDirKnown(false)
 	, m_bHasAdminDir(false)
@@ -61,6 +60,7 @@ CTGitPath::CTGitPath(void)
 	, m_bIsSpecialDirectory(false)
 	, m_bIsWCRootKnown(false)
 	, m_bIsWCRoot(false)
+	, m_fileSize(0)
 {
 	m_Action=0;
 	m_ParentNo=0;
@@ -73,7 +73,6 @@ CTGitPath::~CTGitPath(void)
 CTGitPath::CTGitPath(const CString& sUnknownPath) :
 	  m_bDirectoryKnown(false)
 	, m_bIsDirectory(false)
-	, m_bIsURL(false)
 	, m_bURLKnown(false)
 	, m_bHasAdminDirKnown(false)
 	, m_bHasAdminDir(false)
@@ -91,6 +90,7 @@ CTGitPath::CTGitPath(const CString& sUnknownPath) :
 	, m_bIsSpecialDirectory(false)
 	, m_bIsWCRootKnown(false)
 	, m_bIsWCRoot(false)
+	, m_fileSize(0)
 {
 	SetFromUnknown(sUnknownPath);
 	m_Action=0;
@@ -167,6 +167,7 @@ void CTGitPath::SetFromWin(LPCTSTR pPath)
 {
 	Reset();
 	m_sBackslashPath = pPath;
+	m_sBackslashPath.Replace(L"\\\\?\\", L"");
 	SanitizeRootPath(m_sBackslashPath, false);
 	ATLASSERT(m_sBackslashPath.Find('/')<0);
 }
@@ -174,6 +175,7 @@ void CTGitPath::SetFromWin(const CString& sPath)
 {
 	Reset();
 	m_sBackslashPath = sPath;
+	m_sBackslashPath.Replace(L"\\\\?\\", L"");
 	SanitizeRootPath(m_sBackslashPath, false);
 }
 void CTGitPath::SetFromWin(LPCTSTR pPath, bool bIsDirectory)
@@ -277,19 +279,7 @@ const CString& CTGitPath::GetUIPathString() const
 {
 	if (m_sUIPath.IsEmpty())
 	{
-#if defined(_MFC_VER)
-		//BUGBUG HORRIBLE!!! - CPathUtils::IsEscaped doesn't need to be MFC-only
-		if (IsUrl())
-		{
-			m_sUIPath = CPathUtils::PathUnescape(GetGitPathString());
-			m_sUIPath.Replace(_T("file:////"), _T("file:///\\"));
-
-		}
-		else
-#endif
-		{
-			m_sUIPath = GetWinPathString();
-		}
+		m_sUIPath = GetWinPathString();
 	}
 	return m_sUIPath;
 }
@@ -329,24 +319,6 @@ void CTGitPath::SanitizeRootPath(CString& sPath, bool bIsForwardPath) const
 	{
 		sPath += (bIsForwardPath) ? _T("/") : _T("\\");
 	}
-}
-
-bool CTGitPath::IsUrl() const
-{
-#if 0
-	if (!m_bURLKnown)
-	{
-		EnsureFwdslashPathSet();
-		if(m_sUTF8FwdslashPath.IsEmpty())
-		{
-			SetUTF8FwdslashPath(m_sFwdslashPath);
-		}
-		m_bIsURL = !!svn_path_is_url(m_sUTF8FwdslashPath);
-		m_bURLKnown = true;
-	}
-	return m_bIsURL;
-#endif
-	return false;
 }
 
 bool CTGitPath::IsDirectory() const
@@ -402,6 +374,15 @@ __int64  CTGitPath::GetLastWriteTime() const
 	return m_lastWriteTime;
 }
 
+__int64 CTGitPath::GetFileSize() const
+{
+	if(!m_bDirectoryKnown)
+	{
+		UpdateAttributes();
+	}
+	return m_fileSize;
+}
+
 bool CTGitPath::IsReadOnly() const
 {
 	if(!m_bLastWriteTimeKnown)
@@ -415,26 +396,35 @@ void CTGitPath::UpdateAttributes() const
 {
 	EnsureBackslashPathSet();
 	WIN32_FILE_ATTRIBUTE_DATA attribs;
-	if(GetFileAttributesEx(m_sBackslashPath, GetFileExInfoStandard, &attribs))
+	if (m_sBackslashPath.GetLength() >= 248)
+		m_sLongBackslashPath = _T("\\\\?\\") + m_sBackslashPath;
+	if(GetFileAttributesEx(m_sBackslashPath.GetLength() >= 248 ? m_sLongBackslashPath : m_sBackslashPath, GetFileExInfoStandard, &attribs))
 	{
 		m_bIsDirectory = !!(attribs.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
 		m_lastWriteTime = *(__int64*)&attribs.ftLastWriteTime;
+		if (m_bIsDirectory)
+		{
+			m_fileSize = 0;
+		}
+		else
+		{
+			m_fileSize = ((INT64)( (DWORD)(attribs.nFileSizeLow) ) | ( (INT64)( (DWORD)(attribs.nFileSizeHigh) )<<32 ));
+		}
 		m_bIsReadOnly = !!(attribs.dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 		m_bExists = true;
 	}
 	else
 	{
+		m_bIsDirectory = false;
+		m_lastWriteTime = 0;
+		m_fileSize = 0;
 		DWORD err = GetLastError();
 		if ((err == ERROR_FILE_NOT_FOUND)||(err == ERROR_PATH_NOT_FOUND)||(err == ERROR_INVALID_NAME))
 		{
-			m_bIsDirectory = false;
-			m_lastWriteTime = 0;
 			m_bExists = false;
 		}
 		else
 		{
-			m_bIsDirectory = false;
-			m_lastWriteTime = 0;
 			m_bExists = true;
 			return;
 		}
@@ -827,7 +817,12 @@ int CTGitPath::GetAdminDirMask() const
 	{
 		status |= ITEMIS_FOLDERINGIT;
 		if (IsWCRoot())
+		{
 			status |= ITEMIS_WCROOT;
+
+			if (g_GitAdminDir.HasAdminDir(GetWinPathString(), false))
+				status |= ITEMIS_SUBMODULE;
+		}
 	}
 
 	CString dotGitPath;
@@ -958,10 +953,6 @@ bool CTGitPath::IsValidOnWindows() const
 		sMatch.TrimLeft(_T("\\"));
 		sPattern = _T("^(\\\\\\\\\\?\\\\)?(([a-zA-Z]:|\\\\)\\\\)?(((\\.)|(\\.\\.)|([^\\\\/:\\*\\?\"\\|<> ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?))\\\\)*[^\\\\/:\\*\\?\"\\|<> ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?$");
 	}
-	else if (IsUrl())
-	{
-		sPattern = _T("^((http|https|svn|svn\\+ssh|file)\\:\\\\+([^\\\\@\\:]+\\:[^\\\\@\\:]+@)?\\\\[^\\\\]+(\\:\\d+)?)?(((\\.)|(\\.\\.)|([^\\\\/:\\*\\?\"\\|<>\\. ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?))\\\\)*[^\\\\/:\\*\\?\"\\|<>\\. ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?$");
-	}
 	else
 	{
 		sPattern = _T("^(\\\\\\\\\\?\\\\)?(([a-zA-Z]:|\\\\)\\\\)?(((\\.)|(\\.\\.)|([^\\\\/:\\*\\?\"\\|<> ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?))\\\\)*[^\\\\/:\\*\\?\"\\|<> ](([^\\\\/:\\*\\?\"\\|<>\\. ])|([^\\\\/:\\*\\?\"\\|<>]*[^\\\\/:\\*\\?\"\\|<>\\. ]))?$");
@@ -991,29 +982,6 @@ bool CTGitPath::IsValidOnWindows() const
 
 	m_bIsValidOnWindowsKnown = true;
 	return m_bIsValidOnWindows;
-}
-
-bool CTGitPath::IsSpecialDirectory() const
-{
-	if (m_bIsSpecialDirectoryKnown)
-		return m_bIsSpecialDirectory;
-
-	static LPCTSTR specialDirectories[]
-		= { _T("trunk"), _T("tags"), _T("branches") };
-
-	for (int i = 0; i < _countof(specialDirectories); ++i)
-	{
-		CString name = GetFileOrDirectoryName();
-		if (0 == name.CompareNoCase(specialDirectories[i]))
-		{
-			m_bIsSpecialDirectory = true;
-			break;
-		}
-	}
-
-	m_bIsSpecialDirectoryKnown = true;
-
-	return m_bIsSpecialDirectory;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1078,7 +1046,7 @@ int CTGitPathList::FillUnRev(unsigned int action,CTGitPathList *list)
 		count=1;
 	else
 		count=list->GetCount();
-	for(int i=0;i<count;i++)
+	for (int i = 0; i < count; i++)
 	{
 		CString cmd;
 		pos=0;
@@ -1105,7 +1073,7 @@ int CTGitPathList::FillUnRev(unsigned int action,CTGitPathList *list)
 
 		pos=0;
 		CString one;
-		while( pos>=0 && pos<out.size())
+		while (pos >= 0 && pos < (int)out.size())
 		{
 			one.Empty();
 			g_Git.StringAppend(&one, &out[pos], CP_UTF8);
@@ -1130,7 +1098,7 @@ int CTGitPathList::ParserFromLog(BYTE_VECTOR &log, bool parseDeletes /*false*/)
 	//CString one;
 	CTGitPath path;
 	m_Action=0;
-	while( pos>=0 && pos<log.size())
+	while (pos >= 0 && pos < (int)log.size())
 	{
 		//one=log.Tokenize(_T("\n"),pos);
 		path.Reset();

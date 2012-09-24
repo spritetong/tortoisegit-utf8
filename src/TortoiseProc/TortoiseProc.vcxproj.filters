@@ -599,6 +599,15 @@
     <ClCompile Include="TortoiseProc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\Utils\MiscUI\LinkControl.cpp">
+      <Filter>Utils\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateListCtrl.cpp">
+      <Filter>Commands\UpdateCheck</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteRemoteTagDlg.cpp">
+      <Filter>Utility Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddRemoteDlg.h">
@@ -1038,6 +1047,15 @@
     </ClInclude>
     <ClInclude Include="TortoiseProc.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\MiscUI\LinkControl.h">
+      <Filter>Utils\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateListCtrl.h">
+      <Filter>Commands\UpdateCheck</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteRemoteTagDlg.h">
+      <Filter>Utility Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

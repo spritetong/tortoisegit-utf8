@@ -25,22 +25,22 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -430,19 +430,19 @@
     </CustomBuild>
     <CustomBuild Include="..\apr\include\apr.hw">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fc ..\apr\include\apr.hw ..\apr\include\apr.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\apr\include\apr.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fc ..\apr\include\apr.hw ..\apr\include\apr.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\apr\include\apr.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fc ..\apr\include\apr.hw ..\apr\include\apr.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\apr\include\apr.h;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating apr.h from apr.hw</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fc ..\apr\include\apr.hw ..\apr\include\apr.h &gt;NUL 2&gt;NUL&#x0D;&#x0A;if errorlevel 1 type ..\apr\include\apr.hw &gt; ..\apr\include\apr.h&#x0D;&#x0A;
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\apr\include\apr.h;%(Outputs)</Outputs>
     </CustomBuild>

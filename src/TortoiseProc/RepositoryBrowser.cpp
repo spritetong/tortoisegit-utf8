@@ -75,8 +75,8 @@ public:
 
 	int Compare(LPARAM lParam1, LPARAM lParam2)
 	{
-		CShadowFilesTree * pLeft	= (CShadowFilesTree *)m_pList->GetItemData(lParam1);
-		CShadowFilesTree * pRight	= (CShadowFilesTree *)m_pList->GetItemData(lParam2);
+		CShadowFilesTree * pLeft	= (CShadowFilesTree *)m_pList->GetItemData((int)lParam1);
+		CShadowFilesTree * pRight	= (CShadowFilesTree *)m_pList->GetItemData((int)lParam2);
 
 		int result = 0;
 		switch(m_col)
@@ -313,7 +313,7 @@ int CRepositoryBrowser::ReadTreeRecursive(git_repository &repo, git_tree * tree,
 		const git_tree_entry *entry = git_tree_entry_byindex(tree, i);
 		if (entry == NULL)
 			continue;
-		int mode = git_tree_entry_attributes(entry);
+		int mode = git_tree_entry_filemode(entry);
 		
 		CString base = CUnicodeUtils::GetUnicode(git_tree_entry_name(entry), CP_UTF8);
 
@@ -372,22 +372,40 @@ int CRepositoryBrowser::ReadTree(CShadowFilesTree * treeroot)
 	do
 	{
 		ret = git_repository_open(&repository, gitdir.GetBuffer());
-		if(ret)
+		if (ret)
+		{
+			const git_error * err = giterr_last();
+			MessageBox(_T("Could not open repository.\nlibgit2 reports: ") + CString(err->message), _T("TortoiseGit"), MB_ICONERROR);
 			break;
+		}
 
 		CGitHash hash = g_Git.GetHash(m_sRevision);
 		ret = git_commit_lookup(&commit, repository, (git_oid *) hash.m_hash);
-		if(ret)
+		if (ret)
+		{
+			const git_error * err = giterr_last();
+			MessageBox(_T("Could not lookup commit.\nlibgit2 reports: ") + CString(err->message), _T("TortoiseGit"), MB_ICONERROR);
 			break;
+		}
 
 		ret = git_commit_tree(&tree, commit);
-		if(ret)
+		if (ret)
+		{
+			const git_error * err = giterr_last();
+			MessageBox(_T("Could get tree of commit.\nlibgit2 reports: ") + CString(err->message), _T("TortoiseGit"), MB_ICONERROR);
 			break;
+		}
 
-		ret = ReadTreeRecursive(*repository, tree, treeroot);
-		if(ret)
-			break;
+		ReadTreeRecursive(*repository, tree, treeroot);
 
+		// try to resolve hash to a branch name
+		if (m_sRevision == hash.ToString())
+		{
+			MAP_HASH_NAME map;
+			g_Git.GetMapHashToFriendName(map);
+			if (!map[hash].empty())
+				m_sRevision = map[hash].at(0);
+		}
 		this->GetDlgItem(IDC_BUTTON_REVISION)->SetWindowText(m_sRevision);
 	} while(0);
 
@@ -926,7 +944,7 @@ void CRepositoryBrowser::FileSaveAs(const CString path)
 	CTGitPath gitPath(path);
 
 	CString filename;
-	filename.Format(_T("%s-%s%s"), gitPath.GetBaseFilename(), m_sRevision.Left(g_Git.GetShortHASHLength()), gitPath.GetFileExtension());
+	filename.Format(_T("%s-%s%s"), gitPath.GetBaseFilename(), CGitHash(m_sRevision).ToString().Left(g_Git.GetShortHASHLength()), gitPath.GetFileExtension());
 	CFileDialog dlg(FALSE, NULL, filename, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, NULL);
 
 	CString cmd, out;
@@ -949,7 +967,7 @@ void CRepositoryBrowser::OpenFile(const CString path, eOpenType mode)
 	CString temppath;
 	CString file;
 	GetTempPath(temppath);
-	file.Format(_T("%s%s_%s%s"), temppath, gitPath.GetBaseFilename(), m_sRevision.Left(g_Git.GetShortHASHLength()), gitPath.GetFileExtension());
+	file.Format(_T("%s%s_%s%s"), temppath, gitPath.GetBaseFilename(), CGitHash(m_sRevision).ToString().Left(g_Git.GetShortHASHLength()), gitPath.GetFileExtension());
 
 	CString out;
 	if(g_Git.GetOneFile(m_sRevision, gitPath, file))

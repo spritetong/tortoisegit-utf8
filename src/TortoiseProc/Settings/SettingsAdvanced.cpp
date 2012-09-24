@@ -64,7 +64,7 @@ CSettingsAdvanced::CSettingsAdvanced()
 
 	settings[i].sName	= L"ScintillaDirect2D";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
-	settings[i++].def.b	= true;
+	settings[i++].def.b	= false;
 
 	settings[i].sName	= L"ShowContextMenuIcons";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
@@ -74,9 +74,13 @@ CSettingsAdvanced::CSettingsAdvanced()
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
 	settings[i++].def.b	= true;
 
-	settings[i].sName	= L"UseLibgit2";
+	settings[i].sName	= L"TGitCacheCheckContent";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
 	settings[i++].def.b	= false;
+
+	settings[i].sName	= L"UseLibgit2";
+	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
+	settings[i++].def.b	= true;
 
 	settings[i].sName	= L"VersionCheck";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;

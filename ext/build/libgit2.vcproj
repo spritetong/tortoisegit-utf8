@@ -49,10 +49,12 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="precompiled.h"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
+				ForcedIncludeFiles="precompiled.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -126,10 +128,12 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="precompiled.h"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
+				ForcedIncludeFiles="precompiled.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -201,10 +205,12 @@
 				PreprocessorDefinitions="NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="precompiled.h"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
+				ForcedIncludeFiles="precompiled.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -220,6 +226,7 @@
 				OutputFile="$(OutDir)\$(ProjectName)32.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				LinkTimeCodeGeneration="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -277,10 +284,12 @@
 				PreprocessorDefinitions="NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="precompiled.h"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
+				ForcedIncludeFiles="precompiled.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -295,6 +304,7 @@
 				Name="VCLinkerTool"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				LinkTimeCodeGeneration="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -341,11 +351,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\libgit2\src\branch.c"
+				>
+			</File>
+			<File
 				RelativePath="..\libgit2\src\buffer.c"
 				>
 			</File>
 			<File
 				RelativePath="..\libgit2\src\cache.c"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\src\checkout.c"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\src\clone.c"
 				>
 			</File>
 			<File
@@ -366,6 +388,10 @@
 			</File>
 			<File
 				RelativePath="..\libgit2\src\crlf.c"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\src\date.c"
 				>
 			</File>
 			<File
@@ -509,6 +535,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\libgit2\src\revparse.c"
+				>
+			</File>
+			<File
 				RelativePath="..\libgit2\src\revwalk.c"
 				>
 			</File>
@@ -578,6 +608,42 @@
 				<File
 					RelativePath="..\libgit2\src\win32\posix_w32.c"
 					>
+				</File>
+				<File
+					RelativePath="..\libgit2\src\win32\precompiled.c"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="1"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\libgit2\src\win32\pthread.c"
@@ -807,6 +873,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\libgit2\src\repo_template.h"
+				>
+			</File>
+			<File
 				RelativePath="..\libgit2\src\repository.h"
 				>
 			</File>
@@ -820,6 +890,10 @@
 			</File>
 			<File
 				RelativePath="..\libgit2\src\signature.h"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\src\submodule.h"
 				>
 			</File>
 			<File
@@ -870,6 +944,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\libgit2\src\win32\precompiled.h"
+					>
+				</File>
+				<File
 					RelativePath="..\libgit2\src\win32\pthread.h"
 					>
 				</File>
@@ -903,6 +981,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\libgit2\include\git2\checkout.h"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\include\git2\clone.h"
+				>
+			</File>
+			<File
 				RelativePath="..\libgit2\include\git2\commit.h"
 				>
 			</File>
@@ -920,6 +1006,10 @@
 			</File>
 			<File
 				RelativePath="..\libgit2\include\git2\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\libgit2\include\git2\ignore.h"
 				>
 			</File>
 			<File

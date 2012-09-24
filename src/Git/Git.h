@@ -81,6 +81,7 @@ protected:
 public:
 	CComCriticalSection			m_critGitDllSec;
 	bool	m_IsUseGitDLL;
+	bool	m_IsUseLibGit2;
 
 	CEnvironment m_Environment;
 
@@ -144,6 +145,7 @@ public:
 	BOOL m_bInitialized;
 
 	CString GetHomeDirectory();
+	CString GetGitSystemConfig();
 	static CString ms_LastMsysGitDir;	// the last msysgitdir added to the path, blank if none
 	static int m_LogEncode;
 	static bool IsBranchNameValid(CString branchname);
@@ -178,7 +180,7 @@ public:
 
 	int GetGitEncode(TCHAR* configkey);
 
-	bool IsFastForward(const CString &from, const CString &to);
+	bool IsFastForward(const CString &from, const CString &to, CGitHash * commonAncestor = NULL);
 	CString GetConfigValue(CString name, int encoding=CP_UTF8, CString *GitPath=NULL,BOOL RemoveCR=TRUE);
 
 	int SetConfigValue(CString key, CString value, CONFIG_TYPE type=CONFIG_LOCAL, int encoding=CP_UTF8, CString *GitPath=NULL);
@@ -194,9 +196,9 @@ public:
 	int Revert(CString commit, CTGitPathList &list, bool keep=true);
 	int Revert(CString commit, CTGitPath &path);
 
-	bool SetCurrentDir(CString path)
+	bool SetCurrentDir(CString path, bool submodule = false)
 	{
-		bool b = m_GitDir.HasAdminDir(path,&m_CurrentDir);
+		bool b = m_GitDir.HasAdminDir(path, submodule ? false : !!PathIsDirectory(path), &m_CurrentDir);
 		if (!b && g_GitAdminDir.IsBareRepo(path))
 		{
 			m_CurrentDir = path;
@@ -241,6 +243,7 @@ public:
 	int GetRemoteList(STRING_VECTOR &list);
 	int GetBranchList(STRING_VECTOR &list, int *Current,BRANCH_TYPE type=BRANCH_LOCAL);
 	int GetTagList(STRING_VECTOR &list);
+	int GetRemoteTags(CString remote, STRING_VECTOR &list);
 	int GetMapHashToFriendName(MAP_HASH_NAME &map);
 
 	CString DerefFetchHead();

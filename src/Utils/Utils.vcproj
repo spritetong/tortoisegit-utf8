@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../ext/gitdll;../git;../;../ext/scintilla/include;../ext/hunspell;./;./MiscUi"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -113,7 +113,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../ext/gitdll;../git;../;../ext/scintilla/include;../ext/hunspell;./;./MiscUi"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../../ext/gitdll;../git;../;../ext/scintilla/include;../ext/hunspell;./;./MiscUi"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -240,7 +240,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../../ext/gitdll;../git;../;../ext/scintilla/include;../ext/hunspell;./;./MiscUi"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -481,10 +481,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RWSection.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ShellUpdater.cpp"
 				>
 			</File>
@@ -535,10 +531,6 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\StdioFileT.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\strconv.h"
@@ -654,6 +646,10 @@
 			</File>
 			<File
 				RelativePath=".\MiscUI\Picture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MiscUI\RegexEdit.cpp"
 				>
 			</File>
 			<File
