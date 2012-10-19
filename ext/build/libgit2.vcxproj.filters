@@ -14,18 +14,12 @@
     <Filter Include="Source Files\xdiff">
       <UniqueIdentifier>{e052b8dc-c1d2-436b-988d-3f91d91c1b5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\compat">
-      <UniqueIdentifier>{74dd5bd6-b119-41ff-9d9b-0a36ed981a1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Header Files\win32">
       <UniqueIdentifier>{fb23e06a-8513-4a61-8e52-8fbb6e441c84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\compat">
-      <UniqueIdentifier>{65d60ad0-3d62-48c9-8484-264e0152ace3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Public Header Files">
       <UniqueIdentifier>{8b2e0462-a022-4e78-bf4b-b18ff1eefac9}</UniqueIdentifier>
@@ -266,9 +260,6 @@
     <ClCompile Include="..\libgit2\src\xdiff\xutils.c">
       <Filter>Source Files\xdiff</Filter>
     </ClCompile>
-    <ClCompile Include="..\libgit2\src\compat\fnmatch.c">
-      <Filter>Source Files\compat</Filter>
-    </ClCompile>
     <ClCompile Include="..\libgit2\deps\http-parser\http_parser.c">
       <Filter>deps\http-parser</Filter>
     </ClCompile>
@@ -283,6 +274,30 @@
     </ClCompile>
     <ClCompile Include="..\libgit2\src\branch.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\date.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\delta.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\fnmatch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\pack-objects.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\reset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\revparse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libgit2\src\win32\findfile.c">
+      <Filter>Source Files\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -451,9 +466,6 @@
     <ClInclude Include="..\libgit2\src\win32\utf-conv.h">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\libgit2\src\compat\fnmatch.h">
-      <Filter>Header Files\compat</Filter>
-    </ClInclude>
     <ClInclude Include="..\libgit2\include\git2\attr.h">
       <Filter>Public Header Files</Filter>
     </ClInclude>
@@ -564,6 +576,39 @@
     </ClInclude>
     <ClInclude Include="..\libgit2\src\repo_template.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\compress.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\config_file.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\delta.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\diff_output.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\fnmatch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\khash.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\object.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\oidmap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\pack-objects.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\strmap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libgit2\src\win32\findfile.h">
+      <Filter>Source Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

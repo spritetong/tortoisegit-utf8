@@ -24,6 +24,9 @@
 IMPLEMENT_DYNAMIC(CSubmoduleDiffDlg, CHorizontalResizableStandAloneDialog)
 CSubmoduleDiffDlg::CSubmoduleDiffDlg(CWnd* pParent /*=NULL*/)
 	: CHorizontalResizableStandAloneDialog(CSubmoduleDiffDlg::IDD, pParent)
+	, m_bFromOK(false)
+	, m_bToOK(false)
+	, m_bDirty(false)
 {
 }
 
@@ -43,6 +46,7 @@ void CSubmoduleDiffDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSubmoduleDiffDlg, CHorizontalResizableStandAloneDialog)
 	ON_BN_CLICKED(IDC_LOG, &CSubmoduleDiffDlg::OnBnClickedLog)
 	ON_BN_CLICKED(IDC_LOG2, &CSubmoduleDiffDlg::OnBnClickedLog2)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 BOOL CSubmoduleDiffDlg::OnInitDialog()
@@ -53,11 +57,17 @@ BOOL CSubmoduleDiffDlg::OnInitDialog()
 	GetWindowText(sWindowTitle);
 	CAppUtils::SetWindowTitle(m_hWnd, g_Git.m_CurrentDir, sWindowTitle);
 
+	AddAnchor(IDC_SUBMODULEDIFFTITLE, TOP_LEFT, TOP_RIGHT);
+	AddAnchor(IDC_STATIC_REVISION, TOP_LEFT);
+	AddAnchor(IDC_STATIC_REVISION2, TOP_LEFT);
+	AddAnchor(IDC_STATIC_SUBJECT, TOP_LEFT);
+	AddAnchor(IDC_STATIC_SUBJECT2, TOP_LEFT);
+
 	AddAnchor(IDC_FROMGROUP, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_TOGROUP, TOP_LEFT, TOP_RIGHT);
 
-	AddAnchor(IDC_LOG, TOP_LEFT);
-	AddAnchor(IDC_LOG2, TOP_LEFT);
+	AddAnchor(IDC_LOG, TOP_RIGHT);
+	AddAnchor(IDC_LOG2, TOP_RIGHT);
 
 	AddAnchor(IDC_FROMHASH, TOP_LEFT, TOP_RIGHT);
 	AddAnchor(IDC_FROMSUBJECT, TOP_LEFT, TOP_RIGHT);
@@ -78,11 +88,39 @@ BOOL CSubmoduleDiffDlg::OnInitDialog()
 	GetDlgItem(IDC_SUBMODULEDIFFTITLE)->SetWindowText(title);
 
 	UpdateData(FALSE);
+	if (m_bDirty)
+		GetDlgItem(IDC_TOHASH)->SetWindowText(m_sToHash + _T("-dirty"));
 
 	return FALSE;
 }
 
-void CSubmoduleDiffDlg::SetDiff(CString path, bool toIsWorkingCopy, CString fromHash, CString fromSubject, CString toHash, CString toSubject)
+HBRUSH CSubmoduleDiffDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	if (pWnd->GetDlgCtrlID() == IDC_FROMSUBJECT && nCtlColor == CTLCOLOR_STATIC && !m_bFromOK)
+	{
+		pDC->SetBkColor(RGB(255, 0, 0));
+		pDC->SetTextColor(RGB(255, 255, 255));
+		return CreateSolidBrush(RGB(255, 0, 0));
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_TOSUBJECT && nCtlColor == CTLCOLOR_STATIC && !m_bToOK)
+	{
+		pDC->SetBkColor(RGB(255, 0, 0));
+		pDC->SetTextColor(RGB(255, 255, 255));
+		return CreateSolidBrush(RGB(255, 0, 0));
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_TOHASH && nCtlColor == CTLCOLOR_STATIC && m_bDirty)
+	{
+		pDC->SetBkColor(RGB(255, 255, 0));
+		pDC->SetTextColor(RGB(255, 0, 0));
+		return CreateSolidBrush(RGB(255, 255, 0));
+	}
+
+	return CHorizontalResizableStandAloneDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+
+void CSubmoduleDiffDlg::SetDiff(CString path, bool toIsWorkingCopy, CString fromHash, CString fromSubject, bool fromOK, CString toHash, CString toSubject, bool toOK, bool dirty)
 {
 	m_bToIsWorkingCopy = toIsWorkingCopy;
 
@@ -90,14 +128,17 @@ void CSubmoduleDiffDlg::SetDiff(CString path, bool toIsWorkingCopy, CString from
 
 	m_sFromHash = fromHash;
 	m_sFromSubject = fromSubject;
+	m_bFromOK = fromOK;
 	m_sToHash = toHash;
 	m_sToSubject = toSubject;
+	m_bToOK = toOK;
+	m_bDirty = dirty;
 }
 
 void CSubmoduleDiffDlg::ShowLog(CString hash)
 {
 	CString sCmd;
-	sCmd.Format(_T("/command:log /path:\"%s\" /rev:%s"), g_Git.m_CurrentDir + _T("\\") + m_sPath, hash);
+	sCmd.Format(_T("/command:log /path:\"%s\" /endrev:%s"), g_Git.m_CurrentDir + _T("\\") + m_sPath, hash);
 	CAppUtils::RunTortoiseProc(sCmd);
 }
 

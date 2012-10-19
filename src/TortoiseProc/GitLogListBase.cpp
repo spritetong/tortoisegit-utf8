@@ -667,19 +667,19 @@ void CGitLogListBase::DrawTagBranch(HDC hdc,CRect &rect,INT_PTR index)
 		if (rItem.state & LVIS_SELECTED)
 			txtState = LISS_SELECTED;
 
-		DrawThemeText(hTheme,hdc, LVP_LISTITEM, txtState, data->GetSubject(), -1, DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER, 0, &rt);
+		DrawThemeText(hTheme,hdc, LVP_LISTITEM, txtState, data->GetSubject(), -1, DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS, 0, &rt);
 	}
 	else
 	{
 		if (rItem.state & LVIS_SELECTED)
 		{
 			COLORREF clrOld = ::SetTextColor(hdc,::GetSysColor(COLOR_HIGHLIGHTTEXT));
-			::DrawText(hdc,data->GetSubject(),data->GetSubject().GetLength(),&rt,DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER);
+			::DrawText(hdc,data->GetSubject(),data->GetSubject().GetLength(),&rt,DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS);
 			::SetTextColor(hdc,clrOld);
 		}
 		else
 		{
-			::DrawText(hdc,data->GetSubject(),data->GetSubject().GetLength(),&rt,DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER);
+			::DrawText(hdc,data->GetSubject(),data->GetSubject().GetLength(),&rt,DT_NOPREFIX | DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS);
 		}
 	}
 
@@ -1846,13 +1846,10 @@ void CGitLogListBase::OnContextMenu(CWnd* pWnd, CPoint point)
 				popup.AppendMenu(MF_SEPARATOR, NULL);
 		} // GetSelectedCount() == 1
 
-		if (GetSelectedCount() == 1)
+		if (GetSelectedCount() != 0)
 		{
 			if(m_ContextMenuMask&GetContextMenuBit(ID_COPYHASH))
 				popup.AppendMenuIcon(ID_COPYHASH, IDS_COPY_COMMIT_HASH, IDI_COPYCLIP);
-		}
-		if (GetSelectedCount() != 0)
-		{
 			if(m_ContextMenuMask&GetContextMenuBit(ID_COPYCLIPBOARD))
 				popup.AppendMenuIcon(ID_COPYCLIPBOARD, IDS_LOG_POPUP_COPYTOCLIPBOARD, IDI_COPYCLIP);
 			if(m_ContextMenuMask&GetContextMenuBit(ID_COPYCLIPBOARDMESSAGES))
@@ -1919,6 +1916,7 @@ void CGitLogListBase::CopySelectionToClipBoard(int toCopy)
 		sDate.LoadString(IDS_LOG_DATE);
 		CString sMessage;
 		sMessage.LoadString(IDS_LOG_MESSAGE);
+		bool first = true;
 		while (pos)
 		{
 			CString sLogCopyText;
@@ -1966,10 +1964,12 @@ void CGitLogListBase::CopySelectionToClipBoard(int toCopy)
 			}
 			else
 			{
+				if (!first)
+					sClipdata += _T("\r\n");
 				sClipdata += pLogEntry->m_CommitHash;
-				break;
 			}
 
+			first = false;
 		}
 		CStringUtils::WriteAsciiStringToClipboard(sClipdata, GetSafeHwnd());
 	}
