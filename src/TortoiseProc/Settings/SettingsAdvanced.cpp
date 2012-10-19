@@ -76,7 +76,7 @@ CSettingsAdvanced::CSettingsAdvanced()
 
 	settings[i].sName	= L"TGitCacheCheckContent";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
-	settings[i++].def.b	= false;
+	settings[i++].def.b	= true;
 
 	settings[i].sName	= L"UseLibgit2";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
@@ -85,6 +85,10 @@ CSettingsAdvanced::CSettingsAdvanced()
 	settings[i].sName	= L"VersionCheck";
 	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
 	settings[i++].def.b	= true;
+
+	settings[i].sName	= L"VersionCheckPreview";
+	settings[i].type	= CSettingsAdvanced::SettingTypeBoolean;
+	settings[i++].def.b	= false;
 
 	settings[i].sName	= L"";
 	settings[i].type	= CSettingsAdvanced::SettingTypeNone;

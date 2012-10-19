@@ -160,7 +160,20 @@ UINT CCheckForUpdatesDlg::CheckThread()
 	{
 		sCheckURL = checkurlmachine;
 		if (sCheckURL.IsEmpty())
-			sCheckURL = _T("http://version.tortoisegit.googlecode.com/git/version.txt");
+		{
+			bool checkPreview = false;
+#if PREVIEW
+			checkPreview = true;
+#else
+			CRegStdDWORD regCheckPreview(L"Software\\TortoiseGit\\VersionCheckPreview", FALSE);
+			if (DWORD(regCheckPreview))
+				checkPreview = true;
+#endif
+			if (checkPreview)
+				sCheckURL = _T("http://version.tortoisegit.googlecode.com/git/version-preview.txt");
+			else
+				sCheckURL = _T("http://version.tortoisegit.googlecode.com/git/version.txt");
+		}
 	}
 	CoInitialize(NULL);
 	HRESULT res = URLDownloadToFile(NULL, sCheckURL, tempfile, 0, NULL);
@@ -177,6 +190,15 @@ UINT CCheckForUpdatesDlg::CheckThread()
 			if (file.ReadString(ver))
 			{
 				CString vertemp = ver;
+				// another versionstring for the filename can be provided after a semicolon
+				// this is needed for preview releases
+				int differentFilenamePos = vertemp.Find(_T(";"));
+				if (differentFilenamePos > 0)
+				{
+					vertemp = vertemp.Left(differentFilenamePos);
+					ver = ver.Mid(differentFilenamePos + 1);
+				}
+
 				major = _ttoi(vertemp);
 				vertemp = vertemp.Mid(vertemp.Find('.')+1);
 				minor = _ttoi(vertemp);
@@ -206,10 +228,12 @@ UINT CCheckForUpdatesDlg::CheckThread()
 
 				if (version != 0)
 				{
-					ver.Format(_T("%d.%d.%d.%d"),major,minor,micro,build);
-					temp.Format(IDS_CHECKNEWER_CURRENTVERSION, (LPCTSTR)ver);
+					CString version;
+					version.Format(_T("%d.%d.%d.%d"),major,minor,micro,build);
+					if (version != ver)
+						version += _T(" (") + ver + _T(")");
+					temp.Format(IDS_CHECKNEWER_CURRENTVERSION, (LPCTSTR)version);
 					SetDlgItemText(IDC_CURRENTVERSION, temp);
-					temp.Format(_T("%d.%d.%d.%d"), TGIT_VERMAJOR, TGIT_VERMINOR, TGIT_VERMICRO, TGIT_VERBUILD);
 				}
 
 				if (version == 0)
@@ -305,7 +329,7 @@ void CCheckForUpdatesDlg::FillDownloads(CStdioFile &file, CString version)
 	m_ctrlFiles.InsertItem(0, _T("TortoiseGit"));
 	CString filename;
 	filename.Format(_T("TortoiseGit-%s-%sbit.msi"), version, x86x64);
-	m_fileNames.push_back(filename);
+	m_ctrlFiles.SetItemData(0, (DWORD_PTR)(new CUpdateListCtrl::Entry(filename, CUpdateListCtrl::STATUS_NONE)));
 	m_ctrlFiles.SetCheck(0 , TRUE);
 
 	std::vector<DWORD> m_installedLangs;
@@ -356,7 +380,7 @@ void CCheckForUpdatesDlg::FillDownloads(CStdioFile &file, CString version)
 
 		CString filename;
 		filename.Format(_T("TortoiseGit-LanguagePack-%s-%sbit-%s.msi"), version, x86x64, langs.Mid(5));
-		m_fileNames.push_back(filename);
+		m_ctrlFiles.SetItemData(pos, (DWORD_PTR)(new CUpdateListCtrl::Entry(filename, CUpdateListCtrl::STATUS_NONE)));
 
 		if (std::find(m_installedLangs.begin(), m_installedLangs.end(), loc) != m_installedLangs.end())
 			m_ctrlFiles.SetCheck(pos , TRUE);
@@ -483,10 +507,11 @@ void CCheckForUpdatesDlg::OnBnClickedButtonUpdate()
 		{
 			for (int i = 0; i < (int)m_ctrlFiles.GetItemCount(); i++)
 			{
+				CUpdateListCtrl::Entry *data = (CUpdateListCtrl::Entry *)m_ctrlFiles.GetItemData(i);
 				if (m_ctrlFiles.GetCheck(i) == TRUE)
-					ShellExecute(NULL, _T("open"), folder + m_fileNames[i], NULL, NULL, SW_SHOWNORMAL);
+					ShellExecute(NULL, _T("open"), folder + data->m_filename, NULL, NULL, SW_SHOWNORMAL);
 			}
-			ExitProcess(0);
+			CStandAloneDialog::OnOK();
 		}
 		else if (m_ctrlUpdate.GetCurrentEntry() == 1)
 		{
@@ -546,20 +571,21 @@ UINT CCheckForUpdatesDlg::DownloadThread()
 		m_ctrlFiles.EnsureVisible(i, FALSE);
 		CRect rect;
 		m_ctrlFiles.GetItemRect(i, &rect, LVIR_BOUNDS);
+		CUpdateListCtrl::Entry *data = (CUpdateListCtrl::Entry *)m_ctrlFiles.GetItemData(i);
 		if (m_ctrlFiles.GetCheck(i) == TRUE)
 		{
-			m_ctrlFiles.SetItemData(i, CUpdateListCtrl::STATUS_DOWNLOADING);
+			data->m_status = CUpdateListCtrl::STATUS_DOWNLOADING;
 			m_ctrlFiles.InvalidateRect(rect);
-			if (Download(m_fileNames[i]))
-				m_ctrlFiles.SetItemData(i, CUpdateListCtrl::STATUS_SUCCESS);
+			if (Download(data->m_filename))
+				data->m_status = CUpdateListCtrl::STATUS_SUCCESS;
 			else
 			{
-				m_ctrlFiles.SetItemData(i, CUpdateListCtrl::STATUS_FAIL);
+				data->m_status = CUpdateListCtrl::STATUS_FAIL;
 				result = FALSE;
 			}
 		}
 		else
-			m_ctrlFiles.SetItemData(i, CUpdateListCtrl::STATUS_IGNORE);
+			data->m_status = CUpdateListCtrl::STATUS_IGNORE;
 		m_ctrlFiles.InvalidateRect(rect);
 	}
 
